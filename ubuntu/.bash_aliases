@@ -120,3 +120,5 @@ if type -p -a mc > /dev/null; then
 			;;
 	esac
 fi
+
+#  vim: set ft=sh ts=4 sw=4 tw=0 noet :
