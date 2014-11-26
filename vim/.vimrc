@@ -144,7 +144,7 @@ NeoBundle 'honza/vim-snippets'
 
 " ensure vim version >= 7.3.584 and not in cygwin.
 if (v:version > 703 || (v:version == 703 && has("patch584")))
-			\	&& !(has('win32') || has('win64'))
+			\	&& !(s:is_win32 || s:is_win64)
 	NeoBundle 'Valloric/YouCompleteMe', {
 				\ 'build' : {
 				\     'windows' : './install.sh --clang-completer --system-libclang --omnisharp-completer',
