@@ -1,7 +1,5 @@
-# uncomment force_color_prompt=yes line in .bashrc
-if [ $(grep "^#force_color_prompt=yes" $HOME/.bashrc | wc -l) != 0 ]; then
-	sed -i s/^#force_color_prompt=yes/force_color_prompt=yes/ $HOME/.bashrc
-fi
+# set prompt
+PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
 
 # to use Ctrl-s
 stty -ixon

@@ -9,13 +9,47 @@
 " TODO: Move cursor by display lines when wrapping
 "       - http://vim.wikia.com/wiki/Move_cursor_by_display_lines_when_wrapping
 
-" Plugin: NeoBundle {{{
-" Note: Skip initialization for vim-tiny or vim-small.
+" Note: Skip initialization for vim-tiny or vim-small. {{{
 if !1 | finish | endif
+"}}}
 
-" YouCompleteMe install process tooks time.
-let g:neobundle#install_process_timeout = 1200
+" Judging OS "{{{
+let s:is_win64 = 0
+let s:is_win32 = 0
+let s:is_cygwin = 0
+let s:is_macos = 0
+let s:is_linux64 = 0
+let s:is_linux32 = 0
+let s:is_unix = 0
 
+if has('win32')
+	if has('win64')
+		" Windows 64-bit
+		let s:is_win64 = 1
+	else
+		" Windows 32-bit
+		let s:is_win32 = 1
+	endif
+elseif has('win32unix')
+	" cygwin
+	let s:is_cygwin = 1
+elseif !has('win32') && (has('mac') || has('macunix') || has('gui_macvim') ||
+			\ (!isdirectory('/proc') && executable('sw_vers')))
+	" MacOS
+	let s:is_macos = 1
+elseif glob('/lib*/ld-linux*64.so.2') != ''
+	" Linux 64-bit
+	let s:is_linux64 = 1
+elseif glob('/lib*/ld-linux*.so.2') != ''
+	" Linux 32-bit
+	let s:is_linux32 = 1
+else
+	" Unix
+	let s:is_unix = 1
+endif
+"}}}
+
+" Plugin: NeoBundle {{{
 if has('vim_starting')
 	set nocompatible               " Be iMproved
 
@@ -46,6 +80,9 @@ catch /^Vim\%((\a\+)\)\=:E117/
 	call NeoBundleInstaller()
 endtry
 " }}}
+
+" YouCompleteMe install process tooks time.
+let g:neobundle#install_process_timeout = 1200
 
 " My Bundles here:
 " Refer to |:NeoBundle-examples|.
@@ -166,42 +203,6 @@ try
 	language en_US.UTF-8
 catch
 endtry
-"}}}
-
-" Judging OS "{{{
-let s:is_win64 = 0
-let s:is_win32 = 0
-let s:is_cygwin = 0
-let s:is_macos = 0
-let s:is_linux64 = 0
-let s:is_linux32 = 0
-let s:is_unix = 0
-
-if has('win32')
-	if has('win64')
-		" Windows 64-bit
-		let s:is_win64 = 1
-	else
-		" Windows 32-bit
-		let s:is_win32 = 1
-	endif
-elseif has('win32unix')
-	" cygwin
-	let s:is_cygwin = 1
-elseif !has('win32') && (has('mac') || has('macunix') || has('gui_macvim') ||
-			\ (!isdirectory('/proc') && executable('sw_vers')))
-	" MacOS
-	let s:is_macos = 1
-elseif glob('/lib*/ld-linux*64.so.2') != ''
-	" Linux 64-bit
-	let s:is_linux64 = 1
-elseif glob('/lib*/ld-linux*.so.2') != ''
-	" Linux 32-bit
-	let s:is_linux32 = 1
-else
-	" Unix
-	let s:is_unix = 1
-endif
 "}}}
 
 " Function: Make directory if doesn't exist "{{{
@@ -389,7 +390,7 @@ else
 					\	endtry
 	augroup END
 
-	if &t_Co >= 255
+	if &t_Co >= 256
 		set background=dark
 		let g:rehash256 = 1                 " for molokai colorscheme
 		let g:solarized_termcolors = 256    " for solarized colorscheme
@@ -478,6 +479,9 @@ augroup MyAutoCmd
 	autocmd Filetype perl
 				\ setlocal kp=perldoc\ -f
 	autocmd Filetype tex set textwidth=72
+	autocmd FileType man
+				\ set nonumber
+				\ set mouse=a
 augroup END
 "}}}
 
@@ -523,11 +527,6 @@ if 0
 	autocmd BufWinLeave *.S mkview
 	autocmd BufWinEnter *.S silent loadview
 endif
-"}}}
-
-" VIM man pager related setting {{{
-autocmd FileType man set nonumber
-autocmd FileType man set mouse=a
 "}}}
 
 " cscope settings {{{
@@ -1387,7 +1386,6 @@ let g:syntastic_check_on_open = 1
 " TODO: find out how to remove redundancy check.
 augroup MyAutoCmd
 	autocmd SessionLoadPost * if g:syntastic_check_on_open == 1 | call SyntasticCheck() | else | call SyntasticReset() | endif
-	" autocmd SessionLoadPost * SyntasticCheck
 augroup END
 let g:syntastic_check_on_wq = 0
 let g:syntastic_aggregate_errors = 1
