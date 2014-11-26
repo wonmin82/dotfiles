@@ -10,5 +10,3 @@ sudo cp -f -v ./ubuntu/fonts.conf /root/.config/fontconfig/
 sudo chown -v root:root /root/.config/fontconfig/fonts.conf
 sudo cp -f -v ./ubuntu/local.conf /etc/fonts/
 sudo chown -v root:root /etc/fonts/local.conf
-cp -f -v ./vim/.vimrc ~
-cp -f -v ./vim/.vimrc.local ~
