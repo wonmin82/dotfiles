@@ -1,5 +1,7 @@
 [user]
 	name = Wonmin Jung
 	email = wonmin82@gmail.com
+[push]
+	default = simple
 [color]
 	ui = auto
