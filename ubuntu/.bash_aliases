@@ -18,27 +18,67 @@ fi
 if [ ! -d $HOME/.local/bin ]; then
 	mkdir -p $HOME/.local/bin
 fi
+
 if [ ! -d $HOME/.local/share/man ]; then
 	mkdir -p $HOME/.local/share/man
 fi
+
 if [ ! -d $HOME/.local/share/info ]; then
 	mkdir -p $HOME/.local/share/info
+fi
+
+if [ ! -d $HOME/.local/lib ]; then
+	mkdir -p $HOME/.local/lib
+fi
+
+if [ $(uname -m | grep 'x86_64' | wc -l) != 0 ]; then
+	if [ ! -d $HOME/.local/lib64 ]; then
+		mkdir -p $HOME/.local/lib64
+	fi
+
+	if [ ! -d $HOME/.local/lib32 ]; then
+		mkdir -p $HOME/.local/lib32
+	fi
 fi
 
 # Set some paths
 if [[ ! ":$PATH:" == *":$HOME/.local/bin:"* ]]; then
 	PATH=$HOME/.local/bin:$PATH
+	PATH=$(echo $PATH | sed -e 's/^:*//g' -e 's/:*$//g')
 	export PATH
 fi
+
 if [[ ! ":$(manpath):" == *":$HOME/.local/share/man:"* ]]; then
 	unset MANPATH
 	MANPATH=$HOME/.local/share/man:$(manpath)
+	MANPATH=$(echo $MANPATH | sed -e 's/^:*//g' -e 's/:*$//g')
 	export MANPATH
 fi
+
 if [[ ! ":$INFOPATH:" == *":$HOME/.local/share/info:"* ]]; then
 	INFOPATH=$HOME/.local/share/info:$INFOPATH
+	INFOPATH=$(echo $INFOPATH | sed -e 's/^:*//g' -e 's/:*$//g')
 	export INFOPATH
 fi
+
+unset LD_LIBRARY_PATH_SCRATCH
+if [[ ! ":$LD_LIBRARY_PATH:" == *":$HOME/.local/lib:"* ]]; then
+	LD_LIBRARY_PATH_SCRATCH=$LD_LIBRARY_PATH_SCRATCH:$HOME/.local/lib
+fi
+
+if [[ ! ":$LD_LIBRARY_PATH:" == *":$HOME/.local/lib64:"* ]]; then
+	LD_LIBRARY_PATH_SCRATCH=$LD_LIBRARY_PATH_SCRATCH:$HOME/.local/lib64
+fi
+
+if [[ ! ":$LD_LIBRARY_PATH:" == *":$HOME/.local/lib32:"* ]]; then
+	LD_LIBRARY_PATH_SCRATCH=$LD_LIBRARY_PATH_SCRATCH:$HOME/.local/lib32
+fi
+
+LD_LIBRARY_PATH_SCRATCH=$(echo $LD_LIBRARY_PATH_SCRATCH | sed -e 's/^:*//g' -e 's/:*$//g')
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH_SCRATCH:$LD_LIBRARY_PATH
+LD_LIBRARY_PATH=$(echo $LD_LIBRARY_PATH | sed -e 's/^:*//g' -e 's/:*$//g')
+unset LD_LIBRARY_PATH_SCRATCH
+export LD_LIBRARY_PATH
 
 # Functions
 # #########
