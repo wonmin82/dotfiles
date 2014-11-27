@@ -66,12 +66,14 @@ if [[ ! ":$LD_LIBRARY_PATH:" == *":$HOME/.local/lib:"* ]]; then
 	LD_LIBRARY_PATH_SCRATCH=$LD_LIBRARY_PATH_SCRATCH:$HOME/.local/lib
 fi
 
-if [[ ! ":$LD_LIBRARY_PATH:" == *":$HOME/.local/lib64:"* ]]; then
-	LD_LIBRARY_PATH_SCRATCH=$LD_LIBRARY_PATH_SCRATCH:$HOME/.local/lib64
-fi
+if [ $(uname -m | grep 'x86_64' | wc -l) != 0 ]; then
+	if [[ ! ":$LD_LIBRARY_PATH:" == *":$HOME/.local/lib64:"* ]]; then
+		LD_LIBRARY_PATH_SCRATCH=$LD_LIBRARY_PATH_SCRATCH:$HOME/.local/lib64
+	fi
 
-if [[ ! ":$LD_LIBRARY_PATH:" == *":$HOME/.local/lib32:"* ]]; then
-	LD_LIBRARY_PATH_SCRATCH=$LD_LIBRARY_PATH_SCRATCH:$HOME/.local/lib32
+	if [[ ! ":$LD_LIBRARY_PATH:" == *":$HOME/.local/lib32:"* ]]; then
+		LD_LIBRARY_PATH_SCRATCH=$LD_LIBRARY_PATH_SCRATCH:$HOME/.local/lib32
+	fi
 fi
 
 LD_LIBRARY_PATH_SCRATCH=$(echo $LD_LIBRARY_PATH_SCRATCH | sed -e 's/^:*//g' -e 's/:*$//g')
