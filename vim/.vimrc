@@ -155,17 +155,6 @@ if (v:version > 703 || (v:version == 703 && has("patch584")))
 				\ }
 endif
 
-" NeoBundle 'ervandew/supertab'
-" NeoBundle 'vim-scripts/OmniCppComplete'
-
-" NeoBundle 'Shougo/neocomplete'
-" NeoBundle 'Shougo/neosnippet'
-" NeoBundle 'Shougo/neosnippet-snippets'
-" NeoBundle 'honza/vim-snippets'
-
-" better support terminal key sequences
-"NeoBundle 'nacitar/terminalkeys.vim'
-
 NeoBundle 'tomasr/molokai'
 NeoBundle 'altercation/vim-colors-solarized'
 NeoBundle 'nanotech/jellybeans.vim'
@@ -193,7 +182,9 @@ augroup END
 syntax on
 
 scriptencoding utf-8
-set fileencoding=utf-8
+if &modifiable
+	set fileencoding=utf-8
+endif
 set fileencodings=utf-8,cp949,unicode
 set termencoding=utf-8
 set encoding=utf-8
@@ -440,6 +431,15 @@ if &term =~ '^screen'
 endif
 "}}}
 
+" XTerm escape sequence definition for <home> and <end> key {{{
+if &term =~ '^xterm'
+	map <esc>[1~ <home>
+	map! <esc>[1~ <home>
+	map <esc>[4~ <end>
+	map! <esc>[4~ <end>
+endif
+"}}}
+
 " Cursor settings. {{{
 " This makes terminal vim sooo much nicer!
 " Tmux will only forward escape sequences to the terminal if surrounded by a DCS
@@ -480,8 +480,18 @@ augroup MyAutoCmd
 				\ setlocal kp=perldoc\ -f
 	autocmd Filetype tex set textwidth=72
 	autocmd FileType man
-				\ set nonumber
-				\ set mouse=a
+				\ setlocal tabstop=8 |
+				\ setlocal nomodifiable nomodified nolist nonumber nospell |
+				\ setlocal mouse=a |
+				\ setlocal nocursorline nocursorcolumn |
+				\ %foldopen! |
+				\ nnoremap q :qa!<cr> |
+				\ nnoremap <end> G |
+				\ nnoremap <home> gg |
+				\ nmap K <c-]> |
+				\ nnoremap : <nop> |
+				\ nnoremap <f2> <nop> | nnoremap <f3> <nop> |
+				\ nnoremap <f4> <nop> | nnoremap <f5> <nop>
 augroup END
 "}}}
 
@@ -967,7 +977,7 @@ call unite#custom_source('file_rec,file_rec/async,file_mru,file,buffer,grep',
 			\ ], '\|'))
 
 " Map space to the prefix for Unite
-nnoremap [unite] <Nop>
+nnoremap [unite] <nop>
 nmap <space> [unite]
 
 " General fuzzy search
@@ -1137,6 +1147,7 @@ let g:unite_source_session_enable_auto_save = 1
 autocmd MyAutoCmd VimEnter * call s:unite_session_on_enter()
 function! s:unite_session_on_enter()
 	if !argc() && !exists("g:start_session_from_cmdline")
+				\ && !(&ft == 'man')
 		Unite -buffer-name=sessions session
 	endif
 endfunction
@@ -1678,4 +1689,4 @@ endif
 "}}}
 
 finish
-" vim:foldmethod=marker:foldenable:formatoptions=
+" vim: set ft=vim ts=4 sw=4 noet fdm=marker fen fo= :
