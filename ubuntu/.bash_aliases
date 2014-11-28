@@ -169,6 +169,9 @@ alias ls='ls -hF --color=auto'
 # astyle options
 alias astyle='astyle --style=break --indent=force-tab=4 --unpad-paren --pad-header --pad-oper --unpad-paren --align-pointer=name --align-reference=name'
 
+# axel options
+alias axel='axel -a'
+
 # mc options
 #type -p -a mc > /dev/null && alias mc='. /usr/share/mc/bin/mc-wrapper.sh -a'
 if type -p -a mc > /dev/null; then
