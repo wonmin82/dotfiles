@@ -82,6 +82,27 @@ LD_LIBRARY_PATH=$(echo $LD_LIBRARY_PATH | sed -e 's/^:*//g' -e 's/:*$//g')
 unset LD_LIBRARY_PATH_SCRATCH
 export LD_LIBRARY_PATH
 
+unset LD_RUN_PATH_SCRATCH
+if [[ ! ":$LD_RUN_PATH:" == *":$HOME/.local/lib:"* ]]; then
+	LD_RUN_PATH_SCRATCH=$LD_RUN_PATH_SCRATCH:$HOME/.local/lib
+fi
+
+if [ $(uname -m | grep 'x86_64' | wc -l) != 0 ]; then
+	if [[ ! ":$LD_RUN_PATH:" == *":$HOME/.local/lib64:"* ]]; then
+		LD_RUN_PATH_SCRATCH=$LD_RUN_PATH_SCRATCH:$HOME/.local/lib64
+	fi
+
+	if [[ ! ":$LD_RUN_PATH:" == *":$HOME/.local/lib32:"* ]]; then
+		LD_RUN_PATH_SCRATCH=$LD_RUN_PATH_SCRATCH:$HOME/.local/lib32
+	fi
+fi
+
+LD_RUN_PATH_SCRATCH=$(echo $LD_RUN_PATH_SCRATCH | sed -e 's/^:*//g' -e 's/:*$//g')
+LD_RUN_PATH=$LD_RUN_PATH_SCRATCH:$LD_RUN_PATH
+LD_RUN_PATH=$(echo $LD_RUN_PATH | sed -e 's/^:*//g' -e 's/:*$//g')
+unset LD_RUN_PATH_SCRATCH
+export LD_RUN_PATH
+
 # Functions
 # #########
 function rmoldkernel () {
