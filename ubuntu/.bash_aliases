@@ -1,51 +1,5 @@
-# set prompt
-PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-
-# If this is an xterm set the title to user@host:dir
-case "$TERM" in
-	xterm*|rxvt*|screen*)
-		PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD}\007"'
-		;;
-	*)
-		;;
-esac
-
-case "$TERM" in
-	xterm*|rxvt*)
-		# Show the currently running command in the terminal title:
-		# http://www.davidpashley.com/articles/xterm-titles-with-bash.html
-		show_command_in_title_bar()
-		{
-			case "$BASH_COMMAND" in
-				*\033]0*)
-					# The command is trying to set the title bar as well;
-					# this is most likely the execution of $PROMPT_COMMAND.
-					# In any case nested escapes confuse the terminal, so don't
-					# output them.
-					;;
-				*)
-					echo -ne "\033]0;${USER}@${HOSTNAME}: ${BASH_COMMAND}\007"
-					;;
-			esac
-		}
-		trap show_command_in_title_bar DEBUG
-		;;
-	*)
-		;;
-esac
-
 # to use Ctrl-s
 stty -ixon
-
-# force TERM environment to xterm-256color when we are in gnome-terminal
-if [ $(ps -p $PPID o comm | grep gnome-terminal | wc -l) == 1 ]; then
-	# we are in gnome-terminal.
-	# gnome-terminal does not set TERM to xterm-256color
-	export TERM=xterm-256color
-else
-	# we are not in gnome-terminal.
-	:
-fi
 
 # Ensure some directories exist.
 if [ ! -d $HOME/.local/bin ]; then
@@ -209,5 +163,51 @@ export EDITOR=vim
 # Note we use bash explicitly here to support process substitution
 # which in turn suppresses the "Vim: Reading from stdin..." warning.
 export MANPAGER='/bin/bash -c "vim -MRn -c \"set ft=man\" </dev/tty <(col -b)"'
+
+# force TERM environment to xterm-256color when we are in gnome-terminal
+if [ $(ps -p $PPID o comm | grep gnome-terminal | wc -l) == 1 ]; then
+	# we are in gnome-terminal.
+	# gnome-terminal does not set TERM to xterm-256color
+	export TERM=xterm-256color
+else
+	# we are not in gnome-terminal.
+	:
+fi
+
+# set prompt
+PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+
+# If this is an xterm set the title to user@host:dir
+case "$TERM" in
+	xterm*|rxvt*|screen*)
+		PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD}\007"'
+		;;
+	*)
+		;;
+esac
+
+case "$TERM" in
+	xterm*|rxvt*)
+		# Show the currently running command in the terminal title:
+		# http://www.davidpashley.com/articles/xterm-titles-with-bash.html
+		show_command_in_title_bar()
+		{
+			case "$BASH_COMMAND" in
+				*\033]0*)
+					# The command is trying to set the title bar as well;
+					# this is most likely the execution of $PROMPT_COMMAND.
+					# In any case nested escapes confuse the terminal, so don't
+					# output them.
+					;;
+				*)
+					echo -ne "\033]0;${USER}@${HOSTNAME}: ${BASH_COMMAND}\007"
+					;;
+			esac
+		}
+		trap show_command_in_title_bar DEBUG
+		;;
+	*)
+		;;
+esac
 
 #  vim: set ft=sh ts=4 sw=4 tw=0 noet :
