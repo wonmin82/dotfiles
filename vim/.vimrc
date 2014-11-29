@@ -376,7 +376,7 @@ else
 		autocmd ColorScheme *
 					\	try |
 					\		if g:colors_name == 'molokai' |
-					\			hi VertSplit cterm=none |
+					\			execute "hi VertSplit cterm=none" |
 					\		endif |
 					\	endtry
 	augroup END
@@ -407,10 +407,22 @@ endif
 highlight ExtraWhitespace ctermbg=red guibg=red
 match ExtraWhitespace /\s\+$/
 augroup MyAutoCmd
-	autocmd BufWinEnter * if &modifiable && (&ft!='unite' && &ft!='vimshell') | match ExtraWhitespace /\s\+$/ | endif
-	autocmd InsertEnter * if &modifiable && (&ft!='unite' && &ft!='vimshell') | match ExtraWhitespace /\s\+\%#\@<!$/ | endif
-	autocmd InsertLeave * if &modifiable && (&ft!='unite' && &ft!='vimshell') | match ExtraWhitespace /\s\+$/ | endif
-	autocmd BufWinLeave * if &modifiable && (&ft!='unite' && &ft!='vimshell') | call clearmatches() | endif
+	autocmd BufWinEnter *
+				\   if &modifiable && (&ft!='unite' && &ft!='vimshell') |
+				\       execute "match ExtraWhitespace /\s\+$/" |
+				\   endif
+	autocmd InsertEnter *
+				\   if &modifiable && (&ft!='unite' && &ft!='vimshell') |
+				\       execute "match ExtraWhitespace /\s\+\%#\@<!$/" |
+				\   endif
+	autocmd InsertLeave *
+				\   if &modifiable && (&ft!='unite' && &ft!='vimshell') |
+				\       execute "match ExtraWhitespace /\s\+$/" |
+				\   endif
+	autocmd BufWinLeave *
+				\   if &modifiable && (&ft!='unite' && &ft!='vimshell') |
+				\       execute "call clearmatches()" |
+				\   endif
 augroup END
 "}}}
 
@@ -432,11 +444,11 @@ endif
 "}}}
 
 " XTerm escape sequence definition for <home> and <end> key {{{
-if &term =~ '^xterm'
-	map <esc>[1~ <home>
-	map! <esc>[1~ <home>
-	map <esc>[4~ <end>
-	map! <esc>[4~ <end>
+if &term =~ "^xterm"
+	execute "map <esc>[1~ <home>"
+	execute "map! <esc>[1~ <home>"
+	execute "map <esc>[4~ <end>"
+	execute "map! <esc>[4~ <end>"
 endif
 "}}}
 
@@ -468,30 +480,38 @@ augroup MyAutoCmd
 	" default cinoptions value
 	"set cinoptions=s,e0,n0,f0,{0,}0,^0,L-1,:s,=s,l0,b0,gs,hs,N0,ps,ts,is,+s,c3,C0,/0,(2s,us,U0,w0,W0,k0,m0,j0,J0,)20,*70,#0
 	autocmd Filetype c,cpp
-				\ setlocal tabstop=4 softtabstop=4 shiftwidth=4 smarttab noexpandtab |
-				\ setlocal autoindent cindent smartindent backspace=indent,eol,start |
-				\ setlocal cinoptions=:0,l1,g0,t0,(0,W4,j1,J1 |
-				\ setlocal cinkeys=0{,0},0),:,0#,!^F,o,O,e |
-				\ setlocal cinwords=if,else,while,do,for,switch
+				\ execute "setlocal tabstop=4 softtabstop=4 shiftwidth=4" |
+				\ execute "setlocal smarttab noexpandtab" |
+				\ execute "setlocal autoindent cindent smartindent" |
+				\ execute "setlocal backspace=indent,eol,start" |
+				\ execute "setlocal cinoptions=:0,l1,g0,t0,(0,W4,j1,J1" |
+				\ execute "setlocal cinkeys=0{,0},0),:,0#,!^F,o,O,e" |
+				\ execute "setlocal cinwords=if,else,while,do,for,switch"
 	autocmd Filetype python
-				\ setlocal tabstop=4 softtabstop=4 shiftwidth=4 smarttab expandtab |
-				\ setlocal autoindent cindent smartindent backspace=indent,eol,start |
+				\ execute "setlocal tabstop=4 softtabstop=4 shiftwidth=4" |
+				\ execute "setlocal smarttab expandtab" |
+				\ execute "setlocal autoindent cindent smartindent" |
+				\ execute "setlocal backspace=indent,eol,start"
 	autocmd Filetype perl
-				\ setlocal kp=perldoc\ -f
-	autocmd Filetype tex set textwidth=72
+				\ execute "setlocal kp=perldoc\ -f"
+	autocmd Filetype tex
+				\ execute "setlocal textwidth=72"
 	autocmd FileType man
-				\ setlocal tabstop=8 |
-				\ setlocal nomodifiable nomodified nolist nonumber nospell |
-				\ setlocal mouse=a |
-				\ setlocal nocursorline nocursorcolumn |
-				\ %foldopen! |
-				\ nnoremap q :qa!<cr> |
-				\ nnoremap <end> G |
-				\ nnoremap <home> gg |
-				\ nmap K <c-]> |
-				\ nnoremap : <nop> |
-				\ nnoremap <f2> <nop> | nnoremap <f3> <nop> |
-				\ nnoremap <f4> <nop> | nnoremap <f5> <nop>
+				\ execute "setlocal tabstop=8" |
+				\ execute "setlocal nomodifiable nomodified" |
+				\ execute "setlocal nolist nonumber nospell" |
+				\ execute "setlocal mouse=a" |
+				\ execute "setlocal nocursorline nocursorcolumn" |
+				\ execute "%foldopen!" |
+				\ execute "nnoremap q :qa!<cr>" |
+				\ execute "nnoremap <end> G" |
+				\ execute "nnoremap <home> gg" |
+				\ execute "nmap K <c-]>" |
+				\ execute "nnoremap : <nop>" |
+				\ execute "nnoremap <f2> <nop>" |
+				\ execute "nnoremap <f3> <nop>" |
+				\ execute "nnoremap <f4> <nop>" |
+				\ execute "nnoremap <f5> <nop>"
 augroup END
 "}}}
 
@@ -1396,7 +1416,12 @@ let g:syntastic_check_on_open = 1
 " it will trigger check twice.
 " TODO: find out how to remove redundancy check.
 augroup MyAutoCmd
-	autocmd SessionLoadPost * if g:syntastic_check_on_open == 1 | call SyntasticCheck() | else | call SyntasticReset() | endif
+	autocmd SessionLoadPost *
+				\   if g:syntastic_check_on_open == 1 |
+				\       call SyntasticCheck() |
+				\   else |
+				\       call SyntasticReset() |
+				\   endif
 augroup END
 let g:syntastic_check_on_wq = 0
 let g:syntastic_aggregate_errors = 1
