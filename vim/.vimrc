@@ -4,7 +4,6 @@
 "*  by Wonmin Jung (wonmin82@gmail.com)  *
 "*                                       *
 "*****************************************
-" TODO: Snippet plugin.
 " TODO: Check compatibility in windows.
 " TODO: Move cursor by display lines when wrapping
 "       - http://vim.wikia.com/wiki/Move_cursor_by_display_lines_when_wrapping
@@ -12,6 +11,8 @@
 " Note: Skip initialization for vim-tiny or vim-small. {{{
 if !1 | finish | endif
 "}}}
+
+set nocompatible               " Be iMproved
 
 " Judging OS "{{{
 let s:is_win64 = 0
@@ -49,18 +50,68 @@ else
 endif
 "}}}
 
+" Set directories {{{
+" Function: Make directory if doesn't exist "{{{
+function! EnsureDirExists(dir)
+	let rdir = expand(a:dir)
+	if ! isdirectory(rdir)
+		if exists("*mkdir")
+			call mkdir(rdir, 'p')
+			echon "Created directory: " . rdir . "\n\r"
+		else
+			echon "Please create directory: " . rdir . "\n\r"
+		endif
+	endif
+endfunction
+"}}}
+
+let $DOTVIMPATH = expand('~/.vim')
+let $PLUGINPATH = $DOTVIMPATH . '/bundle'
+
+call EnsureDirExists($DOTVIMPATH)
+set viminfo+=n$DOTVIMPATH/viminfo
+
+" Set swap file directory
+call EnsureDirExists($DOTVIMPATH . '/swap')
+set directory=$DOTVIMPATH/swap/
+
+" Set backup file directory
+call EnsureDirExists($DOTVIMPATH . '/backup')
+set backupdir=$DOTVIMPATH/backup//
+
+call EnsureDirExists($DOTVIMPATH . '/undo')
+set undodir=$DOTVIMPATH/undo//
+
+" set unite data directory using in Shougo's unite plugin
+call EnsureDirExists($DOTVIMPATH . '/unite')
+let g:unite_data_directory = $DOTVIMPATH . '/unite'
+
+" set session directory using in xolox's vim-session plugin
+call EnsureDirExists($DOTVIMPATH . '/session')
+let g:session_directory = $DOTVIMPATH . '/session'
+
+" set ultisnips' data directory
+call EnsureDirExists($DOTVIMPATH . '/ultisnips')
+let g:UltiSnipsSnippetDirectories = [ "ultisnips" ]
+"}}}
+
 " Plugin: NeoBundle {{{
+let g:neobundle#types#git#default_protocol = 'git'
+" YouCompleteMe install process tooks time.
+let g:neobundle#install_process_timeout = 1200
+
 if has('vim_starting')
-	set nocompatible               " Be iMproved
+	" following line has moved to very first of vimrc
+	" set nocompatible               " Be iMproved
 
 	" Required:
-	set runtimepath+=~/.vim/bundle/neobundle.vim/
+	set runtimepath+=$PLUGINPATH/neobundle.vim/
 endif
 
 " Begin NeoBundle {{{
 try
 	" Required:
-	call neobundle#begin(expand('~/.vim/bundle/'))
+	call neobundle#begin(expand($PLUGINPATH))
 
 	" Let NeoBundle manage NeoBundle
 	" Required:
@@ -68,21 +119,40 @@ try
 catch /^Vim\%((\a\+)\)\=:E117/
 	" If NeoBundle is missing, define an installer for it
 	function! NeoBundleInstaller()
-		echom "Starting NeoBundle installation..."
-		let neobundlegit = 'https://github.com/Shougo/neobundle.vim'
-		let destination = expand('~/.vim/bundle/neobundle.vim')
-		call mkdir(destination, "p")
-		call system('git clone ' . neobundlegit . ' ' . destination)
-		echom "All done, restart vim."
-		quit
+		if s:is_cygwin || s:is_macos || s:is_linux64 || s:is_linux32 || s:is_unix
+			execute ':silent !echo "==> Starting NeoBundle installation..."'
+			let destination = expand($PLUGINPATH . '/neobundle.vim')
+			if ! isdirectory(destination)
+				call mkdir(destination, "p")
+			endif
+			let install_command = printf('git clone %s://github.com/Shougo/neobundle.vim.git %s',
+				\ (exists('$http_proxy') ? 'https' : 'git'),
+				\ destination)
+			execute ':silent !echo "==> Executing command: ' . install_command . '"'
+			execute ':silent !' . install_command
+			execute ':silent !echo "==> NeoBundle has been installed. Restart vim to continue."'
+			quit!
+		elseif s:is_win32 || s:is_win64
+			" TODO: need to be checked if it is working or not.
+			execute ':silent !echo ""'
+			execute ':silent !echo "==> Starting NeoBundle installation..."'
+			let destination = expand($PLUGINPATH . '/neobundle.vim')
+			if ! isdirectory(destination)
+				call mkdir(destination, "p")
+			endif
+			let install_command = printf('git clone %s://github.com/Shougo/neobundle.vim.git %s',
+				\ (exists('$http_proxy') ? 'https' : 'git'),
+				\ destination)
+			execute ':silent !echo "==> Executing command: ' . install_command . '"'
+			execute ':silent !' . install_command
+			execute ':silent !echo "==> NeoBundle has been installed. Restart vim to continue."'
+			quit!
+		endif
 	endfunction
 
 	call NeoBundleInstaller()
 endtry
 " }}}
-
-" YouCompleteMe install process tooks time.
-let g:neobundle#install_process_timeout = 1200
 
 " My Bundles here:
 " Refer to |:NeoBundle-examples|.
@@ -100,7 +170,6 @@ NeoBundle 'Shougo/vimproc', {
 NeoBundle 'Shougo/unite.vim'
 NeoBundle 'Shougo/unite-outline'
 NeoBundle 'Shougo/unite-help'
-NeoBundle 'Shougo/unite-session'
 NeoBundle 'Shougo/neomru.vim'
 NeoBundle 'tsukkee/unite-tag'
 NeoBundle 'thinca/vim-unite-history'
@@ -109,6 +178,21 @@ NeoBundle 'mileszs/ack.vim'
 " File browsing
 NeoBundle 'scrooloose/nerdtree'
 NeoBundle 'Shougo/vimfiler'
+
+" Session
+NeoBundle 'xolox/vim-session', {
+			\ 'depends': 'xolox/vim-misc',
+			\ 'augroup': 'PluginSession',
+			\ 'autoload': {
+			\   'commands': [
+			\     { 'name': [ 'OpenSession', 'CloseSession' ],
+			\       'complete': 'customlist,xolox#session#complete_names' },
+			\     { 'name': [ 'SaveSession' ],
+			\       'complete': 'customlist,xolox#session#complete_names_with_suggestions' }
+			\   ],
+			\   'functions': [ 'xolox#session#complete_names',
+			\                  'xolox#session#complete_names_with_suggestions' ]
+			\ }}
 
 " Shell
 NeoBundle 'thinca/vim-quickrun'
@@ -135,8 +219,9 @@ NeoBundle 'jlanzarotta/bufexplorer'
 NeoBundle 'godlygeek/tabular'
 NeoBundle 'Lokaltog/vim-easymotion'
 NeoBundle 'scrooloose/syntastic'
-NeoBundle 'vim-scripts/IndentTab'
-NeoBundle 'vim-scripts/ingo-library'
+NeoBundle 'vim-scripts/IndentTab', {
+			\ 'depends': 'vim-scripts/ingo-library'
+			\ }
 NeoBundle 'vim-scripts/IndentConsistencyCop'
 NeoBundle 'vim-scripts/IndentConsistencyCopAutoCmds'
 NeoBundle 'SirVer/ultisnips'
@@ -196,26 +281,6 @@ catch
 endtry
 "}}}
 
-" Function: Make directory if doesn't exist "{{{
-function! EnsureDirExists(dir)
-	if !isdirectory(a:dir)
-		if exists("*mkdir")
-			call mkdir(a:dir, 'p')
-			echo "Created directory: " . a:dir
-		else
-			echo "Please create directory: " . a:dir
-		endif
-	endif
-endfunction
-"}}}
-
-if s:is_linux64 || s:is_linux32 || s:is_cygwin || s:is_macos || s:is_unix
-	call EnsureDirExists($HOME.'/.vim/swap')
-	set directory=~/.vim/swap//               " Set swap file directory
-	call EnsureDirExists($HOME.'/.vim/backup')
-	set backupdir=~/.vim/backup               " Set backup file directory
-endif
-
 set autoread
 set noautowrite
 set nobackup
@@ -223,6 +288,10 @@ set nowritebackup
 set swapfile
 " Allow changing buffer without saving it first
 set hidden
+
+set undofile
+set undolevels=1000
+set undoreload=10000
 
 set cursorline
 set cursorcolumn
@@ -409,19 +478,19 @@ match ExtraWhitespace /\s\+$/
 augroup MyAutoCmd
 	autocmd BufWinEnter *
 				\   if &modifiable && (&ft!='unite' && &ft!='vimshell') |
-				\       execute "match ExtraWhitespace /\s\+$/" |
+				\       execute 'match ExtraWhitespace /\s\+$/' |
 				\   endif
 	autocmd InsertEnter *
 				\   if &modifiable && (&ft!='unite' && &ft!='vimshell') |
-				\       execute "match ExtraWhitespace /\s\+\%#\@<!$/" |
+				\       execute 'match ExtraWhitespace /\s\+\%#\@<!$/' |
 				\   endif
 	autocmd InsertLeave *
 				\   if &modifiable && (&ft!='unite' && &ft!='vimshell') |
-				\       execute "match ExtraWhitespace /\s\+$/" |
+				\       execute 'match ExtraWhitespace /\s\+$/' |
 				\   endif
 	autocmd BufWinLeave *
 				\   if &modifiable && (&ft!='unite' && &ft!='vimshell') |
-				\       execute "call clearmatches()" |
+				\       execute 'call clearmatches()' |
 				\   endif
 augroup END
 "}}}
@@ -980,22 +1049,6 @@ call unite#filters#matcher_default#use(['matcher_fuzzy'])
 " Use the rank sorter for everything
 " call unite#filters#sorter_default#use(['sorter_rank'])
 
-" Set up some custom ignores
-call unite#custom_source('file_rec,file_rec/async,file_mru,file,buffer,grep',
-			\ 'ignore_pattern', join([
-			\ '\.git/',
-			\ 'git5/.*/review/',
-			\ 'google/obj/',
-			\ 'tmp/',
-			\ '.sass-cache',
-			\ 'node_modules/',
-			\ 'bower_components/',
-			\ 'dist/',
-			\ '.git5_specs/',
-			\ '.pyc',
-			\ '.dropbox/'
-			\ ], '\|'))
-
 " Map space to the prefix for Unite
 nnoremap [unite] <nop>
 nmap <space> [unite]
@@ -1115,33 +1168,48 @@ function! s:unite_settings()
 	endif
 endfunction
 
-" Start in insert mode
-let g:unite_enable_start_insert = 1
+" Global default context
+call unite#custom#profile('default', 'context', {
+			\   'safe': 0,
+			\   'auto_expand': 1,
+			\   'start_insert': 1,
+			\   'max_candidates': 0,
+			\   'update_time': 200,
+			\   'winheight': 20,
+			\   'winwidth': 40,
+			\   'direction': 'botright',
+			\   'no_auto_resize': 0,
+			\   'prompt_direction': 'below',
+			\   'cursor_line_highlight': 'PmenuSel',
+			\   'cursor_line_time': '0.5',
+			\   'candidate_icon': '-',
+			\   'marked_icon': '✓',
+			\   'prompt' : '> '
+			\ })
 
-if s:is_linux64 || s:is_linux32 || s:is_cygwin || s:is_macos || s:is_unix
-	call EnsureDirExists($HOME.'/.vim/unite')
-	let g:unite_data_directory = $HOME.'/.vim/unite'
-endif
-
-" Enable short source name in window
-" let g:unite_enable_short_source_names = 1
+" Set up some custom ignores
+call unite#custom_source('file_rec,file_rec/async,file_mru,file,buffer,grep',
+			\ 'ignore_pattern', join([
+			\ '\.git/',
+			\ 'git5/.*/review/',
+			\ 'google/obj/',
+			\ 'tmp/',
+			\ '.sass-cache',
+			\ 'node_modules/',
+			\ 'bower_components/',
+			\ 'dist/',
+			\ '.git5_specs/',
+			\ '.pyc',
+			\ '.dropbox/'
+			\ ], '\|'))
 
 " Enable history yank source
 let g:unite_source_history_yank_enable = 1
 
-" Open in bottom right
-let g:unite_split_rule = "botright"
+let g:neomru#file_mru_limit = 1000
 
-" Shorten the default update date of 500ms
-let g:unite_update_time = 200
-
-let g:unite_source_file_mru_limit = 1000
-"let g:unite_cursor_line_highlight = 'TabLineSel'
-let g:unite_cursor_line_highlight = 'PmenuSel'
-" let g:unite_abbr_highlight = 'TabLine'
-
-let g:unite_source_file_mru_filename_format = ':~:.'
-let g:unite_source_file_mru_time_format = ''
+let g:neomru#filename_format = ':~:.'
+let g:neomru#time_format = ''
 
 " For ack.
 if executable('ack-grep')
@@ -1156,12 +1224,15 @@ elseif executable('ack')
 endif
 
 let g:unite_source_rec_max_cache_files = 99999
-
 "}}}
 
-" Plugin: Unite Sessions {{{
-" Save session automatically.
-let g:unite_source_session_enable_auto_save = 1
+" Plugin: vim-session {{{
+let g:session_default_overwrite = 1
+let g:session_autosave = 'yes'
+let g:session_autoload = 'no'
+let g:session_persist_colors = 0
+let g:session_menu = 0
+let g:session_verbose_messages = 0
 
 " Pop up session selection if no file is specified
 autocmd MyAutoCmd VimEnter * call s:unite_session_on_enter()
@@ -1171,6 +1242,184 @@ function! s:unite_session_on_enter()
 		Unite -buffer-name=sessions session
 	endif
 endfunction
+"}}}
+
+" Unite source for Xolox's vim-session {{{
+" it's from https://github.com/rafi/vim-config/blob/master/autoload/unite/sources/session.vim
+" it's modified by wonmin82, it can be in .vimrc now
+" unite/sources/session - Xolox's vim-session
+" Maintainer: Rafael Bodill <justrafi at gmail dot com>
+" Author: Shougo Matsushita <Shougo.Matsu@gmail.com>
+" Jason Housley <HousleyJK@gmail.com>
+" Last Modified: 01 Oct 2014
+" License: MIT license
+"-------------------------------------------------
+" Variables
+call unite#util#set_default('g:unite_source_session_allow_rename_locked',
+			\ 0)
+
+function! s:unite_sources_session_save(filename, ...)
+	if unite#util#is_cmdwin()
+		return
+	endif
+	let filename = s:get_session_path(a:filename)
+	execute 'SaveSession!' filename
+endfunction
+
+function! s:unite_sources_session_load(filename)
+	if unite#util#is_cmdwin()
+		return
+	endif
+	let filename = s:get_session_path(a:filename)
+	execute 'OpenSession' filename
+endfunction
+
+function! s:unite_sources_session_complete(arglead, cmdline, cursorpos)
+	let directory = xolox#misc#path#absolute(g:session_directory)
+	let sessions = split(glob(directory.'/*'.g:session_extension), '\n')
+	" let sessions = xolox#session#complete_names_with_suggestions('', 0, 0)
+	return filter(sessions, 'stridx(v:val, a:arglead) == 0')
+endfunction
+
+let s:unite_source_session = {
+			\ 'name': 'session',
+			\ 'description': 'candidates from session list',
+			\ 'default_action': 'load',
+			\ 'alias_table': { 'edit' : 'open' },
+			\ 'action_table': {}
+			\ }
+
+function! s:unite_source_session.gather_candidates(args, context)
+	let directory = xolox#misc#path#absolute(g:session_directory)
+	let sessions = split(glob(directory.'/*'.g:session_extension), '\n')
+	let candidates = map(copy(sessions), "{
+				\ 'word': xolox#session#path_to_name(v:val),
+				\ 'kind': 'file',
+				\ 'action__path': v:val,
+				\ 'action__directory': unite#util#path2directory(v:val)
+				\ }")
+	return candidates
+endfunction
+
+" New session only source
+let s:unite_source_session_new = {
+			\ 'name': 'session/new',
+			\ 'description': 'session candidates from input',
+			\ 'default_action': 'save',
+			\ 'action_table': {}
+			\ }
+
+function! s:unite_source_session_new.change_candidates(args, context)
+	let input = substitute(substitute(
+				\ a:context.input, '\\ ', ' ', 'g'), '^\a\+:\zs\*/', '/', '')
+	if input == ''
+		return []
+	endif
+	" Return new session candidate
+	return [{ 'word': input, 'abbr': '[new session] ' . input, 'action__path': input }] +
+				\ s:unite_source_session.gather_candidates(a:args, a:context)
+endfunction
+
+" Actions
+let s:unite_source_session.action_table.load = {
+			\ 'description': 'load this session',
+			\ }
+
+function! s:unite_source_session.action_table.load.func(candidate)
+	call s:unite_sources_session_load(a:candidate.word)
+endfunction
+
+let s:unite_source_session.action_table.delete = {
+			\ 'description': 'delete from session list',
+			\ 'is_invalidate_cache': 1,
+			\ 'is_quit': 0,
+			\ 'is_selectable': 1
+			\ }
+
+function! s:unite_source_session.action_table.delete.func(candidates)
+	for candidate in a:candidates
+		if input('Really delete session file: '
+					\ . candidate.action__path . '? ') =~? 'y\%[es]'
+			execute 'DeleteSession' candidate.word
+		endif
+	endfor
+endfunction
+
+let s:unite_source_session.action_table.rename = {
+			\ 'description': 'rename session name',
+			\ 'is_invalidate_cache': 1,
+			\ 'is_quit': 0,
+			\ 'is_selectable': 1
+			\ }
+
+function! s:unite_source_session.action_table.rename.func(candidates)
+	let current_session = xolox#session#find_current_session()
+	let rename_locked = g:unite_source_session_allow_rename_locked
+	for candidate in a:candidates
+		if rename_locked || current_session != candidate.word
+			let session_name = input(printf(
+						\ 'New session name: %s -> ', candidate.word),
+						\ candidate.word)
+			if session_name != '' && session_name !=# candidate.word
+				let new_name = g:session_directory.'/'.session_name.g:session_extension
+				let from_path = expand(candidate.action__path)
+				let to_path = expand(new_name)
+				call rename(from_path, to_path)
+				" Rename also lock file
+				if filereadable(from_path.'.lock')
+					" TODO: Change vim-session current session
+					call rename(from_path.'.lock', to_path.'.lock')
+				endif
+			endif
+		else
+			call unite#print_source_error(
+						\ [ 'The session "'.candidate.word.'" is locked.' ], 'session')
+		endif
+	endfor
+endfunction
+
+let s:unite_source_session.action_table.save = {
+			\ 'description': 'save current session as candidate',
+			\ 'is_invalidate_cache': 1,
+			\ 'is_selectable': 1
+			\ }
+
+function! s:unite_source_session.action_table.save.func(candidates)
+	for candidate in a:candidates
+		if input('Really save the current session as: '
+					\ . candidate.word . '? ') =~? 'y\%[es]'
+			call s:unite_sources_session_save(candidate.word)
+		endif
+	endfor
+endfunction
+
+let s:unite_source_session_new.action_table.save = s:unite_source_session.action_table.save
+
+function! s:unite_source_session_new.action_table.save.func(candidates)
+	let current_tab = tabpagenr()
+	tabdo windo if &ft == 'vimfiler' | bd | endif
+	execute 'tabnext '.current_tab
+	for candidate in a:candidates
+		" Second argument means check if exists
+		call s:unite_sources_session_save(candidate.word, 1)
+	endfor
+endfunction
+
+function! s:get_session_path(filename)
+	let filename = a:filename
+	if filename == ''
+		let filename = g:session_default_name
+	endif
+	if filename == ''
+		let filename = v:this_session
+	endif
+	return filename
+endfunction
+
+call unite#define_source(s:unite_source_session)
+call unite#define_source(s:unite_source_session_new)
+unlet s:unite_source_session
+unlet s:unite_source_session_new
 "}}}
 
 " Plugin: Vimfiler {{{
@@ -1258,7 +1507,7 @@ nnoremap <silent> <expr> <f4> @% != "[BufExplorer]" ? ':TagbarToggle<cr>' : '\<n
 inoremap <silent> <expr> <f4> @% != "[BufExplorer]" ? '<esc>:TagbarToggle<cr>a' : '\<nop>'
 
 if s:is_cygwin
-	let g:tagbar_ctags_bin = '$HOME/bin/ctags.exe'   "Cygwin-specific option
+	let g:tagbar_ctags_bin = '~/bin/ctags.exe'   "Cygwin-specific option
 endif
 
 let g:tagbar_left = 0
@@ -1470,7 +1719,7 @@ let g:ycm_path_to_python_interpreter = '' "default ''
 let g:ycm_server_use_vim_stdout = 0 "default 0 (logging to console)
 let g:ycm_server_log_level = 'info' "default info
 
-let g:ycm_global_ycm_extra_conf = '~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
+let g:ycm_global_ycm_extra_conf = $PLUGINPATH . '/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
 let g:ycm_confirm_extra_conf = 0
 
 let g:ycm_goto_buffer_command = 'same-buffer' "[ 'same-buffer', 'horizontal-split', 'vertical-split', 'new-tab' ]
@@ -1503,8 +1752,6 @@ let g:IndentTab_IsSuperTab = 0
 "}}}
 
 " Plugin: UltiSnips {{{
-call EnsureDirExists($HOME.'/.vim/ultisnips')
-let g:UltiSnipsSnippetDirectories = [ "ultisnips" ]
 let g:UltiSnipsExpandTrigger = "<c-z>"
 let g:UltiSnipsJumpForwardTrigger = "<c-j>"
 let g:UltiSnipsJumpBackwardTrigger = "<c-k>"
@@ -1710,6 +1957,20 @@ endif
 	"let Tlist_Ctags_Cmd = '$HOME/bin/ctags.exe'   "Cygwin-specific option
 "endif
 "}}}
+
+" " Plugin: Unite Sessions {{{
+" " Save session automatically.
+" let g:unite_source_session_enable_auto_save = 1
+
+" " Pop up session selection if no file is specified
+" autocmd MyAutoCmd VimEnter * call s:unite_session_on_enter()
+" function! s:unite_session_on_enter()
+	" if !argc() && !exists("g:start_session_from_cmdline")
+				" \ && !(&ft == 'man')
+		" Unite -buffer-name=sessions session
+	" endif
+" endfunction
+" "}}}
 
 "}}}
 
