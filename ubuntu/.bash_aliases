@@ -141,6 +141,9 @@ alias astyle='astyle --style=break --indent=force-tab=4 --unpad-paren --pad-head
 # axel options
 alias axel='axel -a'
 
+# wget options
+alias wget='wget --retry-connrefused'
+
 # mc options
 #type -p -a mc > /dev/null && alias mc='. /usr/share/mc/bin/mc-wrapper.sh -a'
 if type -p -a mc > /dev/null; then
