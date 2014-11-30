@@ -1418,8 +1418,6 @@ endfunction
 
 call unite#define_source(s:unite_source_session)
 call unite#define_source(s:unite_source_session_new)
-unlet s:unite_source_session
-unlet s:unite_source_session_new
 "}}}
 
 " Plugin: Vimfiler {{{
