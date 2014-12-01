@@ -1056,11 +1056,6 @@ endfunc
 "}}}
 
 " Plugin: Unite {{{
-" Use the fuzzy matcher for everything
-call unite#filters#matcher_default#use(['matcher_fuzzy'])
-" Use the rank sorter for everything
-" call unite#filters#sorter_default#use(['sorter_rank'])
-
 " Map space to the prefix for Unite
 nnoremap [unite] <nop>
 nmap <space> [unite]
@@ -1188,6 +1183,14 @@ function! s:unite_settings()
 		imap <buffer> <c-_> <Plug>(unite_exit)
 	endif
 endfunction
+
+" Use the fuzzy matcher for everything
+call unite#filters#matcher_default#use(['matcher_fuzzy'])
+" Use the rank sorter for everything
+" call unite#filters#sorter_default#use(['sorter_rank'])
+" Use the rank sorter for files (NOTE: this is slow)
+call unite#custom#source('buffer,file,file_rec',
+			\ 'sorters', 'sorter_rank')
 
 " Global default context
 call unite#custom#profile('default', 'context', {
