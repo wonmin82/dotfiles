@@ -68,6 +68,7 @@ endfunction
 let $DOTVIMPATH = expand('~/.vim')
 let $PLUGINPATH = $DOTVIMPATH . '/bundle'
 
+" Set viminfo directory
 call EnsureDirExists($DOTVIMPATH)
 set viminfo+=n$DOTVIMPATH/viminfo
 
@@ -79,12 +80,18 @@ set directory=$DOTVIMPATH/swap/
 call EnsureDirExists($DOTVIMPATH . '/backup')
 set backupdir=$DOTVIMPATH/backup//
 
+" Set undo data directory
 call EnsureDirExists($DOTVIMPATH . '/undo')
 set undodir=$DOTVIMPATH/undo//
 
 " set unite data directory using in Shougo's unite plugin
 call EnsureDirExists($DOTVIMPATH . '/unite')
 let g:unite_data_directory = $DOTVIMPATH . '/unite'
+
+" set neomru data directory
+call EnsureDirExists($DOTVIMPATH . '/neomru')
+let g:neomru#file_mru_path = $DOTVIMPATH . '/neomru/file'
+let g:neomru#directory_mru_path = $DOTVIMPATH . '/neomru/directory'
 
 " set session directory using in xolox's vim-session plugin
 call EnsureDirExists($DOTVIMPATH . '/session')
@@ -172,6 +179,7 @@ NeoBundle 'Shougo/unite-outline'
 NeoBundle 'Shougo/unite-help'
 NeoBundle 'Shougo/neomru.vim'
 NeoBundle 'tsukkee/unite-tag'
+NeoBundle 'osyo-manga/unite-quickfix'
 NeoBundle 'thinca/vim-unite-history'
 NeoBundle 'mileszs/ack.vim'
 
@@ -211,7 +219,7 @@ NeoBundle 'bling/vim-bufferline'
 
 NeoBundle 'embear/vim-localvimrc'
 NeoBundle 'scrooloose/nerdcommenter'
-if v:version > 703 || (v:version == 703 && has("patch465"))
+if has('patch-7.3.465')
 	NeoBundle 'eiginn/netrw'
 endif
 NeoBundle 'wesleyche/SrcExpl'
@@ -228,8 +236,7 @@ NeoBundle 'SirVer/ultisnips'
 NeoBundle 'honza/vim-snippets'
 
 " ensure vim version >= 7.3.584 and not in cygwin.
-if (v:version > 703 || (v:version == 703 && has("patch584")))
-			\	&& !(s:is_win32 || s:is_win64)
+if has('patch-7.3.584') && !(s:is_win32 || s:is_win64)
 	NeoBundle 'Valloric/YouCompleteMe', {
 				\ 'build' : {
 				\     'windows' : './install.sh --clang-completer --system-libclang --omnisharp-completer',
@@ -446,6 +453,9 @@ else
 					\	try |
 					\		if g:colors_name == 'molokai' |
 					\			execute "hi VertSplit cterm=none" |
+					\			if &t_Co >= 256 |
+					\				execute "hi MatchParen ctermfg=226 ctermbg=bg" |
+					\			endif |
 					\		endif |
 					\	endtry
 	augroup END
@@ -562,7 +572,7 @@ augroup MyAutoCmd
 				\ execute "setlocal autoindent cindent smartindent" |
 				\ execute "setlocal backspace=indent,eol,start"
 	autocmd Filetype perl
-				\ execute "setlocal kp=perldoc\ -f"
+				\ execute "setlocal kp=perldoc\\ -f"
 	autocmd Filetype tex
 				\ execute "setlocal textwidth=72"
 	autocmd FileType man
@@ -981,7 +991,10 @@ nmap <c-e> [unite]f
 
 " Ctrl-r: Command history using Unite
 silent! nunmap <c-r>
-nmap <c-r> [unite];
+"nmap <c-r> [unite];
+
+" Ctrl-r: Reopen last unite window
+nnoremap <c-r> :UniteResume<cr>
 
 " Ctrl-y: Yanks
 nmap <c-y> [unite]y
@@ -1007,14 +1020,13 @@ nmap <c-s><c-w> ysiw
 " Ctrl-c: (C)hange (c)urrent directory
 nmap <c-c> [unite]d
 " Ctrl-/: A more powerful '/'
-nmap <c-_> [unite]l
+nmap <c-_> [unite]/
 
 " Backspace: Toggle search highlight
 nnoremap <bs> :set hlsearch! hlsearch?<cr>
 
 " Enter: Highlight visual selections
 xnoremap <silent> <cr> y:let @/ = @"<cr>:set hlsearch<cr>
-
 "}}}
 
 " Plugin: localvimrc {{{
@@ -1075,6 +1087,12 @@ nnoremap <silent> [unite]t :<c-u>Unite -buffer-name=tag tag<cr>
 " Quick sessions (projects)
 nnoremap <silent> [unite]p :<c-u>Unite -buffer-name=sessions session<cr>
 
+" Quick quickfix
+nnoremap <silent> [unite]q :<c-u>Unite -buffer-name=quickfix quickfix<cr>
+
+" Quick location list
+nnoremap <silent> [unite]l :<c-u>Unite -buffer-name=location_list location_list<cr>
+
 " Quick sources
 nnoremap <silent> [unite]a :<c-u>Unite -buffer-name=sources source<cr>
 
@@ -1099,7 +1117,7 @@ nnoremap <silent> [unite]h :<c-u>Unite -buffer-name=help help<cr>
 " nnoremap <silent> [unite]l :<c-u>UniteWithCursorWord -buffer-name=search_file line<cr>
 
 " Quick line
-nnoremap <silent> [unite]l :<c-u>Unite -buffer-name=search_file line<cr>
+nnoremap <silent> [unite]/ :<c-u>Unite -buffer-name=search_file line<cr>
 
 " Quick MRU search
 nnoremap <silent> [unite]m :<c-u>Unite -buffer-name=mru file_mru<cr>
@@ -1120,6 +1138,9 @@ nnoremap <silent> [unite]b :<c-u>Unite -buffer-name=bookmarks bookmark<cr>
 " Quick commands
 nnoremap <silent> [unite]; :<c-u>Unite -buffer-name=history -default-action=edit history/command command<cr>
 
+" Quick mappings
+nnoremap <silent> [unite]k :<c-u>Unite -buffer-name=mapping mapping<cr>
+
 " Custom Unite settings
 autocmd MyAutoCmd FileType unite call s:unite_settings()
 function! s:unite_settings()
@@ -1136,7 +1157,7 @@ function! s:unite_settings()
 	nmap <buffer> <s-tab> <Plug>(unite_loop_cursor_up)
 	imap <buffer> <c-a> <Plug>(unite_choose_action)
 	imap <buffer> <tab> <Plug>(unite_insert_leave)
-	imap <buffer> jj <Plug>(unite_insert_leave)
+	" imap <buffer> jj <Plug>(unite_insert_leave)
 	imap <buffer> <c-w> <Plug>(unite_delete_backward_word)
 	imap <buffer> <c-u> <Plug>(unite_delete_backward_path)
 	imap <buffer> '     <Plug>(unite_quick_match_default_action)
@@ -1181,29 +1202,40 @@ call unite#custom#profile('default', 'context', {
 			\   'no_auto_resize': 0,
 			\   'prompt_direction': 'below',
 			\   'cursor_line_highlight': 'PmenuSel',
-			\   'cursor_line_time': '0.5',
+			\   'cursor_line_time': '0.2',
 			\   'candidate_icon': '-',
 			\   'marked_icon': '✓',
 			\   'prompt' : '> '
 			\ })
 
-" Set up some custom ignores
-call unite#custom_source('file_rec,file_rec/async,file_mru,file,buffer,grep',
-			\ 'ignore_pattern', join([
-			\ '\.git/',
-			\ 'git5/.*/review/',
-			\ 'google/obj/',
-			\ 'tmp/',
-			\ '.sass-cache',
-			\ 'node_modules/',
-			\ 'bower_components/',
-			\ 'dist/',
-			\ '.git5_specs/',
-			\ '.pyc',
-			\ '.dropbox/'
-			\ ], '\|'))
+call unite#custom#profile('outline', 'context', {
+			\   'auto_expand': 0,
+			\   'start_insert': 1,
+			\   'max_candidates': 0,
+			\   'no_auto_resize': 1,
+			\   'prompt_direction': 'top',
+			\ })
 
-" Enable history yank source
+" Set up some custom ignores
+call unite#custom#source('file_rec,file_rec/async,file_mru,file,buffer,grep',
+			\   'ignore_pattern', join([
+			\   '\.git/',
+			\   '\.svn/',
+			\   '\.hg/',
+			\   'git5/.*/review/',
+			\   'google/obj/',
+			\   'tmp/',
+			\   '\.sass-cache',
+			\   'node_modules/',
+			\   'bower_components/',
+			\   'dist/',
+			\   '\.git5_specs/',
+			\   '\.pyc',
+			\   '\.dropbox/',
+			\   '\.cache/'
+			\   ], '\|'))
+
+" Enable histo  ry yank source
 let g:unite_source_history_yank_enable = 1
 
 let g:neomru#file_mru_limit = 1000
@@ -1215,11 +1247,11 @@ let g:neomru#time_format = ''
 if executable('ack-grep')
 	let g:unite_source_grep_command = 'ack-grep'
 	" Match whole word only. This might/might not be a good idea
-	let g:unite_source_grep_default_opts = '--no-heading --no-color -a -w'
+	let g:unite_source_grep_default_opts = '--no-heading --no-color -w'
 	let g:unite_source_grep_recursive_opt = ''
 elseif executable('ack')
 	let g:unite_source_grep_command = 'ack'
-	let g:unite_source_grep_default_opts = '--no-heading --no-color -a -w'
+	let g:unite_source_grep_default_opts = '--no-heading --no-color -w'
 	let g:unite_source_grep_recursive_opt = ''
 endif
 
@@ -1263,7 +1295,7 @@ function! s:unite_sources_session_save(filename, ...)
 		return
 	endif
 	let filename = s:get_session_path(a:filename)
-	execute 'SaveSession!' filename
+	silent execute 'SaveSession!' filename
 endfunction
 
 function! s:unite_sources_session_load(filename)
@@ -1271,7 +1303,7 @@ function! s:unite_sources_session_load(filename)
 		return
 	endif
 	let filename = s:get_session_path(a:filename)
-	execute 'OpenSession' filename
+	silent execute 'OpenSession' filename
 endfunction
 
 function! s:unite_sources_session_complete(arglead, cmdline, cursorpos)
@@ -1622,43 +1654,20 @@ nmap <leader>a\| :Tabularize /\|<cr>
 vmap <leader>a\| :Tabularize /\|<cr>
 "}}}
 
-" Toggling quickfix window {{{
-function! GetBufferList()
-	redir =>buflist
-	silent! ls
-	redir END
-	return buflist
-endfunction
-
-function! ToggleList(bufname, opencommand, closecommand)
-	let buflist = GetBufferList()
-	for bufnum in map(filter(split(buflist, '\n'), 'v:val =~ "'.a:bufname.'"'), 'str2nr(matchstr(v:val, "\\d\\+"))')
-		if bufwinnr(bufnum) != -1
-			exec(a:closecommand)
-			return
-		endif
-	endfor
-	if a:bufname == 'Location List' && len(getloclist(0)) == 0
-		echohl ErrorMsg
-		echo "Location List is Empty."
-		return
-	endif
-	let winnr = winnr()
-	exec(a:opencommand)
-	if winnr() != winnr
-		wincmd p
-	endif
-endfunction
-
-nmap <silent> <leader>l :call ToggleList('Location List', 'lopen', 'lclose')<cr>
-nmap <silent> <leader>q :call ToggleList('Quickfix List', 'copen', 'cclose')<cr>
-"}}}
-
 " Plugin: syntastic {{{
 map <leader>ms :SyntasticToggleMode<cr>
 let g:syntastic_error_symbol = '✘'
 let g:syntastic_warning_symbol = '⚠'
 let g:syntastic_check_on_open = 1
+
+let g:syntastic_check_on_wq = 0
+let g:syntastic_aggregate_errors = 1
+let g:syntastic_always_populate_loc_list = 1
+" let g:syntastic_ignore_files = ['\m^/usr/include/', '\m\c\.h$']
+let g:syntastic_mode_map = { "mode": "active",
+			\ "active_filetypes": [],
+			\ "passive_filetypes": [] }
+
 " autocmd for apply localvimrc to syntastic when loading a session.
 " it will trigger check twice.
 " TODO: find out how to remove redundancy check.
@@ -1670,30 +1679,6 @@ augroup MyAutoCmd
 				\       call SyntasticReset() |
 				\   endif
 augroup END
-let g:syntastic_check_on_wq = 0
-let g:syntastic_aggregate_errors = 1
-" let g:syntastic_ignore_files = ['\m^/usr/include/', '\m\c\.h$']
-let g:syntastic_mode_map = { "mode": "active",
-			\ "active_filetypes": [],
-			\ "passive_filetypes": [] }
-
-" Function: Toggle Syntastic Errors Window "{{{
-function! ToggleSyntasticErrorsWindow()
-	let l:is_loc_buf_exists = 0
-	for i in tabpagebuflist()
-		if getbufvar(i, '&buftype') == 'quickfix'
-			let l:is_loc_buf_exists = 1
-			break
-		endif
-	endfor
-	if l:is_loc_buf_exists == 0
-		Errors
-	else
-		lclose
-	endif
-endfunction
-"}}}
-nmap <silent> <expr> <leader>e IsHerePluginBuffer() ? '\<nop>' : ':call ToggleSyntasticErrorsWindow()<cr>'
 "}}}
 
 " Plugin: YouCompleteMe {{{
