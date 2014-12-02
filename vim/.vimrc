@@ -65,45 +65,49 @@ function! EnsureDirExists(dir)
 endfunction
 "}}}
 
+" set data directories
 let $DOTVIMPATH = expand('~/.vim')
 let $PLUGINPATH = $DOTVIMPATH . '/bundle'
+let $SWAPPATH = $DOTVIMPATH . '/swap'
+let $BACKUPPATH = $DOTVIMPATH . '/backup'
+let $UNDOPATH = $DOTVIMPATH . '/undo'
+let $SESSIONPATH = $DOTVIMPATH . '/session'
+let $ULTISNIPSPATH = $DOTVIMPATH . '/UltiSnips'
+let $UNITEPATH = $DOTVIMPATH . '/cache/unite'
+let $VIMFILERPATH = $DOTVIMPATH . '/cache/vimfiler'
+let $VIMSHELLPATH = $DOTVIMPATH . '/cache/vimshell'
+let $NEOMRUPATH = $DOTVIMPATH . '/cache/neomru'
 
-" Set viminfo directory
 call EnsureDirExists($DOTVIMPATH)
 set viminfo+=n$DOTVIMPATH/viminfo
 
-" Set swap file directory
-call EnsureDirExists($DOTVIMPATH . '/swap')
-set directory=$DOTVIMPATH/swap/
+call EnsureDirExists($SWAPPATH)
+set directory=$SWAPPATH//
 
-" Set backup file directory
-call EnsureDirExists($DOTVIMPATH . '/backup')
-set backupdir=$DOTVIMPATH/backup//
+call EnsureDirExists($BACKUPPATH)
+set backupdir=$BACKUPPATH//
 
-" Set undo data directory
-call EnsureDirExists($DOTVIMPATH . '/undo')
-set undodir=$DOTVIMPATH/undo//
+call EnsureDirExists($UNDOPATH)
+set undodir=$UNDOPATH//
 
-" set unite data directory using in Shougo's unite plugin
-call EnsureDirExists($DOTVIMPATH . '/unite')
-let g:unite_data_directory = $DOTVIMPATH . '/unite'
+call EnsureDirExists($SESSIONPATH)
+let g:session_directory = $SESSIONPATH
 
-" set vimfiler data directory
-call EnsureDirExists($DOTVIMPATH . '/vimfiler')
-let g:vimfiler_data_directory = $DOTVIMPATH . '/vimfiler'
+call EnsureDirExists($ULTISNIPSPATH)
+let g:UltiSnipsSnippetsDir = $ULTISNIPSPATH
 
-" set neomru data directory
-call EnsureDirExists($DOTVIMPATH . '/neomru')
-let g:neomru#file_mru_path = $DOTVIMPATH . '/neomru/file'
-let g:neomru#directory_mru_path = $DOTVIMPATH . '/neomru/directory'
+call EnsureDirExists($UNITEPATH)
+let g:unite_data_directory = $UNITEPATH
 
-" set session directory using in xolox's vim-session plugin
-call EnsureDirExists($DOTVIMPATH . '/session')
-let g:session_directory = $DOTVIMPATH . '/session'
+call EnsureDirExists($VIMFILERPATH)
+let g:vimfiler_data_directory = $VIMFILERPATH
 
-" set ultisnips' data directory
-call EnsureDirExists($DOTVIMPATH . '/ultisnips')
-let g:UltiSnipsSnippetDirectories = [ "ultisnips" ]
+call EnsureDirExists($VIMSHELLPATH)
+let g:vimfiler_data_directory = $VIMSHELLPATH
+
+call EnsureDirExists($NEOMRUPATH)
+let g:neomru#file_mru_path = $NEOMRUPATH . '/file'
+let g:neomru#directory_mru_path = $NEOMRUPATH . '/directory'
 "}}}
 
 " Plugin: NeoBundle {{{
@@ -454,13 +458,13 @@ else
 	" line drawing characters.
 	augroup MyAutoCmd
 		autocmd ColorScheme *
-					\	try |
-					\		if g:colors_name == 'molokai' |
-					\			execute "hi VertSplit cterm=none" |
-					\			if &t_Co >= 256 |
-					\				execute "hi MatchParen ctermfg=226 ctermbg=bg" |
-					\			endif |
-					\		endif |
+					\   try |
+					\       if g:colors_name == 'molokai' |
+					\           execute "hi VertSplit cterm=none" |
+					\       endif |
+					\       if g:colors_name == 'molokai' && &t_Co >= 256 |
+					\           execute "hi MatchParen ctermfg=226 ctermbg=bg" |
+					\       endif |
 					\	endtry
 	augroup END
 
@@ -1670,6 +1674,7 @@ let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
 let g:syntastic_aggregate_errors = 1
 let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 2       " use unite location list instead.
 " let g:syntastic_ignore_files = ['\m^/usr/include/', '\m\c\.h$']
 let g:syntastic_mode_map = { "mode": "active",
 			\ "active_filetypes": [],
