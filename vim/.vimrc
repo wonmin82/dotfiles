@@ -88,6 +88,10 @@ set undodir=$DOTVIMPATH/undo//
 call EnsureDirExists($DOTVIMPATH . '/unite')
 let g:unite_data_directory = $DOTVIMPATH . '/unite'
 
+" set vimfiler data directory
+call EnsureDirExists($DOTVIMPATH . '/vimfiler')
+let g:vimfiler_data_directory = $DOTVIMPATH . '/vimfiler'
+
 " set neomru data directory
 call EnsureDirExists($DOTVIMPATH . '/neomru')
 let g:neomru#file_mru_path = $DOTVIMPATH . '/neomru/file'
