@@ -103,7 +103,7 @@ call EnsureDirExists($VIMFILERPATH)
 let g:vimfiler_data_directory = $VIMFILERPATH
 
 call EnsureDirExists($VIMSHELLPATH)
-let g:vimfiler_data_directory = $VIMSHELLPATH
+let g:vimshell_data_directory = $VIMSHELLPATH
 
 call EnsureDirExists($NEOMRUPATH)
 let g:neomru#file_mru_path = $NEOMRUPATH . '/file'
@@ -240,6 +240,7 @@ NeoBundle 'vim-scripts/IndentTab', {
 			\ }
 NeoBundle 'vim-scripts/IndentConsistencyCop'
 NeoBundle 'vim-scripts/IndentConsistencyCopAutoCmds'
+NeoBundle 'ntpeters/vim-better-whitespace'
 NeoBundle 'SirVer/ultisnips'
 NeoBundle 'honza/vim-snippets'
 
@@ -488,31 +489,6 @@ else
 endif
 "}}}
 "
-" highlight trailing space {{{
-" listchar=trail is not as flexible, use the below to highlight trailing
-" whitespace. Don't do it for unite windows or readonly files
-highlight ExtraWhitespace ctermbg=red guibg=red
-match ExtraWhitespace /\s\+$/
-augroup MyAutoCmd
-	autocmd BufWinEnter *
-				\   if &modifiable && (&ft!='unite' && &ft!='vimshell') |
-				\       execute 'match ExtraWhitespace /\s\+$/' |
-				\   endif
-	autocmd InsertEnter *
-				\   if &modifiable && (&ft!='unite' && &ft!='vimshell') |
-				\       execute 'match ExtraWhitespace /\s\+\%#\@<!$/' |
-				\   endif
-	autocmd InsertLeave *
-				\   if &modifiable && (&ft!='unite' && &ft!='vimshell') |
-				\       execute 'match ExtraWhitespace /\s\+$/' |
-				\   endif
-	autocmd BufWinLeave *
-				\   if &modifiable && (&ft!='unite' && &ft!='vimshell') |
-				\       execute 'call clearmatches()' |
-				\   endif
-augroup END
-"}}}
-
 " XTerm escape sequences definition for tmux {{{
 " Make Vim recognize XTerm escape sequences for Page and Arrow
 " keys combined with modifiers such as Shift, Control, and Alt.
@@ -599,6 +575,8 @@ augroup MyAutoCmd
 				\ execute "nnoremap <f3> <nop>" |
 				\ execute "nnoremap <f4> <nop>" |
 				\ execute "nnoremap <f5> <nop>"
+	autocmd FileType vimshell
+				\ execute "setlocal nolist nonumber nospell"
 augroup END
 "}}}
 
@@ -1020,7 +998,7 @@ nnoremap <c-s><c-s> :Unite -buffer-name=grep grep:.::<c-r><c-w><cr>
 " Ctrl-sd: (S)earch word in current (d)irectory (prompt for word)
 nnoremap <c-s><c-d> :Unite -buffer-name=grep grep:.<cr>
 " Ctrl-sf: Quickly (s)earch in (f)ile
-nmap <c-s><c-f> [unite]l
+nmap <c-s><c-f> [unite]/
 " Ctrl-sr: Easier (s)earch and (r)eplace
 nnoremap <c-s><c-r> :%s/<c-r><c-w>//gc<left><left><left>
 " Ctrl-sw: Quickly surround word
@@ -1494,11 +1472,14 @@ endfunction
 "}}}
 
 " Plugin: VimShell {{{
+" NOTE: VimShell must be exited by 'exit' command in vimshell
+"		Otherwise, syntax highlight will be turned off.
 let g:vimshell_prompt = "% "
 let g:vimshell_user_prompt = 'fnamemodify(getcwd(), ":~")'
 autocmd MyAutoCmd FileType vimshell call s:vimshell_settings()
 function! s:vimshell_settings()
 	call vimshell#altercmd#define('g', 'git')
+	call vimshell#execute('export MANPAGER=')
 endfunction
 "}}}
 
@@ -1607,6 +1588,11 @@ map <leader>icd :IndentConsistencyCopAutoCmdsOff<cr>
 let g:indentconsistencycop_CheckOnLoad = 0
 let g:indentconsistencycop_CheckAfteRWrite = 1
 let g:indentconsistencycop_CheckAfterWriteMaxLinesForImmediateCheck = 1000
+"}}}
+
+" Plugin: vim-better-whitespace {{{
+highlight ExtraWhitespace ctermbg=red guibg=red
+let g:better_whitespace_filetypes_blacklist = ['vimshell', 'unite', 'help']
 "}}}
 
 " Plugin: SrcExplorer {{{
