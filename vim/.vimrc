@@ -174,12 +174,12 @@ endtry
 " Note: You don't set neobundle setting in .gvimrc!
 
 NeoBundle 'Shougo/vimproc', {
-			\ 'build': {
-			\     'windows': 'make -f make_mingw32.mak',
-			\     'cygwin': 'make -f make_cygwin.mak',
-			\     'mac': 'make -f make_mac.mak',
-			\     'unix': 'make -f make_unix.mak',
-			\ } }
+			\   'build': {
+			\       'windows': 'make -f make_mingw32.mak',
+			\       'cygwin': 'make -f make_cygwin.mak',
+			\       'mac': 'make -f make_mac.mak',
+			\       'unix': 'make -f make_unix.mak',
+			\ }}
 
 " Fuzzy search
 NeoBundle 'Shougo/unite.vim'
@@ -197,17 +197,21 @@ NeoBundle 'Shougo/vimfiler'
 
 " Session
 NeoBundle 'xolox/vim-session', {
-			\ 'depends': 'xolox/vim-misc',
-			\ 'augroup': 'PluginSession',
-			\ 'autoload': {
+			\   'depends': 'xolox/vim-misc',
+			\   'augroup': 'PluginSession',
+			\   'autoload': {
 			\   'commands': [
-			\     { 'name': [ 'OpenSession', 'CloseSession' ],
-			\       'complete': 'customlist,xolox#session#complete_names' },
-			\     { 'name': [ 'SaveSession' ],
-			\       'complete': 'customlist,xolox#session#complete_names_with_suggestions' }
+			\   {
+			\       'name': [ 'OpenSession', 'CloseSession' ],
+			\       'complete': 'customlist,xolox#session#complete_names'
+			\   },
+			\   {
+			\       'name': [ 'SaveSession' ],
+			\       'complete': 'customlist,xolox#session#complete_names_with_suggestions'
+			\   }
 			\   ],
-			\   'functions': [ 'xolox#session#complete_names',
-			\                  'xolox#session#complete_names_with_suggestions' ]
+			\       'functions': [ 'xolox#session#complete_names',
+			\                      'xolox#session#complete_names_with_suggestions' ]
 			\ }}
 
 " Shell
@@ -247,12 +251,12 @@ NeoBundle 'honza/vim-snippets'
 " ensure vim version >= 7.3.584 and not in cygwin.
 if has('patch-7.3.584') && !(s:is_win32 || s:is_win64)
 	NeoBundle 'Valloric/YouCompleteMe', {
-				\ 'build' : {
-				\     'windows' : './install.sh --clang-completer --system-libclang --omnisharp-completer',
-				\     'cygwin' : './install.sh --clang-completer --system-libclang',
-				\     'mac' : './install.sh --clang-completer --system-libclang --omnisharp-completer',
-				\     'unix' : './install.sh --clang-completer --system-libclang --omnisharp-completer',
-				\    }
+				\   'build' : {
+				\       'windows' : './install.sh --clang-completer --system-libclang --omnisharp-completer',
+				\       'cygwin' : './install.sh --clang-completer --system-libclang',
+				\       'mac' : './install.sh --clang-completer --system-libclang --omnisharp-completer',
+				\       'unix' : './install.sh --clang-completer --system-libclang --omnisharp-completer',
+				\   }
 				\ }
 endif
 
@@ -543,40 +547,40 @@ augroup MyAutoCmd
 	" default cinoptions value
 	"set cinoptions=s,e0,n0,f0,{0,}0,^0,L-1,:s,=s,l0,b0,gs,hs,N0,ps,ts,is,+s,c3,C0,/0,(2s,us,U0,w0,W0,k0,m0,j0,J0,)20,*70,#0
 	autocmd Filetype c,cpp
-				\ execute "setlocal tabstop=4 softtabstop=4 shiftwidth=4" |
-				\ execute "setlocal smarttab noexpandtab" |
-				\ execute "setlocal autoindent cindent smartindent" |
-				\ execute "setlocal backspace=indent,eol,start" |
-				\ execute "setlocal cinoptions=:0,l1,g0,t0,(0,W4,j1,J1" |
-				\ execute "setlocal cinkeys=0{,0},0),:,0#,!^F,o,O,e" |
-				\ execute "setlocal cinwords=if,else,while,do,for,switch"
+				\   execute "setlocal tabstop=4 softtabstop=4 shiftwidth=4" |
+				\   execute "setlocal smarttab noexpandtab" |
+				\   execute "setlocal autoindent cindent smartindent" |
+				\   execute "setlocal backspace=indent,eol,start" |
+				\   execute "setlocal cinoptions=:0,l1,g0,t0,(0,W4,j1,J1" |
+				\   execute "setlocal cinkeys=0{,0},0),:,0#,!^F,o,O,e" |
+				\   execute "setlocal cinwords=if,else,while,do,for,switch"
 	autocmd Filetype python
-				\ execute "setlocal tabstop=4 softtabstop=4 shiftwidth=4" |
-				\ execute "setlocal smarttab expandtab" |
-				\ execute "setlocal autoindent cindent smartindent" |
-				\ execute "setlocal backspace=indent,eol,start"
+				\   execute "setlocal tabstop=4 softtabstop=4 shiftwidth=4" |
+				\   execute "setlocal smarttab expandtab" |
+				\   execute "setlocal autoindent cindent smartindent" |
+				\   execute "setlocal backspace=indent,eol,start"
 	autocmd Filetype perl
-				\ execute "setlocal kp=perldoc\\ -f"
+				\   execute "setlocal kp=perldoc\\ -f"
 	autocmd Filetype tex
-				\ execute "setlocal textwidth=72"
+				\   execute "setlocal textwidth=72"
 	autocmd FileType man
-				\ execute "setlocal tabstop=8" |
-				\ execute "setlocal nomodifiable nomodified" |
-				\ execute "setlocal nolist nonumber nospell" |
-				\ execute "setlocal mouse=a" |
-				\ execute "setlocal nocursorline nocursorcolumn" |
-				\ execute "%foldopen!" |
-				\ execute "nnoremap q :qa!<cr>" |
-				\ execute "nnoremap <end> G" |
-				\ execute "nnoremap <home> gg" |
-				\ execute "nmap K <c-]>" |
-				\ execute "nnoremap : <nop>" |
-				\ execute "nnoremap <f2> <nop>" |
-				\ execute "nnoremap <f3> <nop>" |
-				\ execute "nnoremap <f4> <nop>" |
-				\ execute "nnoremap <f5> <nop>"
+				\   execute "setlocal tabstop=8" |
+				\   execute "setlocal nomodifiable nomodified" |
+				\   execute "setlocal nolist nonumber nospell" |
+				\   execute "setlocal mouse=a" |
+				\   execute "setlocal nocursorline nocursorcolumn" |
+				\   execute "%foldopen!" |
+				\   execute "nnoremap q :qa!<cr>" |
+				\   execute "nnoremap <end> G" |
+				\   execute "nnoremap <home> gg" |
+				\   execute "nmap K <c-]>" |
+				\   execute "nnoremap : <nop>" |
+				\   execute "nnoremap <f2> <nop>" |
+				\   execute "nnoremap <f3> <nop>" |
+				\   execute "nnoremap <f4> <nop>" |
+				\   execute "nnoremap <f5> <nop>"
 	autocmd FileType vimshell
-				\ execute "setlocal nolist nonumber nospell"
+				\   execute "setlocal nolist nonumber nospell"
 augroup END
 "}}}
 
@@ -918,7 +922,7 @@ nmap <leader>mm :call ToggleMouse()<cr>
 " files.
 function! AppendModeline()
 	let l:modeline = printf(" vim: set ts=%d sw=%d tw=%d %set :",
-				\ &tabstop, &shiftwidth, &textwidth, &expandtab ? '' : 'no')
+				\   &tabstop, &shiftwidth, &textwidth, &expandtab ? '' : 'no')
 	let l:modeline = substitute(&commentstring, "%s", l:modeline, "")
 	call append(line("$"), l:modeline)
 endfunction
@@ -1126,25 +1130,25 @@ nnoremap <silent> [unite]k :<c-u>Unite -buffer-name=mapping mapping<cr>
 autocmd MyAutoCmd FileType unite call s:unite_settings()
 function! s:unite_settings()
 	" <esc> overriding may cause problems at some terminal types.
-	" nmap <buffer> <esc> <Plug>(unite_exit)
-	" nmap <buffer> <esc> <Plug>(unite_insert_enter)
-	" imap <buffer> <esc> <Plug>(unite_exit)
+	" nmap <buffer> <esc> <plug>(unite_exit)
+	" nmap <buffer> <esc> <plug>(unite_insert_enter)
+	" imap <buffer> <esc> <plug>(unite_exit)
 
-	" imap <buffer> <c-j> <Plug>(unite_select_next_line)
-	imap <buffer> <c-j> <Plug>(unite_insert_leave)
-	nmap <buffer> <c-j> <Plug>(unite_loop_cursor_down)
-	nmap <buffer> <c-k> <Plug>(unite_loop_cursor_up)
-	nmap <buffer> <tab> <Plug>(unite_loop_cursor_down)
-	nmap <buffer> <s-tab> <Plug>(unite_loop_cursor_up)
-	imap <buffer> <c-a> <Plug>(unite_choose_action)
-	imap <buffer> <tab> <Plug>(unite_insert_leave)
-	" imap <buffer> jj <Plug>(unite_insert_leave)
-	imap <buffer> <c-w> <Plug>(unite_delete_backward_word)
-	imap <buffer> <c-u> <Plug>(unite_delete_backward_path)
-	imap <buffer> '     <Plug>(unite_quick_match_default_action)
-	nmap <buffer> '     <Plug>(unite_quick_match_default_action)
-	nmap <buffer> <c-r> <Plug>(unite_redraw)
-	imap <buffer> <c-r> <Plug>(unite_redraw)
+	" imap <buffer> <c-j> <plug>(unite_select_next_line)
+	imap <buffer> <c-j> <plug>(unite_insert_leave)
+	nmap <buffer> <c-j> <plug>(unite_loop_cursor_down)
+	nmap <buffer> <c-k> <plug>(unite_loop_cursor_up)
+	nmap <buffer> <tab> <plug>(unite_loop_cursor_down)
+	nmap <buffer> <s-tab> <plug>(unite_loop_cursor_up)
+	imap <buffer> <c-a> <plug>(unite_choose_action)
+	imap <buffer> <tab> <plug>(unite_insert_leave)
+	" imap <buffer> jj <plug>(unite_insert_leave)
+	imap <buffer> <c-w> <plug>(unite_delete_backward_word)
+	imap <buffer> <c-u> <plug>(unite_delete_backward_path)
+	imap <buffer> '     <plug>(unite_quick_match_default_action)
+	nmap <buffer> '     <plug>(unite_quick_match_default_action)
+	nmap <buffer> <c-r> <plug>(unite_redraw)
+	imap <buffer> <c-r> <plug>(unite_redraw)
 	inoremap <silent><buffer><expr> <c-s> unite#do_action('split')
 	nnoremap <silent><buffer><expr> <c-s> unite#do_action('split')
 	inoremap <silent><buffer><expr> <c-v> unite#do_action('vsplit')
@@ -1161,12 +1165,12 @@ function! s:unite_settings()
 
 	" Using Ctrl-\ to trigger outline, so close it using the same keystroke
 	if unite.buffer_name =~# '^outline'
-		imap <buffer> <c-\> <Plug>(unite_exit)
+		imap <buffer> <c-\> <plug>(unite_exit)
 	endif
 
 	" Using Ctrl-/ to trigger line, close it using same keystroke
 	if unite.buffer_name =~# '^search_file'
-		imap <buffer> <c-_> <Plug>(unite_exit)
+		imap <buffer> <c-_> <plug>(unite_exit)
 	endif
 endfunction
 
@@ -1176,7 +1180,7 @@ call unite#filters#matcher_default#use(['matcher_fuzzy'])
 " call unite#filters#sorter_default#use(['sorter_rank'])
 " Use the rank sorter for files (NOTE: this is slow)
 call unite#custom#source('buffer,file,file_rec',
-			\ 'sorters', 'sorter_rank')
+			\   'sorters', 'sorter_rank')
 
 " Global default context
 call unite#custom#profile('default', 'context', {
@@ -1207,22 +1211,25 @@ call unite#custom#profile('outline', 'context', {
 
 " Set up some custom ignores
 call unite#custom#source('file_rec,file_rec/async,file_mru,file,buffer,grep',
-			\   'ignore_pattern', join([
-			\   '\.git/',
-			\   '\.svn/',
-			\   '\.hg/',
-			\   'git5/.*/review/',
-			\   'google/obj/',
-			\   'tmp/',
-			\   '\.sass-cache',
-			\   'node_modules/',
-			\   'bower_components/',
-			\   'dist/',
-			\   '\.git5_specs/',
-			\   '\.pyc',
-			\   '\.dropbox/',
-			\   '\.cache/'
-			\   ], '\|'))
+			\   'ignore_pattern',
+			\   join([
+			\       '\.git/',
+			\       '\.svn/',
+			\       '\.hg/',
+			\       'git5/.*/review/',
+			\       'google/obj/',
+			\       'tmp/',
+			\       '\.sass-cache',
+			\       'node_modules/',
+			\       'bower_components/',
+			\       'dist/',
+			\       '\.git5_specs/',
+			\       '\.pyc',
+			\       '\.dropbox/',
+			\       '\.cache/'
+			\   ],
+			\   '\|')
+			\)
 
 " Enable histo  ry yank source
 let g:unite_source_history_yank_enable = 1
@@ -1259,7 +1266,7 @@ let g:session_verbose_messages = 0
 autocmd MyAutoCmd VimEnter * call s:unite_session_on_enter()
 function! s:unite_session_on_enter()
 	if !argc() && !exists("g:start_session_from_cmdline")
-				\ && !(&ft == 'man')
+				\   && !(&ft == 'man')
 		Unite -buffer-name=sessions session
 	endif
 endfunction
@@ -1276,8 +1283,7 @@ endfunction
 " License: MIT license
 "-------------------------------------------------
 " Variables
-call unite#util#set_default('g:unite_source_session_allow_rename_locked',
-			\ 0)
+call unite#util#set_default('g:unite_source_session_allow_rename_locked', 0)
 
 function! s:unite_sources_session_save(filename, ...)
 	if unite#util#is_cmdwin()
@@ -1303,31 +1309,31 @@ function! s:unite_sources_session_complete(arglead, cmdline, cursorpos)
 endfunction
 
 let s:unite_source_session = {
-			\ 'name': 'session',
-			\ 'description': 'candidates from session list',
-			\ 'default_action': 'load',
-			\ 'alias_table': { 'edit' : 'open' },
-			\ 'action_table': {}
+			\   'name': 'session',
+			\   'description': 'candidates from session list',
+			\   'default_action': 'load',
+			\   'alias_table': { 'edit' : 'open' },
+			\   'action_table': {}
 			\ }
 
 function! s:unite_source_session.gather_candidates(args, context)
 	let directory = xolox#misc#path#absolute(g:session_directory)
 	let sessions = split(glob(directory.'/*'.g:session_extension), '\n')
 	let candidates = map(copy(sessions), "{
-				\ 'word': xolox#session#path_to_name(v:val),
-				\ 'kind': 'file',
-				\ 'action__path': v:val,
-				\ 'action__directory': unite#util#path2directory(v:val)
+				\   'word': xolox#session#path_to_name(v:val),
+				\   'kind': 'file',
+				\   'action__path': v:val,
+				\   'action__directory': unite#util#path2directory(v:val)
 				\ }")
 	return candidates
 endfunction
 
 " New session only source
 let s:unite_source_session_new = {
-			\ 'name': 'session/new',
-			\ 'description': 'session candidates from input',
-			\ 'default_action': 'save',
-			\ 'action_table': {}
+			\   'name': 'session/new',
+			\   'description': 'session candidates from input',
+			\   'default_action': 'save',
+			\   'action_table': {}
 			\ }
 
 function! s:unite_source_session_new.change_candidates(args, context)
@@ -1337,7 +1343,8 @@ function! s:unite_source_session_new.change_candidates(args, context)
 		return []
 	endif
 	" Return new session candidate
-	return [{ 'word': input, 'abbr': '[new session] ' . input, 'action__path': input }] +
+	return [{ 'word': input, 'abbr': '[new session] ' . input,
+				\ 'action__path': input }] +
 				\ s:unite_source_session.gather_candidates(a:args, a:context)
 endfunction
 
@@ -1447,8 +1454,8 @@ call unite#define_source(s:unite_source_session_new)
 nnoremap <silent> <expr> <leader>vf MyOpenExplorerCommand()
 function! MyOpenExplorerCommand()
 	return printf(":\<c-u>VimFilerBufferDir -buffer-name=%s -split -auto-cd -toggle -no-quit -winwidth=%s\<cr>",
-				\ g:my_vimfiler_explorer_name,
-				\ g:my_vimfiler_winwidth)
+				\   g:my_vimfiler_explorer_name,
+				\   g:my_vimfiler_winwidth)
 endfunction
 
 let g:vimfiler_as_default_explorer = 1
@@ -1467,7 +1474,7 @@ let g:vimfiler_safe_mode_by_default = 0
 
 autocmd MyAutoCmd FileType vimfiler call s:vimfiler_settings()
 function! s:vimfiler_settings()
-	nmap <buffer><expr><cr> vimfiler#smart_cursor_map("\<PLUG>(vimfiler_expand_tree)", "e")
+	nmap <buffer> <expr> <cr> vimfiler#smart_cursor_map("\<plug>(vimfiler_expand_tree)", "e")
 endfunction
 "}}}
 
@@ -1561,7 +1568,10 @@ let g:NERDTreeDirArrows = 1
 let g:NERDTreeIgnore = ['\~$', '\.swp$', '\.git', '\.hg', '\.svn', '\.bzr']
 " Close vim if the only window open is nerdtree
 autocmd MyAutoCmd BufEnter *
-			\ if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
+			\   if (winnr("$") == 1 && exists("b:NERDTreeType")
+			\      && b:NERDTreeType == "primary") |
+			\       q |
+			\   endif
 "}}}
 
 " Plugin: NERDCommenter {{{
@@ -1615,13 +1625,13 @@ let g:SrcExpl_gobackKey = "<space>"
 " // are using buffers. And you need add their bufname into the list below
 " // according to the command ":buffers!"
 let g:SrcExpl_pluginList = [
-			\ "__Tag_List__",
-			\ "_NERD_tree_",
-			\ "Source_Explorer",
-			\ "[File List]",
-			\ "[Buf List]",
-			\ "[BufExplorer]"
-			\ ]
+			\   "__Tag_List__",
+			\   "_NERD_tree_",
+			\   "Source_Explorer",
+			\   "[File List]",
+			\   "[Buf List]",
+			\   "[BufExplorer]"
+			\]
 " // Enable/Disable the local definition searching, and note that this is not
 " // guaranteed to work, the Source Explorer doesn't check the syntax for now.
 " // It only searches for a match with the keyword according to command 'gd'
@@ -1663,8 +1673,9 @@ let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 2       " use unite location list instead.
 " let g:syntastic_ignore_files = ['\m^/usr/include/', '\m\c\.h$']
 let g:syntastic_mode_map = { "mode": "active",
-			\ "active_filetypes": [],
-			\ "passive_filetypes": [] }
+			\   "active_filetypes": [],
+			\   "passive_filetypes": []
+			\ }
 
 " autocmd for apply localvimrc to syntastic when loading a session.
 " it will trigger check twice.
@@ -1876,16 +1887,16 @@ endif
 " let g:neosnippet#snippets_directory='~/.vim/bundle/vim-snippets/snippets'
 
 " " Plugin key-mappings.
-" imap <c-k>     <Plug>(neosnippet_expand_or_jump)
-" smap <c-k>     <Plug>(neosnippet_expand_or_jump)
-" xmap <c-k>     <Plug>(neosnippet_expand_target)
+" imap <c-k>     <plug>(neosnippet_expand_or_jump)
+" smap <c-k>     <plug>(neosnippet_expand_or_jump)
+" xmap <c-k>     <plug>(neosnippet_expand_target)
 
 " " SuperTab like snippets behavior.
 " " imap <expr><tab> neosnippet#expandable_or_jumpable() ?
-			" " \ "\<Plug>(neosnippet_expand_or_jump)"
+			" " \ "\<plug>(neosnippet_expand_or_jump)"
 			" " \: pumvisible() ? "\<C-n>" : "\<tab>"
 " " smap <expr><tab> neosnippet#expandable_or_jumpable() ?
-			" " \ "\<Plug>(neosnippet_expand_or_jump)"
+			" " \ "\<plug>(neosnippet_expand_or_jump)"
 			" " \: "\<tab>"
 
 " " For snippet_complete marker.
