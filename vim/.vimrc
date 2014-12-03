@@ -1129,19 +1129,31 @@ nnoremap <silent> [unite]k :<c-u>Unite -buffer-name=mapping mapping<cr>
 " Custom Unite settings
 autocmd MyAutoCmd FileType unite call s:unite_settings()
 function! s:unite_settings()
-	" <esc> overriding may cause problems at some terminal types.
-	" nmap <buffer> <esc> <plug>(unite_exit)
-	" nmap <buffer> <esc> <plug>(unite_insert_enter)
-	" imap <buffer> <esc> <plug>(unite_exit)
+	" map <esc> key overriding and some escape sequence handling. {{{
+	" NOTE: frankly speaking, I doubt that if I am doing right..
+	nmap <buffer> <esc> <plug>(unite_exit)
+	imap <buffer> <esc> <plug>(unite_insert_leave)
+	imap <buffer> <esc><esc> <plug>(unite_exit)
+	nnoremap <buffer> <esc>[ <esc>[
+	inoremap <buffer> <esc>[ <esc>[
+	nnoremap <buffer> <esc>[O <esc>[O
+	inoremap <buffer> <esc>[O <esc>[O
+	nnoremap <buffer> <esc>[[ <esc>[[
+	inoremap <buffer> <esc>[[ <esc>[[
+	inoremap <buffer> <esc><esc>[ <esc><esc>[
+	"}}}
 
+	nmap <buffer> <home> <plug>(unite_cursor_top)
+	nmap <buffer> <end> <plug>(unite_cursor_bottom)
 	" imap <buffer> <c-j> <plug>(unite_select_next_line)
 	imap <buffer> <c-j> <plug>(unite_insert_leave)
 	nmap <buffer> <c-j> <plug>(unite_loop_cursor_down)
 	nmap <buffer> <c-k> <plug>(unite_loop_cursor_up)
-	nmap <buffer> <tab> <plug>(unite_loop_cursor_down)
-	nmap <buffer> <s-tab> <plug>(unite_loop_cursor_up)
-	imap <buffer> <c-a> <plug>(unite_choose_action)
-	imap <buffer> <tab> <plug>(unite_insert_leave)
+	"nmap <buffer> <tab> <plug>(unite_loop_cursor_down)
+	"nmap <buffer> <s-tab> <plug>(unite_loop_cursor_up)
+	"imap <buffer> <c-a> <plug>(unite_choose_action)
+	nmap <buffer> <tab> <plug>(unite_choose_action)
+	imap <buffer> <tab> <plug>(unite_choose_action)
 	" imap <buffer> jj <plug>(unite_insert_leave)
 	imap <buffer> <c-w> <plug>(unite_delete_backward_word)
 	imap <buffer> <c-u> <plug>(unite_delete_backward_path)
