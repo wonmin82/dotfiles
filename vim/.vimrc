@@ -1102,7 +1102,7 @@ nnoremap <silent> [unite]h :<c-u>Unite -buffer-name=help help<cr>
 " nnoremap <silent> [unite]l :<c-u>UniteWithCursorWord -buffer-name=search_file line<cr>
 
 " Quick line
-nnoremap <silent> [unite]/ :<c-u>Unite -buffer-name=search_file line<cr>
+nnoremap <silent> [unite]/ :<c-u>Unite -buffer-name=line line<cr>
 
 " Quick MRU search
 nnoremap <silent> [unite]m :<c-u>Unite -buffer-name=mru file_mru<cr>
@@ -1152,6 +1152,7 @@ function! s:unite_settings()
 	"nmap <buffer> <tab> <plug>(unite_loop_cursor_down)
 	"nmap <buffer> <s-tab> <plug>(unite_loop_cursor_up)
 	"imap <buffer> <c-a> <plug>(unite_choose_action)
+	nmap <buffer> M     <plug>(unite_disable_max_candidates)|
 	nmap <buffer> <tab> <plug>(unite_choose_action)
 	imap <buffer> <tab> <plug>(unite_choose_action)
 	" imap <buffer> jj <plug>(unite_insert_leave)
@@ -1186,13 +1187,10 @@ function! s:unite_settings()
 	endif
 endfunction
 
-" Use the fuzzy matcher for everything
+" Use the fuzzy matcher for everything, except grep, line and etc. see the docs.
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
-" Use the rank sorter for everything
-" call unite#filters#sorter_default#use(['sorter_rank'])
-" Use the rank sorter for files (NOTE: this is slow)
-call unite#custom#source('buffer,file,file_rec',
-			\   'sorters', 'sorter_rank')
+" Use the selecta sorter for all source.
+call unite#filters#sorter_default#use(['sorter_selecta'])
 
 " Global default context
 call unite#custom#profile('default', 'context', {
