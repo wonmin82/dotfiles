@@ -470,7 +470,7 @@ else
 					\       if g:colors_name == 'molokai' && &t_Co >= 256 |
 					\           execute "hi MatchParen ctermfg=226 ctermbg=bg" |
 					\       endif |
-					\	endtry
+					\   endtry
 	augroup END
 
 	if &t_Co >= 256
@@ -1152,7 +1152,7 @@ function! s:unite_settings()
 	"nmap <buffer> <tab> <plug>(unite_loop_cursor_down)
 	"nmap <buffer> <s-tab> <plug>(unite_loop_cursor_up)
 	"imap <buffer> <c-a> <plug>(unite_choose_action)
-	nmap <buffer> M     <plug>(unite_disable_max_candidates)|
+	nmap <buffer> M     <plug>(unite_disable_max_candidates)
 	nmap <buffer> <tab> <plug>(unite_choose_action)
 	imap <buffer> <tab> <plug>(unite_choose_action)
 	" imap <buffer> jj <plug>(unite_insert_leave)
