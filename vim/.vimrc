@@ -1182,7 +1182,7 @@ function! s:unite_settings()
 	endif
 
 	" Using Ctrl-/ to trigger line, close it using same keystroke
-	if unite.buffer_name =~# '^search_file'
+	if unite.buffer_name =~# '^line'
 		imap <buffer> <c-_> <plug>(unite_exit)
 	endif
 endfunction
