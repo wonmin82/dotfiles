@@ -89,7 +89,7 @@ function purgeremovedpkgs () {
 }
 
 function updatepackages () {
-	retry sudo aptitude update && retry sudo aptitude -d -y full-upgrade && sudo aptitude -y full-upgrade
+	retry sudo aptitude update && retry sudo aptitude -d -y upgrade && sudo aptitude -y upgrade
 }
 
 if [ -f /usr/bin/vmware-config-tools.pl ]; then
