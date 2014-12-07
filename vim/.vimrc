@@ -1046,7 +1046,7 @@ let g:localvimrc_ask = 0
 "}}}
 
 " Function: check whether current buffer is plugin's or not {{{
-let s:Plugin_Buffer_List = ['\\[BufExplorer\\]', 'NERD_tree.*', '__Tagbar__']
+let s:Plugin_Buffer_List = ["\\[BufExplorer\\]", "NERD_tree.*", "__Tagbar__"]
 function! IsHerePluginBuffer()
 	for l:item in s:Plugin_Buffer_List
 		if match(bufname('%'), l:item) >= 0
