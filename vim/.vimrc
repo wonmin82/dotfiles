@@ -589,15 +589,15 @@ augroup MyAutoCmd
 				\   execute "setlocal mouse=a" |
 				\   execute "setlocal nocursorline nocursorcolumn" |
 				\   execute "%foldopen!" |
-				\   execute "nnoremap q :qa!<cr>" |
-				\   execute "nnoremap <end> G" |
-				\   execute "nnoremap <home> gg" |
-				\   execute "nmap K <c-]>" |
-				\   execute "nnoremap : <nop>" |
-				\   execute "nnoremap <f2> <nop>" |
-				\   execute "nnoremap <f3> <nop>" |
-				\   execute "nnoremap <f4> <nop>" |
-				\   execute "nnoremap <f5> <nop>"
+				\   execute "nnoremap <buffer> q :qa!<cr>" |
+				\   execute "nnoremap <buffer> <end> G" |
+				\   execute "nnoremap <buffer> <home> gg" |
+				\   execute "nmap <buffer> K <c-]>" |
+				\   execute "nnoremap <buffer> : <nop>" |
+				\   execute "nnoremap <buffer> <f2> <nop>" |
+				\   execute "nnoremap <buffer> <f3> <nop>" |
+				\   execute "nnoremap <buffer> <f4> <nop>" |
+				\   execute "nnoremap <buffer> <f5> <nop>"
 	autocmd FileType vimshell
 				\   execute "setlocal nolist nonumber nospell"
 augroup END
