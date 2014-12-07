@@ -245,6 +245,7 @@ NeoBundle 'vim-scripts/IndentTab', {
 NeoBundle 'vim-scripts/IndentConsistencyCop'
 NeoBundle 'vim-scripts/IndentConsistencyCopAutoCmds'
 NeoBundle 'ntpeters/vim-better-whitespace'
+NeoBundle 'rhysd/vim-clang-format'
 NeoBundle 'SirVer/ultisnips'
 NeoBundle 'honza/vim-snippets'
 
@@ -1563,10 +1564,7 @@ let g:bufferline_rotate = 2
 nnoremap <silent> <expr> <f4> @% != "[BufExplorer]" ? ':TagbarToggle<cr>' : '\<nop>'
 inoremap <silent> <expr> <f4> @% != "[BufExplorer]" ? '<esc>:TagbarToggle<cr>a' : '\<nop>'
 
-if s:is_cygwin
-	let g:tagbar_ctags_bin = '~/bin/ctags.exe'   "Cygwin-specific option
-endif
-
+let g:tagbar_ctags_bin = exepath('ctags')
 let g:tagbar_left = 0
 
 if 1 " 1: open only when used, 0: open always
@@ -1613,7 +1611,7 @@ let g:netrw_altv = 1 " when navigating a folder,
 "}}}
 
 " Plugin: IndentConsistencyCop {{{
-map <leader>icc :IndentConsistencyCop<cr>
+nmap <leader>icc :IndentConsistencyCop<cr>
 let g:indentconsistencycop_highlighting = 'sglmf:3'
 let g:indentconsistencycop_non_indent_pattern = ' \*\%([*/ \t]\|$\)'
 "}}}
@@ -1621,14 +1619,15 @@ let g:indentconsistencycop_non_indent_pattern = ' \*\%([*/ \t]\|$\)'
 " Plugin: IndentConsistencyCopAutoCmds {{{
 " DOES NOT WORK
 " TODO: investigate why it's not working
-map <leader>ice :IndentConsistencyCopAutoCmdsOn<cr>
-map <leader>icd :IndentConsistencyCopAutoCmdsOff<cr>
+nmap <leader>ice :IndentConsistencyCopAutoCmdsOn<cr>
+nmap <leader>icd :IndentConsistencyCopAutoCmdsOff<cr>
 let g:indentconsistencycop_CheckOnLoad = 0
 let g:indentconsistencycop_CheckAfteRWrite = 1
 let g:indentconsistencycop_CheckAfterWriteMaxLinesForImmediateCheck = 1000
 "}}}
 
 " Plugin: vim-better-whitespace {{{
+nmap <leader>mb :ToggleWhitespace<cr>
 highlight ExtraWhitespace ctermbg=red guibg=red
 let g:better_whitespace_filetypes_blacklist = ['vimshell', 'unite', 'help']
 "}}}
@@ -1776,6 +1775,22 @@ let g:UltiSnipsExpandTrigger = "<c-z>"
 let g:UltiSnipsJumpForwardTrigger = "<c-j>"
 let g:UltiSnipsJumpBackwardTrigger = "<c-k>"
 let g:UltiSnipsListSnippets = "<c-s>"
+"}}}
+
+" Plugin: vim-clang-format {{{
+let s:clang_format_finding_versions = [
+			\   '3.6', '3.5', '3.4', '3.3', '3.2'
+			\ ]
+if executable('clang-format')
+	let g:clang_format#command = exepath('clang-format')
+else
+	for i in s:clang_format_finding_versions
+		let s:clang_format_executable = 'clang-format-' . i
+		if executable(s:clang_format_executable)
+			let g:clang_format#command = exepath(s:clang_format_executable)
+		endif
+	endfor
+endif
 "}}}
 
 " bracket autocompletion {{{
