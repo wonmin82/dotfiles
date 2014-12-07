@@ -1183,19 +1183,19 @@ function! s:unite_settings()
 	nmap <buffer> '     <plug>(unite_quick_match_default_action)
 	nmap <buffer> <c-r> <plug>(unite_redraw)
 	imap <buffer> <c-r> <plug>(unite_redraw)
-	inoremap <silent><buffer><expr> <c-s> unite#do_action('split')
-	nnoremap <silent><buffer><expr> <c-s> unite#do_action('split')
-	inoremap <silent><buffer><expr> <c-v> unite#do_action('vsplit')
-	nnoremap <silent><buffer><expr> <c-v> unite#do_action('vsplit')
+	inoremap <silent> <buffer> <expr> <c-s> unite#do_action('split')
+	nnoremap <silent> <buffer> <expr> <c-s> unite#do_action('split')
+	inoremap <silent> <buffer> <expr> <c-v> unite#do_action('vsplit')
+	nnoremap <silent> <buffer> <expr> <c-v> unite#do_action('vsplit')
 
 	let unite = unite#get_current_unite()
 	if unite.buffer_name =~# '^search'
-		nnoremap <silent><buffer><expr> r     unite#do_action('replace')
+		nnoremap <silent> <buffer> <expr> r     unite#do_action('replace')
 	else
-		nnoremap <silent><buffer><expr> r     unite#do_action('rename')
+		nnoremap <silent> <buffer> <expr> r     unite#do_action('rename')
 	endif
 
-	nnoremap <silent><buffer><expr> cd     unite#do_action('lcd')
+	nnoremap <silent> <buffer> <expr> cd     unite#do_action('lcd')
 
 	" Using Ctrl-\ to trigger outline, so close it using the same keystroke
 	if unite.buffer_name =~# '^outline'
@@ -1856,11 +1856,11 @@ let g:clang_format#style_options = {
 
 " map to <Leader>cf in C++ code
 autocmd FileType c,cpp,objc
-			\   nnoremap <buffer><leader>cf :<c-u>ClangFormat<cr>
+			\   nnoremap <buffer> <leader>cf :<c-u>ClangFormat<cr>
 autocmd FileType c,cpp,objc
-			\   vnoremap <buffer><leader>cf :ClangFormat<cr>
+			\   vnoremap <buffer> <leader>cf :ClangFormat<cr>
 autocmd FileType c,cpp,objc
-			\   map <buffer><leader>x <plug>(operator-clang-format)
+			\   map <buffer> <leader>x <plug>(operator-clang-format)
 " Toggle auto formatting:
 nmap <leader>C :ClangFormatAutoToggle<cr>
 "}}}
