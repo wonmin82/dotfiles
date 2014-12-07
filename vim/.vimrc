@@ -167,7 +167,7 @@ catch /^Vim\%((\a\+)\)\=:E117/
 
 	call NeoBundleInstaller()
 endtry
-" }}}
+"}}}
 
 " My Bundles here:
 " Refer to |:NeoBundle-examples|.
@@ -179,7 +179,7 @@ NeoBundle 'Shougo/vimproc', {
 			\       'cygwin': 'make -f make_cygwin.mak',
 			\       'mac': 'make -f make_mac.mak',
 			\       'unix': 'make -f make_unix.mak',
-			\ }}
+			\}}
 
 " Fuzzy search
 NeoBundle 'Shougo/unite.vim'
@@ -212,7 +212,7 @@ NeoBundle 'xolox/vim-session', {
 			\   ],
 			\       'functions': [ 'xolox#session#complete_names',
 			\                      'xolox#session#complete_names_with_suggestions' ]
-			\ }}
+			\}}
 
 " Shell
 NeoBundle 'thinca/vim-quickrun'
@@ -241,13 +241,13 @@ NeoBundle 'Lokaltog/vim-easymotion'
 NeoBundle 'scrooloose/syntastic'
 NeoBundle 'vim-scripts/IndentTab', {
 			\   'depends': 'vim-scripts/ingo-library'
-			\ }
+			\}
 NeoBundle 'vim-scripts/IndentConsistencyCop'
 NeoBundle 'vim-scripts/IndentConsistencyCopAutoCmds'
 NeoBundle 'ntpeters/vim-better-whitespace'
 NeoBundle 'rhysd/vim-clang-format', {
 			\   'depends': 'kana/vim-operator-user'
-			\ }
+			\}
 NeoBundle 'SirVer/ultisnips'
 NeoBundle 'honza/vim-snippets'
 
@@ -261,7 +261,7 @@ if (v:version > 703 || v:version == 703 && has('patch584'))
 				\       'mac' : './install.sh --clang-completer --system-libclang --omnisharp-completer',
 				\       'unix' : './install.sh --clang-completer --system-libclang --omnisharp-completer',
 				\   }
-				\ }
+				\}
 endif
 
 NeoBundle 'tomasr/molokai'
@@ -1230,7 +1230,7 @@ call unite#custom#profile('default', 'context', {
 			\   'candidate_icon': '-',
 			\   'marked_icon': '✓',
 			\   'prompt' : '> '
-			\ })
+			\})
 
 call unite#custom#profile('outline', 'context', {
 			\   'auto_expand': 0,
@@ -1238,7 +1238,7 @@ call unite#custom#profile('outline', 'context', {
 			\   'max_candidates': 0,
 			\   'no_auto_resize': 1,
 			\   'prompt_direction': 'top',
-			\ })
+			\})
 
 " Set up some custom ignores
 call unite#custom#source('file_rec,file_rec/async,file_mru,file,buffer,grep',
@@ -1345,7 +1345,7 @@ let s:unite_source_session = {
 			\   'default_action': 'load',
 			\   'alias_table': { 'edit' : 'open' },
 			\   'action_table': {}
-			\ }
+			\}
 
 function! s:unite_source_session.gather_candidates(args, context)
 	let directory = xolox#misc#path#absolute(g:session_directory)
@@ -1355,7 +1355,7 @@ function! s:unite_source_session.gather_candidates(args, context)
 				\   'kind': 'file',
 				\   'action__path': v:val,
 				\   'action__directory': unite#util#path2directory(v:val)
-				\ }")
+				\}")
 	return candidates
 endfunction
 
@@ -1365,51 +1365,53 @@ let s:unite_source_session_new = {
 			\   'description': 'session candidates from input',
 			\   'default_action': 'save',
 			\   'action_table': {}
-			\ }
+			\}
 
 function! s:unite_source_session_new.change_candidates(args, context)
-	let input = substitute(substitute(
-				\ a:context.input, '\\ ', ' ', 'g'), '^\a\+:\zs\*/', '/', '')
+	let input = substitute(
+				\   substitute(a:context.input, '\\ ', ' ', 'g'),
+				\   '^\a\+:\zs\*/', '/', ''
+				\)
 	if input == ''
 		return []
 	endif
 	" Return new session candidate
-	return [{ 'word': input, 'abbr': '[new session] ' . input,
-				\ 'action__path': input }] +
-				\ s:unite_source_session.gather_candidates(a:args, a:context)
+	return [{'word': input, 'abbr': '[new session] ' . input,
+				\   'action__path': input }] +
+				\   s:unite_source_session.gather_candidates(a:args, a:context)
 endfunction
 
 " Actions
 let s:unite_source_session.action_table.load = {
-			\ 'description': 'load this session',
-			\ }
+			\   'description': 'load this session',
+			\}
 
 function! s:unite_source_session.action_table.load.func(candidate)
 	call s:unite_sources_session_load(a:candidate.word)
 endfunction
 
 let s:unite_source_session.action_table.delete = {
-			\ 'description': 'delete from session list',
-			\ 'is_invalidate_cache': 1,
-			\ 'is_quit': 0,
-			\ 'is_selectable': 1
-			\ }
+			\   'description': 'delete from session list',
+			\   'is_invalidate_cache': 1,
+			\   'is_quit': 0,
+			\   'is_selectable': 1
+			\}
 
 function! s:unite_source_session.action_table.delete.func(candidates)
 	for candidate in a:candidates
 		if input('Really delete session file: '
-					\ . candidate.action__path . '? ') =~? 'y\%[es]'
+					\   . candidate.action__path . '? ') =~? 'y\%[es]'
 			execute 'DeleteSession' candidate.word
 		endif
 	endfor
 endfunction
 
 let s:unite_source_session.action_table.rename = {
-			\ 'description': 'rename session name',
-			\ 'is_invalidate_cache': 1,
-			\ 'is_quit': 0,
-			\ 'is_selectable': 1
-			\ }
+			\   'description': 'rename session name',
+			\   'is_invalidate_cache': 1,
+			\   'is_quit': 0,
+			\   'is_selectable': 1
+			\}
 
 function! s:unite_source_session.action_table.rename.func(candidates)
 	let current_session = xolox#session#find_current_session()
@@ -1417,8 +1419,8 @@ function! s:unite_source_session.action_table.rename.func(candidates)
 	for candidate in a:candidates
 		if rename_locked || current_session != candidate.word
 			let session_name = input(printf(
-						\ 'New session name: %s -> ', candidate.word),
-						\ candidate.word)
+						\   'New session name: %s -> ', candidate.word),
+						\   candidate.word)
 			if session_name != '' && session_name !=# candidate.word
 				let new_name = g:session_directory.'/'.session_name.g:session_extension
 				let from_path = expand(candidate.action__path)
@@ -1432,21 +1434,22 @@ function! s:unite_source_session.action_table.rename.func(candidates)
 			endif
 		else
 			call unite#print_source_error(
-						\ [ 'The session "'.candidate.word.'" is locked.' ], 'session')
+						\   [ 'The session "'.candidate.word.'" is locked.' ],
+						\   'session')
 		endif
 	endfor
 endfunction
 
 let s:unite_source_session.action_table.save = {
-			\ 'description': 'save current session as candidate',
-			\ 'is_invalidate_cache': 1,
-			\ 'is_selectable': 1
-			\ }
+			\   'description': 'save current session as candidate',
+			\   'is_invalidate_cache': 1,
+			\   'is_selectable': 1
+			\}
 
 function! s:unite_source_session.action_table.save.func(candidates)
 	for candidate in a:candidates
 		if input('Really save the current session as: '
-					\ . candidate.word . '? ') =~? 'y\%[es]'
+					\   . candidate.word . '? ') =~? 'y\%[es]'
 			call s:unite_sources_session_save(candidate.word)
 		endif
 	endfor
@@ -1704,7 +1707,7 @@ let g:syntastic_auto_loc_list = 2       " use unite location list instead.
 let g:syntastic_mode_map = { "mode": "active",
 			\   "active_filetypes": [],
 			\   "passive_filetypes": []
-			\ }
+			\}
 
 " autocmd for apply localvimrc to syntastic when loading a session.
 " it will trigger check twice.
@@ -1783,7 +1786,7 @@ let g:UltiSnipsListSnippets = "<c-s>"
 " NOTE: clang-format 3.4 or later is required)
 let s:clang_format_finding_versions = [
 			\   '3.6', '3.5', '3.4'
-			\ ]
+			\]
 if executable('clang-format')
 	let g:clang_format#command = exepath('clang-format')
 else
@@ -1926,7 +1929,7 @@ endif
 			" \ 'default' : '',
 			" \ 'vimshell' : $HOME.'/.vimshell_hist',
 			" \ 'scheme' : $HOME.'/.gosh_completions'
-			" \ }
+			" \}
 
 " " Define keyword.
 " if !exists('g:neocomplete#keyword_patterns')
