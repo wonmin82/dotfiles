@@ -240,12 +240,14 @@ NeoBundle 'godlygeek/tabular'
 NeoBundle 'Lokaltog/vim-easymotion'
 NeoBundle 'scrooloose/syntastic'
 NeoBundle 'vim-scripts/IndentTab', {
-			\ 'depends': 'vim-scripts/ingo-library'
+			\   'depends': 'vim-scripts/ingo-library'
 			\ }
 NeoBundle 'vim-scripts/IndentConsistencyCop'
 NeoBundle 'vim-scripts/IndentConsistencyCopAutoCmds'
 NeoBundle 'ntpeters/vim-better-whitespace'
-NeoBundle 'rhysd/vim-clang-format'
+NeoBundle 'rhysd/vim-clang-format', {
+			\   'depends': 'kana/vim-operator-user'
+			\ }
 NeoBundle 'SirVer/ultisnips'
 NeoBundle 'honza/vim-snippets'
 
@@ -1778,8 +1780,9 @@ let g:UltiSnipsListSnippets = "<c-s>"
 "}}}
 
 " Plugin: vim-clang-format {{{
+" NOTE: clang-format 3.4 or later is required)
 let s:clang_format_finding_versions = [
-			\   '3.6', '3.5', '3.4', '3.3', '3.2'
+			\   '3.6', '3.5', '3.4'
 			\ ]
 if executable('clang-format')
 	let g:clang_format#command = exepath('clang-format')
@@ -1791,6 +1794,72 @@ else
 		endif
 	endfor
 endif
+
+let g:clang_format#style_options = {
+			\   "BasedOnStyle" : "google",
+			\   "AccessModifierOffset" : -1,
+			\   "ConstructorInitializerIndentWidth" : 4,
+			\   "AlignEscapedNewlinesLeft" : "true",
+			\   "AlignTrailingComments" : "true",
+			\   "AllowAllParametersOfDeclarationOnNextLine" : "true",
+			\   "AllowShortBlocksOnASingleLine" : "false",
+			\   "AllowShortIfStatementsOnASingleLine" : "true",
+			\   "AllowShortLoopsOnASingleLine" : "true",
+			\   "AllowShortFunctionsOnASingleLine" : "All",
+			\   "AlwaysBreakTemplateDeclarations" : "true",
+			\   "AlwaysBreakBeforeMultilineStrings" : "true",
+			\   "BreakBeforeBinaryOperators" : "false",
+			\   "BreakBeforeTernaryOperators" : "true",
+			\   "BreakConstructorInitializersBeforeComma" : "false",
+			\   "BinPackParameters" : "true",
+			\   "ColumnLimit" : 80,
+			\   "ConstructorInitializerAllOnOneLineOrOnePerLine" : "true",
+			\   "DerivePointerAlignment" : "false",
+			\   "ExperimentalAutoDetectBinPacking" : "false",
+			\   "IndentCaseLabels" : "true",
+			\   "IndentWrappedFunctionNames" : "false",
+			\   "IndentFunctionDeclarationAfterType" : "false",
+			\   "MaxEmptyLinesToKeep" : 1,
+			\   "KeepEmptyLinesAtTheStartOfBlocks" : "false",
+			\   "NamespaceIndentation" : "None",
+			\   "ObjCSpaceAfterProperty" : "false",
+			\   "ObjCSpaceBeforeProtocolList" : "false",
+			\   "PenaltyBreakBeforeFirstCallParameter" : 1,
+			\   "PenaltyBreakComment" : 300,
+			\   "PenaltyBreakString" : 1000,
+			\   "PenaltyBreakFirstLessLess" : 120,
+			\   "PenaltyExcessCharacter" : 1000000,
+			\   "PenaltyReturnTypeOnItsOwnLine" : 200,
+			\   "PointerAlignment" : "Right",
+			\   "SpacesBeforeTrailingComments" : 2,
+			\   "Cpp11BracedListStyle" : "true",
+			\   "Standard" : "Auto",
+			\   "IndentWidth" : 4,
+			\   "TabWidth" : 4,
+			\   "UseTab" : "ForIndentation",
+			\   "BreakBeforeBraces" : "Attach",
+			\   "SpacesInParentheses" : "false",
+			\   "SpacesInAngles" : "false",
+			\   "SpaceInEmptyParentheses" : "false",
+			\   "SpacesInCStyleCastParentheses" : "false",
+			\   "SpacesInContainerLiterals" : "true",
+			\   "SpaceBeforeAssignmentOperators" : "true",
+			\   "ContinuationIndentWidth" : 4,
+			\   "CommentPragmas" : "\"^ IWYU pragma:\"",
+			\   "ForEachMacros" : "[ foreach, Q_FOREACH, BOOST_FOREACH ]",
+			\   "SpaceBeforeParens" : "ControlStatements",
+			\   "DisableFormat" : "false"
+			\}
+
+" map to <Leader>cf in C++ code
+autocmd FileType c,cpp,objc
+			\   nnoremap <buffer><leader>cf :<c-u>ClangFormat<cr>
+autocmd FileType c,cpp,objc
+			\   vnoremap <buffer><leader>cf :ClangFormat<cr>
+autocmd FileType c,cpp,objc
+			\   map <buffer><leader>x <plug>(operator-clang-format)
+" Toggle auto formatting:
+nmap <leader>C :ClangFormatAutoToggle<cr>
 "}}}
 
 " bracket autocompletion {{{
