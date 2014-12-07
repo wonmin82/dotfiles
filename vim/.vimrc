@@ -588,7 +588,7 @@ augroup MyAutoCmd
 				\   execute "setlocal nolist nonumber nospell" |
 				\   execute "setlocal mouse=a" |
 				\   execute "setlocal nocursorline nocursorcolumn" |
-				\   execute "%foldopen!" |
+				\   execute "silent! %foldopen!" |
 				\   execute "nnoremap <buffer> q :qa!<cr>" |
 				\   execute "nnoremap <buffer> <end> G" |
 				\   execute "nnoremap <buffer> <home> gg" |
