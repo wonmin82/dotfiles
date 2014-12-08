@@ -1799,48 +1799,48 @@ function! s:clang_format_detect()
 endfunction
 
 function! s:has_vimproc()
-    if !exists('s:exists_vimproc')
-        try
-            silent call vimproc#version()
-            let s:exists_vimproc = 1
-        catch
-            let s:exists_vimproc = 0
-        endtry
-    endif
-    return s:exists_vimproc
+	if !exists('s:exists_vimproc')
+		try
+			silent call vimproc#version()
+			let s:exists_vimproc = 1
+		catch
+			let s:exists_vimproc = 0
+		endtry
+	endif
+	return s:exists_vimproc
 endfunction
 
 function! s:system(str, ...)
-    let command = a:str
-    let input = a:0 >= 1 ? a:1 : ''
+	let command = a:str
+	let input = a:0 >= 1 ? a:1 : ''
 
-    if a:0 == 0
-        let output = s:has_vimproc() ?
-                    \ vimproc#system(command) : system(command)
-    elseif a:0 == 1
-        let output = s:has_vimproc() ?
-                    \ vimproc#system(command, input) : system(command, input)
-    else
-        " ignores 3rd argument unless you have vimproc.
-        let output = s:has_vimproc() ?
-                    \ vimproc#system(command, input, a:2) : system(command, input)
-    endif
+	if a:0 == 0
+		let output = s:has_vimproc() ?
+					\ vimproc#system(command) : system(command)
+	elseif a:0 == 1
+		let output = s:has_vimproc() ?
+					\ vimproc#system(command, input) : system(command, input)
+	else
+		" ignores 3rd argument unless you have vimproc.
+		let output = s:has_vimproc() ?
+					\ vimproc#system(command, input, a:2) : system(command, input)
+	endif
 
-    return output
+	return output
 endfunction
 
 function! s:clang_format_get_version()
-    if &shell =~# 'csh$' && executable('/bin/bash')
-        let shell_save = &shell
-        set shell=/bin/bash
-    endif
-    try
-        return matchlist(s:system(g:clang_format#command.' --version 2>&1'), '\(\d\+\)\.\(\d\+\)')[1:2]
-    finally
-        if exists('l:shell_save')
-            let &shell = shell_save
-        endif
-    endtry
+	if &shell =~# 'csh$' && executable('/bin/bash')
+		let shell_save = &shell
+		set shell=/bin/bash
+	endif
+	try
+		return matchlist(s:system(g:clang_format#command.' --version 2>&1'), '\(\d\+\)\.\(\d\+\)')[1:2]
+	finally
+		if exists('l:shell_save')
+			let &shell = shell_save
+		endif
+	endtry
 endfunction
 
 let s:clang_format_is_available = 0
@@ -1890,7 +1890,7 @@ if s:clang_format_is_available
 					\   "Standard" : "Auto",
 					\   "IndentWidth" : 4,
 					\   "TabWidth" : 4,
-					\   "UseTab" : "ForIndentation",
+					\   "UseTab" : "Always",
 					\   "BreakBeforeBraces" : "Allman",
 					\   "IndentFunctionDeclarationAfterType" : "true",
 					\   "SpacesInParentheses" : "false",
@@ -1944,7 +1944,7 @@ if s:clang_format_is_available
 					\   "Standard" : "Auto",
 					\   "IndentWidth" : 4,
 					\   "TabWidth" : 4,
-					\   "UseTab" : "ForIndentation",
+					\   "UseTab" : "Always",
 					\   "BreakBeforeBraces" : "Allman",
 					\   "SpacesInParentheses" : "false",
 					\   "SpacesInAngles" : "false",
