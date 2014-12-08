@@ -1784,9 +1784,10 @@ let g:UltiSnipsListSnippets = "<c-s>"
 
 " Plugin: vim-clang-format {{{
 " NOTE: clang-format 3.4 or later is required
-" NOTE: cuurently, style options are ready for 3.4 and 3.5 only
+" NOTE: currently, style options are ready for 3.4, 3.5 and 3.6 only
 let s:clang_format_detecting_candidates = [
-			\   'clang-format', 'clang-format-3.5', 'clang-format-3.4'
+			\   'clang-format', 'clang-format-3.6',
+			\   'clang-format-3.5', 'clang-format-3.4'
 			\]
 
 function! s:clang_format_detect()
@@ -1823,7 +1824,8 @@ function! s:system(str, ...)
 	else
 		" ignores 3rd argument unless you have vimproc.
 		let output = s:has_vimproc() ?
-					\ vimproc#system(command, input, a:2) : system(command, input)
+					\ vimproc#system(command, input, a:2) :
+					\ system(command, input)
 	endif
 
 	return output
@@ -1835,7 +1837,8 @@ function! s:clang_format_get_version()
 		set shell=/bin/bash
 	endif
 	try
-		return matchlist(s:system(g:clang_format#command.' --version 2>&1'), '\(\d\+\)\.\(\d\+\)')[1:2]
+		return matchlist(s:system(g:clang_format#command.' --version 2>&1'),
+					\   '\(\d\+\)\.\(\d\+\)')[1:2]
 	finally
 		if exists('l:shell_save')
 			let &shell = shell_save
@@ -1854,29 +1857,40 @@ endtry
 if s:clang_format_is_available
 	let v = s:clang_format_get_version()
 	" clang-format style options {{{
-	if v[0] == 3 && v[1] == 4           " style options for clang-format 3.4
+	if v[0] == 3 && v[1] == 6           " style options for clang-format 3.6
+		" clang-format 3.6 has not been released yet.
+		" this style options for clang-format svn revision 218612
 		let g:clang_format#style_options = {
+					\   "Language" : "Cpp",
 					\   "BasedOnStyle" : "google",
 					\   "AccessModifierOffset" : -4,
 					\   "ConstructorInitializerIndentWidth" : 4,
 					\   "AlignEscapedNewlinesLeft" : "true",
 					\   "AlignTrailingComments" : "true",
 					\   "AllowAllParametersOfDeclarationOnNextLine" : "true",
+					\   "AllowShortBlocksOnASingleLine" : "false",
+					\   "AllowShortCaseLabelsOnASingleLine": "false",
 					\   "AllowShortIfStatementsOnASingleLine" : "false",
 					\   "AllowShortLoopsOnASingleLine" : "false",
+					\   "AllowShortFunctionsOnASingleLine" : "None",
+					\   "AlwaysBreakAfterDefinitionReturnType": "false",
 					\   "AlwaysBreakTemplateDeclarations" : "true",
 					\   "AlwaysBreakBeforeMultilineStrings" : "true",
-					\   "BreakBeforeBinaryOperators" : "false",
+					\   "BreakBeforeBinaryOperators": "None",
 					\   "BreakBeforeTernaryOperators" : "true",
 					\   "BreakConstructorInitializersBeforeComma" : "false",
 					\   "BinPackParameters" : "true",
 					\   "ColumnLimit" : 80,
 					\   "ConstructorInitializerAllOnOneLineOrOnePerLine" : "true",
-					\   "DerivePointerBinding" : "false",
+					\   "DerivePointerAlignment" : "false",
 					\   "ExperimentalAutoDetectBinPacking" : "false",
 					\   "IndentCaseLabels" : "false",
+					\   "IndentWrappedFunctionNames" : "false",
+					\   "IndentFunctionDeclarationAfterType" : "false",
 					\   "MaxEmptyLinesToKeep" : 1,
+					\   "KeepEmptyLinesAtTheStartOfBlocks" : "false",
 					\   "NamespaceIndentation" : "None",
+					\   "ObjCSpaceAfterProperty" : "false",
 					\   "ObjCSpaceBeforeProtocolList" : "false",
 					\   "PenaltyBreakBeforeFirstCallParameter" : 1,
 					\   "PenaltyBreakComment" : 300,
@@ -1884,7 +1898,7 @@ if s:clang_format_is_available
 					\   "PenaltyBreakFirstLessLess" : 120,
 					\   "PenaltyExcessCharacter" : 1000000,
 					\   "PenaltyReturnTypeOnItsOwnLine" : 200,
-					\   "PointerBindsToType" : "false",
+					\   "PointerAlignment" : "Right",
 					\   "SpacesBeforeTrailingComments" : 2,
 					\   "Cpp11BracedListStyle" : "true",
 					\   "Standard" : "Auto",
@@ -1892,14 +1906,19 @@ if s:clang_format_is_available
 					\   "TabWidth" : 4,
 					\   "UseTab" : "Always",
 					\   "BreakBeforeBraces" : "Allman",
-					\   "IndentFunctionDeclarationAfterType" : "true",
 					\   "SpacesInParentheses" : "false",
+					\   "SpacesInSquareBrackets": "false",
 					\   "SpacesInAngles" : "false",
 					\   "SpaceInEmptyParentheses" : "false",
 					\   "SpacesInCStyleCastParentheses" : "false",
-					\   "SpaceAfterControlStatementKeyword": "true",
+					\   "SpaceAfterCStyleCast": "false",
+					\   "SpacesInContainerLiterals" : "true",
 					\   "SpaceBeforeAssignmentOperators" : "true",
 					\   "ContinuationIndentWidth" : 4,
+					\   "CommentPragmas" : "\"^ IWYU pragma:\"",
+					\   "ForEachMacros" : "[ foreach, Q_FOREACH, BOOST_FOREACH ]",
+					\   "SpaceBeforeParens" : "ControlStatements",
+					\   "DisableFormat" : "false"
 					\}
 	elseif v[0] == 3 && v[1] == 5       " style options for clang-format 3.5
 		let g:clang_format#style_options = {
@@ -1957,6 +1976,53 @@ if s:clang_format_is_available
 					\   "ForEachMacros" : "[ foreach, Q_FOREACH, BOOST_FOREACH ]",
 					\   "SpaceBeforeParens" : "ControlStatements",
 					\   "DisableFormat" : "false"
+					\}
+	elseif v[0] == 3 && v[1] == 4       " style options for clang-format 3.4
+		let g:clang_format#style_options = {
+					\   "BasedOnStyle" : "google",
+					\   "AccessModifierOffset" : -4,
+					\   "ConstructorInitializerIndentWidth" : 4,
+					\   "AlignEscapedNewlinesLeft" : "true",
+					\   "AlignTrailingComments" : "true",
+					\   "AllowAllParametersOfDeclarationOnNextLine" : "true",
+					\   "AllowShortIfStatementsOnASingleLine" : "false",
+					\   "AllowShortLoopsOnASingleLine" : "false",
+					\   "AlwaysBreakTemplateDeclarations" : "true",
+					\   "AlwaysBreakBeforeMultilineStrings" : "true",
+					\   "BreakBeforeBinaryOperators" : "false",
+					\   "BreakBeforeTernaryOperators" : "true",
+					\   "BreakConstructorInitializersBeforeComma" : "false",
+					\   "BinPackParameters" : "true",
+					\   "ColumnLimit" : 80,
+					\   "ConstructorInitializerAllOnOneLineOrOnePerLine" : "true",
+					\   "DerivePointerBinding" : "false",
+					\   "ExperimentalAutoDetectBinPacking" : "false",
+					\   "IndentCaseLabels" : "false",
+					\   "MaxEmptyLinesToKeep" : 1,
+					\   "NamespaceIndentation" : "None",
+					\   "ObjCSpaceBeforeProtocolList" : "false",
+					\   "PenaltyBreakBeforeFirstCallParameter" : 1,
+					\   "PenaltyBreakComment" : 300,
+					\   "PenaltyBreakString" : 1000,
+					\   "PenaltyBreakFirstLessLess" : 120,
+					\   "PenaltyExcessCharacter" : 1000000,
+					\   "PenaltyReturnTypeOnItsOwnLine" : 200,
+					\   "PointerBindsToType" : "false",
+					\   "SpacesBeforeTrailingComments" : 2,
+					\   "Cpp11BracedListStyle" : "true",
+					\   "Standard" : "Auto",
+					\   "IndentWidth" : 4,
+					\   "TabWidth" : 4,
+					\   "UseTab" : "Always",
+					\   "BreakBeforeBraces" : "Allman",
+					\   "IndentFunctionDeclarationAfterType" : "true",
+					\   "SpacesInParentheses" : "false",
+					\   "SpacesInAngles" : "false",
+					\   "SpaceInEmptyParentheses" : "false",
+					\   "SpacesInCStyleCastParentheses" : "false",
+					\   "SpaceAfterControlStatementKeyword": "true",
+					\   "SpaceBeforeAssignmentOperators" : "true",
+					\   "ContinuationIndentWidth" : 4,
 					\}
 	endif
 	"}}}
