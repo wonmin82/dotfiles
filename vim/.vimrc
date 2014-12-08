@@ -1783,86 +1783,194 @@ let g:UltiSnipsListSnippets = "<c-s>"
 "}}}
 
 " Plugin: vim-clang-format {{{
-" NOTE: clang-format 3.4 or later is required)
-let s:clang_format_finding_versions = [
-			\   '3.6', '3.5', '3.4'
+" NOTE: clang-format 3.4 or later is required
+" NOTE: cuurently, style options are ready for 3.4 and 3.5 only
+let s:clang_format_detecting_candidates = [
+			\   'clang-format', 'clang-format-3.5', 'clang-format-3.4'
 			\]
-if executable('clang-format')
-	let g:clang_format#command = exepath('clang-format')
-else
-	for i in s:clang_format_finding_versions
-		let s:clang_format_executable = 'clang-format-' . i
-		if executable(s:clang_format_executable)
-			let g:clang_format#command = exepath(s:clang_format_executable)
+
+function! s:clang_format_detect()
+	for candidate in s:clang_format_detecting_candidates
+		if executable(candidate)
+			return exepath(candidate)
 		endif
 	endfor
+	throw 'clang-format could not be detected.'
+endfunction
+
+function! s:has_vimproc()
+    if !exists('s:exists_vimproc')
+        try
+            silent call vimproc#version()
+            let s:exists_vimproc = 1
+        catch
+            let s:exists_vimproc = 0
+        endtry
+    endif
+    return s:exists_vimproc
+endfunction
+
+function! s:system(str, ...)
+    let command = a:str
+    let input = a:0 >= 1 ? a:1 : ''
+
+    if a:0 == 0
+        let output = s:has_vimproc() ?
+                    \ vimproc#system(command) : system(command)
+    elseif a:0 == 1
+        let output = s:has_vimproc() ?
+                    \ vimproc#system(command, input) : system(command, input)
+    else
+        " ignores 3rd argument unless you have vimproc.
+        let output = s:has_vimproc() ?
+                    \ vimproc#system(command, input, a:2) : system(command, input)
+    endif
+
+    return output
+endfunction
+
+function! s:clang_format_get_version()
+    if &shell =~# 'csh$' && executable('/bin/bash')
+        let shell_save = &shell
+        set shell=/bin/bash
+    endif
+    try
+        return matchlist(s:system(g:clang_format#command.' --version 2>&1'), '\(\d\+\)\.\(\d\+\)')[1:2]
+    finally
+        if exists('l:shell_save')
+            let &shell = shell_save
+        endif
+    endtry
+endfunction
+
+let s:clang_format_is_available = 0
+try
+	let g:clang_format#command = s:clang_format_detect()
+	let s:clang_format_is_available = 1
+catch
+	let s:clang_format_is_available = 0
+endtry
+
+if s:clang_format_is_available
+	let v = s:clang_format_get_version()
+	" clang-format style options {{{
+	if v[0] == 3 && v[1] == 4           " style options for clang-format 3.4
+		let g:clang_format#style_options = {
+					\   "BasedOnStyle" : "google",
+					\   "AccessModifierOffset" : -4,
+					\   "ConstructorInitializerIndentWidth" : 4,
+					\   "AlignEscapedNewlinesLeft" : "true",
+					\   "AlignTrailingComments" : "true",
+					\   "AllowAllParametersOfDeclarationOnNextLine" : "true",
+					\   "AllowShortIfStatementsOnASingleLine" : "false",
+					\   "AllowShortLoopsOnASingleLine" : "false",
+					\   "AlwaysBreakTemplateDeclarations" : "true",
+					\   "AlwaysBreakBeforeMultilineStrings" : "true",
+					\   "BreakBeforeBinaryOperators" : "false",
+					\   "BreakBeforeTernaryOperators" : "true",
+					\   "BreakConstructorInitializersBeforeComma" : "false",
+					\   "BinPackParameters" : "true",
+					\   "ColumnLimit" : 80,
+					\   "ConstructorInitializerAllOnOneLineOrOnePerLine" : "true",
+					\   "DerivePointerBinding" : "false",
+					\   "ExperimentalAutoDetectBinPacking" : "false",
+					\   "IndentCaseLabels" : "false",
+					\   "MaxEmptyLinesToKeep" : 1,
+					\   "NamespaceIndentation" : "None",
+					\   "ObjCSpaceBeforeProtocolList" : "false",
+					\   "PenaltyBreakBeforeFirstCallParameter" : 1,
+					\   "PenaltyBreakComment" : 300,
+					\   "PenaltyBreakString" : 1000,
+					\   "PenaltyBreakFirstLessLess" : 120,
+					\   "PenaltyExcessCharacter" : 1000000,
+					\   "PenaltyReturnTypeOnItsOwnLine" : 200,
+					\   "PointerBindsToType" : "false",
+					\   "SpacesBeforeTrailingComments" : 2,
+					\   "Cpp11BracedListStyle" : "true",
+					\   "Standard" : "Auto",
+					\   "IndentWidth" : 4,
+					\   "TabWidth" : 4,
+					\   "UseTab" : "ForIndentation",
+					\   "BreakBeforeBraces" : "Allman",
+					\   "IndentFunctionDeclarationAfterType" : "true",
+					\   "SpacesInParentheses" : "false",
+					\   "SpacesInAngles" : "false",
+					\   "SpaceInEmptyParentheses" : "false",
+					\   "SpacesInCStyleCastParentheses" : "false",
+					\   "SpaceAfterControlStatementKeyword": "true",
+					\   "SpaceBeforeAssignmentOperators" : "true",
+					\   "ContinuationIndentWidth" : 4,
+					\}
+	elseif v[0] == 3 && v[1] == 5       " style options for clang-format 3.5
+		let g:clang_format#style_options = {
+					\   "Language" : "Cpp",
+					\   "BasedOnStyle" : "google",
+					\   "AccessModifierOffset" : -4,
+					\   "ConstructorInitializerIndentWidth" : 4,
+					\   "AlignEscapedNewlinesLeft" : "true",
+					\   "AlignTrailingComments" : "true",
+					\   "AllowAllParametersOfDeclarationOnNextLine" : "true",
+					\   "AllowShortBlocksOnASingleLine" : "false",
+					\   "AllowShortIfStatementsOnASingleLine" : "false",
+					\   "AllowShortLoopsOnASingleLine" : "false",
+					\   "AllowShortFunctionsOnASingleLine" : "None",
+					\   "AlwaysBreakTemplateDeclarations" : "true",
+					\   "AlwaysBreakBeforeMultilineStrings" : "true",
+					\   "BreakBeforeBinaryOperators" : "false",
+					\   "BreakBeforeTernaryOperators" : "true",
+					\   "BreakConstructorInitializersBeforeComma" : "false",
+					\   "BinPackParameters" : "true",
+					\   "ColumnLimit" : 80,
+					\   "ConstructorInitializerAllOnOneLineOrOnePerLine" : "true",
+					\   "DerivePointerAlignment" : "false",
+					\   "ExperimentalAutoDetectBinPacking" : "false",
+					\   "IndentCaseLabels" : "false",
+					\   "IndentWrappedFunctionNames" : "false",
+					\   "IndentFunctionDeclarationAfterType" : "false",
+					\   "MaxEmptyLinesToKeep" : 1,
+					\   "KeepEmptyLinesAtTheStartOfBlocks" : "false",
+					\   "NamespaceIndentation" : "None",
+					\   "ObjCSpaceAfterProperty" : "false",
+					\   "ObjCSpaceBeforeProtocolList" : "false",
+					\   "PenaltyBreakBeforeFirstCallParameter" : 1,
+					\   "PenaltyBreakComment" : 300,
+					\   "PenaltyBreakString" : 1000,
+					\   "PenaltyBreakFirstLessLess" : 120,
+					\   "PenaltyExcessCharacter" : 1000000,
+					\   "PenaltyReturnTypeOnItsOwnLine" : 200,
+					\   "PointerAlignment" : "Right",
+					\   "SpacesBeforeTrailingComments" : 2,
+					\   "Cpp11BracedListStyle" : "true",
+					\   "Standard" : "Auto",
+					\   "IndentWidth" : 4,
+					\   "TabWidth" : 4,
+					\   "UseTab" : "ForIndentation",
+					\   "BreakBeforeBraces" : "Allman",
+					\   "SpacesInParentheses" : "false",
+					\   "SpacesInAngles" : "false",
+					\   "SpaceInEmptyParentheses" : "false",
+					\   "SpacesInCStyleCastParentheses" : "false",
+					\   "SpacesInContainerLiterals" : "true",
+					\   "SpaceBeforeAssignmentOperators" : "true",
+					\   "ContinuationIndentWidth" : 4,
+					\   "CommentPragmas" : "\"^ IWYU pragma:\"",
+					\   "ForEachMacros" : "[ foreach, Q_FOREACH, BOOST_FOREACH ]",
+					\   "SpaceBeforeParens" : "ControlStatements",
+					\   "DisableFormat" : "false"
+					\}
+	endif
+	"}}}
+
+	" map to <Leader>cf in C++ code
+	autocmd FileType c,cpp,objc
+				\   nnoremap <buffer> <leader>cf :<c-u>ClangFormat<cr>
+	autocmd FileType c,cpp,objc
+				\   vnoremap <buffer> <leader>cf :ClangFormat<cr>
+	autocmd FileType c,cpp,objc
+				\   map <buffer> <leader>x <plug>(operator-clang-format)
+	" Toggle auto formatting:
+	nmap <leader>C :ClangFormatAutoToggle<cr>
 endif
-
-let g:clang_format#style_options = {
-			\   "BasedOnStyle" : "google",
-			\   "AccessModifierOffset" : -4,
-			\   "ConstructorInitializerIndentWidth" : 4,
-			\   "AlignEscapedNewlinesLeft" : "true",
-			\   "AlignTrailingComments" : "true",
-			\   "AllowAllParametersOfDeclarationOnNextLine" : "true",
-			\   "AllowShortBlocksOnASingleLine" : "false",
-			\   "AllowShortIfStatementsOnASingleLine" : "false",
-			\   "AllowShortLoopsOnASingleLine" : "false",
-			\   "AllowShortFunctionsOnASingleLine" : "None",
-			\   "AlwaysBreakTemplateDeclarations" : "true",
-			\   "AlwaysBreakBeforeMultilineStrings" : "true",
-			\   "BreakBeforeBinaryOperators" : "false",
-			\   "BreakBeforeTernaryOperators" : "true",
-			\   "BreakConstructorInitializersBeforeComma" : "false",
-			\   "BinPackParameters" : "true",
-			\   "ColumnLimit" : 80,
-			\   "ConstructorInitializerAllOnOneLineOrOnePerLine" : "true",
-			\   "DerivePointerAlignment" : "false",
-			\   "ExperimentalAutoDetectBinPacking" : "false",
-			\   "IndentCaseLabels" : "false",
-			\   "IndentWrappedFunctionNames" : "false",
-			\   "IndentFunctionDeclarationAfterType" : "false",
-			\   "MaxEmptyLinesToKeep" : 1,
-			\   "KeepEmptyLinesAtTheStartOfBlocks" : "false",
-			\   "NamespaceIndentation" : "None",
-			\   "ObjCSpaceAfterProperty" : "false",
-			\   "ObjCSpaceBeforeProtocolList" : "false",
-			\   "PenaltyBreakBeforeFirstCallParameter" : 1,
-			\   "PenaltyBreakComment" : 300,
-			\   "PenaltyBreakString" : 1000,
-			\   "PenaltyBreakFirstLessLess" : 120,
-			\   "PenaltyExcessCharacter" : 1000000,
-			\   "PenaltyReturnTypeOnItsOwnLine" : 200,
-			\   "PointerAlignment" : "Right",
-			\   "SpacesBeforeTrailingComments" : 2,
-			\   "Cpp11BracedListStyle" : "true",
-			\   "Standard" : "Auto",
-			\   "IndentWidth" : 4,
-			\   "TabWidth" : 4,
-			\   "UseTab" : "ForIndentation",
-			\   "BreakBeforeBraces" : "Allman",
-			\   "SpacesInParentheses" : "false",
-			\   "SpacesInAngles" : "false",
-			\   "SpaceInEmptyParentheses" : "false",
-			\   "SpacesInCStyleCastParentheses" : "false",
-			\   "SpacesInContainerLiterals" : "true",
-			\   "SpaceBeforeAssignmentOperators" : "true",
-			\   "ContinuationIndentWidth" : 4,
-			\   "CommentPragmas" : "\"^ IWYU pragma:\"",
-			\   "ForEachMacros" : "[ foreach, Q_FOREACH, BOOST_FOREACH ]",
-			\   "SpaceBeforeParens" : "ControlStatements",
-			\   "DisableFormat" : "false"
-			\}
-
-" map to <Leader>cf in C++ code
-autocmd FileType c,cpp,objc
-			\   nnoremap <buffer> <leader>cf :<c-u>ClangFormat<cr>
-autocmd FileType c,cpp,objc
-			\   vnoremap <buffer> <leader>cf :ClangFormat<cr>
-autocmd FileType c,cpp,objc
-			\   map <buffer> <leader>x <plug>(operator-clang-format)
-" Toggle auto formatting:
-nmap <leader>C :ClangFormatAutoToggle<cr>
 "}}}
 
 " bracket autocompletion {{{
