@@ -25,7 +25,7 @@ antigen bundle screen
 antigen bundle zsh-users/zsh-syntax-highlighting
 
 # Load the theme.
-antigen theme gnzh
+antigen theme bira
 
 # Tell antigen that you're done.
 antigen-apply
@@ -139,6 +139,9 @@ LD_RUN_PATH=$(echo $LD_RUN_PATH | sed -e 's/^:*//g' -e 's/:*$//g')
 unset LD_PATH_SCRATCH
 export LD_LIBRARY_PATH
 export LD_RUN_PATH
+
+# grep color setting
+export GREP_COLOR='1:31'
 
 # vim settings
 export EDITOR=vim
