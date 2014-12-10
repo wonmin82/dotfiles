@@ -17,6 +17,9 @@ antigen bundle heroku
 antigen bundle pip
 antigen bundle lein
 antigen bundle command-not-found
+# to prevent messed up window title in tmux.
+# TODO: I don't like it, find better way.
+antigen bundle screen
 
 # Syntax highlighting bundle.
 antigen bundle zsh-users/zsh-syntax-highlighting
