@@ -1,8 +1,8 @@
 #!/bin/bash
-cp -f -v ./ubuntu/.bash_aliases ~
-cp -f -v ./ubuntu/.inputrc ~
-cp -f -v ./ubuntu/.tmux.conf ~
-cp -f -v ./ubuntu/.gitconfig ~
+cp -f -v ./ubuntu/bash_aliases ~/.bash_aliases
+cp -f -v ./ubuntu/inputrc ~/.inputrc
+cp -f -v ./ubuntu/tmux.conf ~/.tmux.conf
+cp -f -v ./ubuntu/gitconfig ~/.gitconfig
 mkdir -p -v ~/.config/fontconfig
 cp -f -v ./ubuntu/fonts.conf ~/.config/fontconfig/
 sudo mkdir -p -v /root/.config/fontconfig

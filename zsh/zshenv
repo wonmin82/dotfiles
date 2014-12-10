@@ -1,0 +1,11 @@
+#!/bin/zsh
+ZDOTDIR=~/.zsh
+
+ZSHDATADIR=$HOME/.zsh_data
+HISTFILE=$ZSHDATADIR/.zsh_history
+
+ANTIGENDIR=$ZSHDATADIR/antigen
+ADOTDIR=$ZSHDATADIR/antigen-repo
+
+skip_global_compinit=1
+# COMPDUMPFILE=$ZSHDATADIR/.zcompdump
