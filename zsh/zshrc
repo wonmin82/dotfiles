@@ -96,6 +96,10 @@ if [[ $(uname -m | grep 'x86_64' | wc -l) != 0 ]]; then
 	fi
 fi
 
+if [[ ! -d $HOME/.local/lib/pkgconfig ]]; then
+	mkdir -p $HOME/.local/lib/pkgconfig
+fi
+
 # Set some paths
 if [[ ! ":$PATH:" == *":$HOME/.local/bin:"* ]]; then
 	PATH=$HOME/.local/bin:$PATH
@@ -139,6 +143,12 @@ LD_RUN_PATH=$(echo $LD_RUN_PATH | sed -e 's/^:*//g' -e 's/:*$//g')
 unset LD_PATH_SCRATCH
 export LD_LIBRARY_PATH
 export LD_RUN_PATH
+
+if [[ ! ":$PKG_CONFIG_PATH:" == *":$HOME/.local/lib/pkgconfig:"* ]]; then
+	PKG_CONFIG_PATH=$HOME/.local/lib/pkgconfig:$PKG_CONFIG_PATH
+	PKG_CONFIG_PATH=$(echo $PKG_CONFIG_PATH | sed -e 's/^:*//g' -e 's/:*$//g')
+	export PKG_CONFIG_PATH
+fi
 
 # grep color setting
 export GREP_COLOR='1:31'
@@ -238,12 +248,20 @@ alias wget='wget --retry-connrefused'
 # mc options
 #type -p -a mc > /dev/null && alias mc='. /usr/share/mc/bin/mc-wrapper.sh -a'
 if type -p -a mc > /dev/null; then
+	unset MCWRAPPERSH
+	if [[ -x $HOME/.local/libexec/mc/mc-wrapper.sh ]]; then
+		local MCWRAPPERSH="$HOME/.local/libexec/mc/mc-wrapper.sh"
+	else
+		if [[ -x /usr/share/mc/bin/mc-wrapper.sh ]]; then
+			local MCWRAPPERSH="/usr/share/mc/bin/mc-wrapper.sh"
+		fi
+	fi
 	case "$TERM" in
 		screen-256color)
-			alias mc='TERM=screen . /usr/share/mc/bin/mc-wrapper.sh -a -x'
+			alias mc="TERM=screen . $MCWRAPPERSH -a -x"
 			;;
 		*)
-			alias mc='. /usr/share/mc/bin/mc-wrapper.sh -a'
+			alias mc=". $MCWRAPPERSH -a"
 			;;
 	esac
 fi
