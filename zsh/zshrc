@@ -313,17 +313,17 @@ function retry () {
 	local nTrys=0
 	local maxTrys=20
 	local delayBtwnTrys=3
-	local laststatus=256
-	until [[ $laststatus == 0 ]]; do
+	local lastStatus=256
+	until [[ $lastStatus == 0 ]]; do
 		$*
-		laststatus=$?
+		lastStatus=$?
 		nTrys=$(($nTrys + 1))
 		if [[ $nTrys -gt $maxTrys ]]; then
-			echo "Number of re-trys exceeded. Exit code: $laststatus"
-			exit $laststatus
+			echo "Number of re-trys exceeded. Exit code: $lastStatus"
+			exit $lastStatus
 		fi
-		if [[ $laststatus != 0 ]]; then
-			echo "Failed (exit code $status)... retry count $nTrys/$maxTrys"
+		if [[ $lastStatus != 0 ]]; then
+			echo "Failed (exit code $lastStatus)... retry count $nTrys/$maxTrys"
 			sleep $delayBtwnTrys
 		fi
 	done
