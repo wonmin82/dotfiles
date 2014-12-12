@@ -139,7 +139,7 @@ setopt pushdtohome pushdminus pushdsilent
 # list choices if completion is ambiguous
 setopt autolist
 # if a word matches exactly, accept it even if ambiguous
-setopt recexact
+# setopt recexact
 # completions don't have to be equally spaced
 setopt listpacked
 # show file types in completion ( / for dirs, = for pipes, @ for symlinks, etc..)
