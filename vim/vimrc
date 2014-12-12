@@ -942,8 +942,9 @@ nmap <leader>mm :call ToggleMouse()<cr>
 " Use substitute() instead of printf() to handle '%%s' modeline in LaTeX
 " files.
 function! AppendModeline()
-	let l:modeline = printf(" vim: set ts=%d sw=%d tw=%d %set :",
-				\   &tabstop, &shiftwidth, &textwidth, &expandtab ? '' : 'no')
+	let l:modeline = printf(" vim: set ft=%s ts=%d sts=%d sw=%d tw=%d %set fdm=%s :",
+				\   &filetype, &tabstop, &softtabstop, &shiftwidth, &textwidth,
+				\   &expandtab ? '' : 'no', &fdm)
 	let l:modeline = substitute(&commentstring, "%s", l:modeline, "")
 	call append(line("$"), l:modeline)
 endfunction
