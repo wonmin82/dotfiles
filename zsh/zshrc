@@ -202,7 +202,7 @@ fi
 function retry () {
 	local nTrys=0
 	local maxTrys=20
-	local delayBtwnTrys=333
+	local delayBtwnTrys=3
 	local laststatus=256
 	until [[ $laststatus == 0 ]]; do
 		$*
