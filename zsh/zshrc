@@ -1,8 +1,10 @@
+# Ensure $ZSHDATADIR exists {{{
 if [[ ! -d $ZSHDATADIR ]]; then
 	mkdir -p $ZSHDATADIR
 fi
+#}}}
 
-# LS_COLORS {{{
+# LS_COLORS configuration {{{
 if [[ ! -f $ZSHDATADIR/LS_COLORS/LS_COLORS ]]; then
 	mkdir -p $ZSHDATADIR/LS_COLORS
 	git clone https://github.com/trapd00r/LS_COLORS.git $ZSHDATADIR/LS_COLORS
@@ -16,11 +18,6 @@ if (( $+terminfo[colors] )) && (( $terminfo[colors] == 256 )); then
 	eval $( dircolors -b $ZSHDATADIR/LS_COLORS/LS_COLORS )
 fi
 #}}}
-
-if [[ ! -f $ANTIGENDIR/antigen.zsh ]]; then
-	mkdir -p $ANTIGENDIR
-	git clone https://github.com/zsh-users/antigen.git $ANTIGENDIR
-fi
 
 # Highlight style {{{
 # variables for zsh-syntax-highlighting
@@ -63,6 +60,12 @@ if (( $+terminfo[colors] )) && (( $terminfo[colors] == 256 )); then
 fi
 #}}}
 
+# Antigen bundle configurations {{{
+if [[ ! -f $ANTIGENDIR/antigen.zsh ]]; then
+	mkdir -p $ANTIGENDIR
+	git clone https://github.com/zsh-users/antigen.git $ANTIGENDIR
+fi
+
 source $ANTIGENDIR/antigen.zsh
 
 antigen use oh-my-zsh
@@ -73,9 +76,6 @@ antigen bundle heroku
 antigen bundle pip
 antigen bundle lein
 antigen bundle command-not-found
-# to prevent messed up window title in tmux.
-# TODO: I don't like it, find better way.
-antigen bundle screen
 
 # Syntax highlighting bundle.
 antigen bundle zsh-users/zsh-syntax-highlighting
@@ -85,8 +85,9 @@ antigen theme bira
 
 # Tell antigen that you're done.
 antigen-apply
+#}}}
 
-# keyboard configurations {{{
+# Keyboard configurations {{{
 # to use Ctrl-s
 setopt noflowcontrol
 
@@ -125,7 +126,7 @@ if (( ${+terminfo[smkx]} )) && (( ${+terminfo[rmkx]} )); then
 fi
 #}}}
 
-# options {{{
+# Options {{{
 ## directory changing
 # implicit cd if directory is used as command
 setopt autocd
@@ -176,6 +177,7 @@ unsetopt autoparamslash
 unsetopt beep
 #}}}
 
+# Path configurationsa {{{
 # Ensure some directories exist.
 if [[ ! -d $HOME/.local/bin ]]; then
 	mkdir -p $HOME/.local/bin
@@ -279,9 +281,9 @@ else
 	# we are not in gnome-terminal.
 	:
 fi
+#}}}
 
-# Functions
-# #########
+# Functions {{{
 function rmoldkernel () {
 	local cur_kernel=$(uname -r|sed 's/-*[a-z]//g'|sed 's/-386//g')
 	local kernel_pkg="linux-(image|image-extra|headers|ubuntu-modules|restricted-modules)"
@@ -325,9 +327,9 @@ function retry () {
 		fi
 	done
 }
+#}}}
 
-# Aliases
-# #######
+# Aliases {{{
 # Some example alias instructions
 # If these are enabled they will be used instead of any instructions
 # they may mask. For example, alias rm='rm -i' will mask the rm
@@ -372,5 +374,99 @@ if type -p -a mc > /dev/null; then
 			;;
 	esac
 fi
+#}}}
+
+# Window title setting {{{
+# try to give the window a meaningful title, at least some of the time
+
+# use terminfo data to set title. this works with urxvt and probably others
+title-set-terminfo () {
+	print -nR "$terminfo[tsl]$1 ${*[2,$]}$terminfo[fsl]"
+}
+# xterm doesn't work with terminfo -> special treatment
+title-set-xterm () {
+	print -nR $'\033]0;'$1 ${*[2,$]}$'\007'
+}
+
+# set tab title in screen
+title-set-screen () {
+	# tab title only uses $1
+	print -nR $'\033k'$1$'\033\\'
+}
+
+# run some application, maybe? set title to "command (pwd)"
+title-preexec () {
+
+	# don't bother if nopony's listening anyways
+	(( $#title_functions > 0 )) || return
+
+	local -a buf
+	buf=( ${(z)1} )
+
+	# straight from zsh-syntax-highlighting :)
+	precommands=( 'builtin' 'command' 'exec' 'nocorrect' 'noglob' 'sudo' 'time' )
+
+	# first is a precommand? shift dis shit.
+	local prefix
+	while (( $+precommands[(r)$buf[1]] )); do
+		if [[ $buf[1] == sudo ]]; then
+
+			# show sudo as a prefix
+			prefix="sudo "
+
+			# shift away all sudo-args, so the next one should be the command
+			shift buf
+			while [[ $buf[1] == -* ]]; do
+				shift buf
+			done
+
+		else
+			shift buf
+		fi
+	done
+
+	# only care for a couple of command-type types. "for" is hardly a useful title
+	local typ=${"$(LC_ALL=C builtin whence -w $buf[1] 2>/dev/null)"#*: }
+	[[ $typ == "function" || $typ == "command" || $typ == "alias" ]] || return
+
+	local f
+	for f in $title_functions; do
+		$f "$prefix${buf[1]:t}" "(${(D)PWD})"
+	done
+
+}
+
+# back to the prompt, title is "zsh (pwd)"
+title-precmd () {
+
+	local f
+	for f in $title_functions; do
+		$f zsh "(${(D)PWD})"
+	done
+
+}
+
+# array of functions to call for title setting
+typeset -aH title_functions
+
+# if we can get tsl from terminfo, that'd be perfect. works with urxvt.
+zmodload zsh/terminfo
+if (( $+terminfo[tsl] && $+terminfo[fsl] )); then
+	title_functions+=( title-set-terminfo )
+	# otherwise, fallback for specific terminals (maybe expand this list?)
+elif [[ $TERM == xterm* ]]; then
+	title_functions+=( title-set-xterm )
+fi
+
+# set screen title independently
+if [[ $TERM == screen* ]]; then
+	title_functions+=( title-set-screen )
+fi
+
+# we do this regardless, to always provide title_functions functionality
+autoload -U add-zsh-hook
+add-zsh-hook preexec title-preexec
+add-zsh-hook precmd title-precmd
+#}}}
 
 #  vim: set ft=zsh ts=4 sts=4 sw=4 tw=0 noet fdm=marker :
