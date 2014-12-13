@@ -79,7 +79,9 @@ if [[ ! ":$PKG_CONFIG_PATH:" == *":$HOME/.local/lib/pkgconfig:"* ]]; then
 	PKG_CONFIG_PATH=$(echo $PKG_CONFIG_PATH | sed -e 's/^:*//g' -e 's/:*$//g')
 	export PKG_CONFIG_PATH
 fi
+#}}}
 
+# Variables {{{
 # grep color setting
 export GREP_COLOR='1;31'
 
