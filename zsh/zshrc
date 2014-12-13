@@ -110,24 +110,52 @@ if [[ ! -d $ZSHDATADIR ]]; then
 fi
 #}}}
 
-# LS_COLORS configuration {{{
-if [[ ! -f $ZSHDATADIR/LS_COLORS/LS_COLORS ]]; then
-	mkdir -p $ZSHDATADIR/LS_COLORS
-	git clone https://github.com/trapd00r/LS_COLORS.git $ZSHDATADIR/LS_COLORS
+# Antigen bundle configurations {{{
+if [[ ! -f $ANTIGENDIR/antigen.zsh ]]; then
+	mkdir -p $ANTIGENDIR
+	git clone https://github.com/zsh-users/antigen.git $ANTIGENDIR
 fi
 
-zmodload zsh/terminfo || return 1
+source $ANTIGENDIR/antigen.zsh
 
+antigen use oh-my-zsh
+
+# Bundles from the default repo (robbyrussell's oh-my-zsh).
+antigen bundle git
+antigen bundle heroku
+antigen bundle pip
+antigen bundle lein
+antigen bundle command-not-found
+antigen bundle screen
+
+# Syntax highlighting bundle.
+antigen bundle zsh-users/zsh-syntax-highlighting
+
+# more LS_COLORS
+# only available for 256 color terminals
+zmodload zsh/terminfo || return 1
+if (( $+terminfo[colors] )) && (( $terminfo[colors] == 256 )); then
+	antigen bundle trapd00r/LS_COLORS
+fi
+
+# Load the theme.
+antigen theme bira
+
+# Tell antigen that you're done.
+antigen-apply
+#}}}
+
+# LS_COLORS configuration {{{
 # only available for 256 color terminals
 if (( $+terminfo[colors] )) && (( $terminfo[colors] == 256 )); then
 	# load trapd00r's LS_COLORS things
-	eval $( dircolors -b $ZSHDATADIR/LS_COLORS/LS_COLORS )
+	eval $( dircolors -b $ADOTDIR/repos/https-COLON--SLASH--SLASH-github.com-SLASH-trapd00r-SLASH-LS_COLORS.git/LS_COLORS )
 fi
 #}}}
 
 # Highlight style {{{
 # variables for zsh-syntax-highlighting
-# ZSH_HIGHLIGHT_HIGHLIGHTERS_DIR=$ADOTDIR/repos/https-COLON--SLASH--SLASH-github.com-SLASH-zsh-users-SLASH-zsh-syntax-highlighting.git/highlighters
+ZSH_HIGHLIGHT_HIGHLIGHTERS_DIR=$ADOTDIR/repos/https-COLON--SLASH--SLASH-github.com-SLASH-zsh-users-SLASH-zsh-syntax-highlighting.git/highlighters
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
 ZSH_HIGHLIGHT_MAXLENGTH=300
 
@@ -166,37 +194,10 @@ if (( $+terminfo[colors] )) && (( $terminfo[colors] == 256 )); then
 fi
 #}}}
 
-# Antigen bundle configurations {{{
-if [[ ! -f $ANTIGENDIR/antigen.zsh ]]; then
-	mkdir -p $ANTIGENDIR
-	git clone https://github.com/zsh-users/antigen.git $ANTIGENDIR
-fi
-
-source $ANTIGENDIR/antigen.zsh
-
-antigen use oh-my-zsh
-
-# Bundles from the default repo (robbyrussell's oh-my-zsh).
-antigen bundle git
-antigen bundle heroku
-antigen bundle pip
-antigen bundle lein
-antigen bundle command-not-found
-antigen bundle screen
-
-# Syntax highlighting bundle.
-antigen bundle zsh-users/zsh-syntax-highlighting
-
-# Load the theme.
-antigen theme bira
-
-# Tell antigen that you're done.
-antigen-apply
-#}}}
-
 # Keyboard configurations {{{
 # to use Ctrl-s
 setopt noflowcontrol
+stty -ixon
 
 autoload zkbd
 
