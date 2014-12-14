@@ -1,3 +1,61 @@
+# Determine system environment {{{
+function determine-sysenv()
+{
+	_SYSENV_OS=${$(uname):l}
+	_SYSENV_KERNEL=$(uname -r)
+	_SYSENV_MACH=$(uname -m)
+
+	if [[ "${_SYSENV_OS}" == "windowsnt" ]]; then
+		_SYSENV_OS=windows
+	elif [[ "${_SYSENV_OS}" == "darwin" ]]; then
+		_SYSENV_OS=macos
+	elif [[ "${_SYSENV_OS}" =~ "^cygwin" ]]; then
+		_SYSENV_OS=cygwin
+	else
+		_SYSENV_OS=$(uname)
+		if [[ "${_SYSENV_OS}" == "SunOS" ]]; then
+			_SYSENV_OS=Solaris
+			_SYSENV_ARCH=$(uname -p)
+			_SYSENV_OSSTR="${_SYSENV_OS} ${_SYSENV_REV}(${_SYSENV_ARCH} $(uname -v))"
+		elif [[ "${_SYSENV_OS}" == "AIX" ]]; then
+			_SYSENV_OSSTR="${_SYSENV_OS} $(oslevel) ($(oslevel -r))"
+		elif [[ "${_SYSENV_OS}" == "Linux" ]]; then
+			if [[ -f /etc/redhat-release ]]; then
+				_SYSENV_DISTROBASEDON='RedHat'
+				_SYSENV_DIST=$(cat /etc/redhat-release | sed s/\ release.*//)
+				_SYSENV_PSEUDONAME=$(cat /etc/redhat-release | sed s/.*\(// | sed s/\)//)
+				_SYSENV_REV=$(cat /etc/redhat-release | sed s/.*release\ // | sed s/\ .*//)
+			elif [[ -f /etc/SuSE-release ]]; then
+				_SYSENV_DISTROBASEDON='SuSe'
+				_SYSENV_PSEUDONAME=$(cat /etc/SuSE-release | tr "\n" ' '| sed s/VERSION.*//)
+				_SYSENV_REV=$(cat /etc/SuSE-release | tr "\n" ' ' | sed s/.*=\ //)
+			elif [[ -f /etc/mandrake-release ]]; then
+				_SYSENV_DISTROBASEDON='Mandrake'
+				_SYSENV_PSEUDONAME=$(cat /etc/mandrake-release | sed s/.*\(// | sed s/\)//)
+				_SYSENV_REV=$(cat /etc/mandrake-release | sed s/.*release\ // | sed s/\ .*//)
+			elif [[ -f /etc/debian_version ]]; then
+				_SYSENV_DISTROBASEDON='Debian'
+				if [[ -f /etc/lsb-release ]]; then
+					_SYSENV_DIST=$(cat /etc/lsb-release | grep '^DISTRIB_ID' | awk -F= '{ print $2 }')
+					_SYSENV_PSEUDONAME=$(cat /etc/lsb-release | grep '^DISTRIB_CODENAME' | awk -F= '{ print $2 }')
+					_SYSENV_REV=$(cat /etc/lsb-release | grep '^DISTRIB_RELEASE' | awk -F= '{ print $2 }')
+				fi
+			fi
+			if [[ -f /etc/UnitedLinux-release ]]; then
+				_SYSENV_DIST="${_SYSENV_DIST}[$(cat /etc/UnitedLinux-release | tr "\n" ' ' | sed s/VERSION.*//)]"
+			fi
+			_SYSENV_OS=${_SYSENV_OS:l}
+			_SYSENV_DIST=${_SYSENV_DIST:l}
+			_SYSENV_DISTROBASEDON=${_SYSENV_DISTROBASEDON:l}
+		fi
+	fi
+}
+
+determine-sysenv
+readonly _SYSENV_OS _SYSENV_OSSTR _SYSENV_DIST _SYSENV_DISTROBASEDON \
+	SYSENV_PSEUDONAME _SYSENV_REV _SYSENV_KERNEL _SYSENV_MACH
+#}}}
+
 # Path configurations {{{
 # Ensure some directories exist.
 if [[ ! -d $HOME/.local/bin ]]; then
@@ -122,12 +180,19 @@ antigen use oh-my-zsh
 
 # Bundles from the default repo (robbyrussell's oh-my-zsh).
 antigen bundle git
-antigen bundle command-not-found
 antigen bundle tmux
 antigen bundle screen
 
 # Syntax highlighting bundle.
 antigen bundle zsh-users/zsh-syntax-highlighting
+
+if [[ $_SYSENV_DIST == "ubuntu" ]]; then
+	antigen bundle command-not-found
+fi
+
+if [[ $_SYSENV_OS == "macos" ]]; then
+	antigen bundle brew
+fi
 
 # more LS_COLORS
 # only available for 256 color terminals
@@ -296,32 +361,39 @@ export MANPAGER='/bin/bash -c "vim -MRn -c \"set ft=man\" </dev/tty <(col -b)"'
 #}}}
 
 # Functions {{{
-function clean-old-kernels () {
-	local cur_kernel=$(uname -r|sed 's/-*[a-z]//g'|sed 's/-386//g')
-	local kernel_pkg="linux-(image|image-extra|headers|ubuntu-modules|restricted-modules)"
-	local meta_pkg="${kernel_pkg}-(generic|i386|virtual|server|common|rt|xen|ec2|amd64)"
-	local latest_kernel=$(dpkg -l linux-image-\* | grep -E linux-image-\[0-9\] | awk '/^ii/{ print $2}' | grep -E \[0-9\] | tail -1 | cut -f3,4 -d"-")
-	sudo aptitude purge -y $(dpkg -l | grep -E $kernel_pkg | grep -v -E "${cur_kernel}|${meta_pkg}|${latest_kernel}" | awk '{print $2}')
-	sudo rm -rfv $(find /lib/modules/* -maxdepth 0 | grep -v -E "${cur_kernel}|${latest_kernel}" | awk '{print $1}')
-	sudo update-grub2
-}
+if [[ $_SYSENV_DIST == "ubuntu" ]]; then
+	function clean-old-kernels()
+	{
+		local cur_kernel=$(uname -r|sed 's/-*[a-z]//g'|sed 's/-386//g')
+		local kernel_pkg="linux-(image|image-extra|headers|ubuntu-modules|restricted-modules)"
+		local meta_pkg="${kernel_pkg}-(generic|i386|virtual|server|common|rt|xen|ec2|amd64)"
+		local latest_kernel=$(dpkg -l linux-image-\* | grep -E linux-image-\[0-9\] | awk '/^ii/{ print $2}' | grep -E \[0-9\] | tail -1 | cut -f3,4 -d"-")
+		sudo aptitude purge -y $(dpkg -l | grep -E $kernel_pkg | grep -v -E "${cur_kernel}|${meta_pkg}|${latest_kernel}" | awk '{print $2}')
+		sudo rm -rfv $(find /lib/modules/* -maxdepth 0 | grep -v -E "${cur_kernel}|${latest_kernel}" | awk '{print $1}')
+		sudo update-grub2
+	}
 
-function clean-packages () {
-	sudo aptitude -y autoclean
-	sudo aptitude -y purge `dpkg --get-selections | grep deinstall | cut -f1`
-}
+	function clean-packages()
+	{
+		sudo aptitude -y autoclean
+		sudo aptitude -y purge `dpkg --get-selections | grep deinstall | cut -f1`
+	}
 
-function update-packages () {
-	retry sudo aptitude update && retry sudo aptitude -d -y upgrade && sudo aptitude -y upgrade
-}
+	function update-packages()
+	{
+		retry sudo aptitude update && retry sudo aptitude -d -y upgrade && sudo aptitude -y upgrade
+	}
+fi
 
 if [[ -f /usr/bin/vmware-config-tools.pl ]]; then
-	function reconfigure-vmware-tools () {
+	function reconfigure-vmware-tools()
+	{
 		sudo vmware-config-tools.pl --clobber-kernel-modules=vmblock,vmhgfs,vmmemctl,vmxnet,vmci,vsock,vmsync,pvscsi,vmxnet3,vmwsvga --default
 	}
 fi
 
-function retry () {
+function retry()
+{
 	local nTrys=0
 	local maxTrys=20
 	local delayBtwnTrys=3
@@ -373,10 +445,8 @@ if type -p -a mc > /dev/null; then
 	unset MCWRAPPERSH
 	if [[ -x $HOME/.local/libexec/mc/mc-wrapper.sh ]]; then
 		local MCWRAPPERSH="$HOME/.local/libexec/mc/mc-wrapper.sh"
-	else
-		if [[ -x /usr/share/mc/bin/mc-wrapper.sh ]]; then
-			local MCWRAPPERSH="/usr/share/mc/bin/mc-wrapper.sh"
-		fi
+	elif [[ -x /usr/share/mc/bin/mc-wrapper.sh ]]; then
+		local MCWRAPPERSH="/usr/share/mc/bin/mc-wrapper.sh"
 	fi
 	case "$TERM" in
 		screen-256color)
@@ -393,23 +463,27 @@ fi
 # try to give the window a meaningful title, at least some of the time
 
 # use terminfo data to set title. this works with urxvt and probably others
-title-set-terminfo () {
+title-set-terminfo()
+{
 	print -nR "$terminfo[tsl]$1 ${*[2,$]}$terminfo[fsl]"
 }
+
 # xterm doesn't work with terminfo -> special treatment
-title-set-xterm () {
+title-set-xterm()
+{
 	print -nR $'\033]0;'$1 ${*[2,$]}$'\007'
 }
 
 # set tab title in screen
-title-set-screen () {
+title-set-screen()
+{
 	# tab title only uses $1
 	print -nR $'\033k'$1$'\033\\'
 }
 
 # run some application, maybe? set title to "command (pwd)"
-title-preexec () {
-
+title-preexec()
+{
 	# don't bother if nopony's listening anyways
 	(( $#title_functions > 0 )) || return
 
@@ -446,17 +520,15 @@ title-preexec () {
 	for f in $title_functions; do
 		$f "$prefix${buf[1]:t}" "(${(D)PWD})"
 	done
-
 }
 
 # back to the prompt, title is "zsh (pwd)"
-title-precmd () {
-
+title-precmd()
+{
 	local f
 	for f in $title_functions; do
 		$f zsh "(${(D)PWD})"
 	done
-
 }
 
 # array of functions to call for title setting
