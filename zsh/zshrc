@@ -81,20 +81,7 @@ if [[ ! ":$PKG_CONFIG_PATH:" == *":$HOME/.local/lib/pkgconfig:"* ]]; then
 fi
 #}}}
 
-# Variables {{{
-# grep color setting
-export GREP_COLOR='1;31'
-
-# vim settings
-export EDITOR=vim
-# Use vim to browse man pages. One can use Ctrl-] and Ctrl-t
-# to browse and return from referenced man pages. ZZ or q to quit.
-# Note initially within vim, one can goto the man page for the
-# word under the cursor by using [section_number]K.
-# Note we use bash explicitly here to support process substitution
-# which in turn suppresses the "Vim: Reading from stdin..." warning.
-export MANPAGER='/bin/bash -c "vim -MRn -c \"set ft=man\" </dev/tty <(col -b)"'
-
+# TERM variable {{{
 # force TERM environment to xterm-256color when we are in gnome-terminal
 if [[ $(ps -p $PPID o comm | grep gnome-terminal | wc -l) == 1 ]]; then
 	# we are in gnome-terminal.
@@ -105,13 +92,16 @@ else
 	:
 fi
 
-# tmux bundle variables {{{
+# if you want to force TERM to xterm-256color
+#export TERM=xterm-256color
+#}}}
+
+# Variables for tmux bundle {{{
 ZSH_TMUX_AUTOSTART=false
 ZSH_TMUX_AUTOSTART_ONCE=false
 ZSH_TMUX_AUTOCONNECT=false
 ZSH_TMUX_AUTOQUIT=false
 ZSH_TMUX_FIXTERM=true
-#}}}
 #}}}
 
 # Ensure $ZSHDATADIR exists {{{
@@ -287,7 +277,23 @@ setopt hist_verify
 setopt share_history
 setopt bang_hist
 setopt extended_history
-#}}]
+#}}}
+
+# Variables {{{
+# grep color setting
+export GREP_COLOR='1;31'
+
+# vim settings
+export EDITOR=vim
+
+# Use vim to browse man pages. One can use Ctrl-] and Ctrl-t
+# to browse and return from referenced man pages. ZZ or q to quit.
+# Note initially within vim, one can goto the man page for the
+# word under the cursor by using [section_number]K.
+# Note we use bash explicitly here to support process substitution
+# which in turn suppresses the "Vim: Reading from stdin..." warning.
+export MANPAGER='/bin/bash -c "vim -MRn -c \"set ft=man\" </dev/tty <(col -b)"'
+#}}}
 
 # Functions {{{
 function clean-old-kernels () {
