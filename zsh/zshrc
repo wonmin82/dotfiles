@@ -104,6 +104,14 @@ else
 	# we are not in gnome-terminal.
 	:
 fi
+
+# tmux bundle variables {{{
+ZSH_TMUX_AUTOSTART=false
+ZSH_TMUX_AUTOSTART_ONCE=false
+ZSH_TMUX_AUTOCONNECT=false
+ZSH_TMUX_AUTOQUIT=false
+ZSH_TMUX_FIXTERM=true
+#}}}
 #}}}
 
 # Ensure $ZSHDATADIR exists {{{
@@ -124,10 +132,8 @@ antigen use oh-my-zsh
 
 # Bundles from the default repo (robbyrussell's oh-my-zsh).
 antigen bundle git
-antigen bundle heroku
-antigen bundle pip
-antigen bundle lein
 antigen bundle command-not-found
+antigen bundle tmux
 antigen bundle screen
 
 # Syntax highlighting bundle.
@@ -237,58 +243,54 @@ fi
 #}}}
 
 # Options {{{
-## directory changing
-# implicit cd if directory is used as command
-setopt autocd
-# make cd behave like pushd, and enable some convenience functions for pushd
-setopt autopushd pushdignoredups
-setopt pushdtohome pushdminus pushdsilent
+setopt auto_cd
+setopt auto_pushd pushd_ignore_dups
+setopt pushd_to_home pushd_minus pushd_silent
 
-## completion options
-# list choices if completion is ambiguous
-setopt autolist
-# if a word matches exactly, accept it even if ambiguous
-# setopt recexact
-# completions don't have to be equally spaced
-setopt listpacked
-# show file types in completion ( / for dirs, = for pipes, @ for symlinks, etc..)
-setopt listtypes
+setopt auto_list
+setopt list_packed
+setopt list_types
 
-## interactive type features, mostly zle stuff
-# use '' inside ' quotes to write a single ' character (only interactively!)
-setopt rcquotes
-# allow # for comments interactively (helpful for history annotation)
-setopt interactivecomments
-# require >! to overwrite a file
-setopt noclobber
+setopt rc_quotes
+setopt interactive_comments
+setopt no_clobber
+unsetopt rm_star_silent
 
-## globbing
-# enable ^, ~, # and glob flags in glob expressions (oh yes)
-setopt extendedglob
-# sort globs numerically (8 9 10 11, not 10 11 8 9)
-setopt numericglobsort
-# ~ substitution and tab completion after a = (for --x=filename args)
-setopt magicequalsubst
+setopt extended_glob
+setopt numeric_glob_sort
+setopt magic_equal_subst
 
-## job control
-# for single commands, resume matching jobs instead
-setopt autoresume
-# list jobs in long format
-setopt longlistjobs
-# notify us about job status changes immediately
+setopt auto_resume
+setopt bg_nice
+setopt long_list_jobs
 setopt notify
 
-## negatives
-# don't run background jobs in lower prio by default
-#unsetopt bgnice
-# directories don't need to end in a slash
-unsetopt autoparamslash
-# never beep on error!
+unsetopt auto_param_slash
 unsetopt beep
+unsetopt hist_beep
+unsetopt list_beep
 #}}}
 
+# History options {{{
+# history file location set in .zshenv
+HISTSIZE=10000
+SAVEHIST=10000
+
+setopt hist_ignore_all_dups
+unsetopt hist_ignore_space
+
+setopt append_history
+setopt inc_append_history
+
+setopt hist_reduce_blanks
+setopt hist_verify
+setopt share_history
+setopt bang_hist
+setopt extended_history
+#}}]
+
 # Functions {{{
-function rmoldkernel () {
+function clean-old-kernels () {
 	local cur_kernel=$(uname -r|sed 's/-*[a-z]//g'|sed 's/-386//g')
 	local kernel_pkg="linux-(image|image-extra|headers|ubuntu-modules|restricted-modules)"
 	local meta_pkg="${kernel_pkg}-(generic|i386|virtual|server|common|rt|xen|ec2|amd64)"
@@ -298,16 +300,17 @@ function rmoldkernel () {
 	sudo update-grub2
 }
 
-function purgeremovedpkgs () {
+function clean-packages () {
+	sudo aptitude -y autoclean
 	sudo aptitude -y purge `dpkg --get-selections | grep deinstall | cut -f1`
 }
 
-function updatepackages () {
+function update-packages () {
 	retry sudo aptitude update && retry sudo aptitude -d -y upgrade && sudo aptitude -y upgrade
 }
 
 if [[ -f /usr/bin/vmware-config-tools.pl ]]; then
-	function reconfigurevmwaretools () {
+	function reconfigure-vmware-tools () {
 		sudo vmware-config-tools.pl --clobber-kernel-modules=vmblock,vmhgfs,vmmemctl,vmxnet,vmci,vsock,vmsync,pvscsi,vmxnet3,vmwsvga --default
 	}
 fi

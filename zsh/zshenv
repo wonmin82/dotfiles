@@ -1,4 +1,5 @@
-#!/bin/zsh
+umask 022
+
 ZDOTDIR=~/.zsh
 
 ZSHDATADIR=$HOME/.zsh_data
