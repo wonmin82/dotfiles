@@ -180,6 +180,7 @@ antigen use oh-my-zsh
 
 # Bundles from the default repo (robbyrussell's oh-my-zsh).
 antigen bundle git
+antigen bundle gitignore
 antigen bundle tmux
 antigen bundle screen
 
@@ -188,10 +189,13 @@ antigen bundle zsh-users/zsh-syntax-highlighting
 
 if [[ $_SYSENV_DIST == "ubuntu" ]]; then
 	antigen bundle command-not-found
+	antigen bundle debian
 fi
 
 if [[ $_SYSENV_OS == "macos" ]]; then
+	antigen bundle osx
 	antigen bundle brew
+	antigen bundle brew-cask
 fi
 
 # more LS_COLORS
