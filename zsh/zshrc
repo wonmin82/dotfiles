@@ -448,14 +448,16 @@ if type -p -a mc > /dev/null; then
 	elif [[ -x /usr/share/mc/bin/mc-wrapper.sh ]]; then
 		local MCWRAPPERSH="/usr/share/mc/bin/mc-wrapper.sh"
 	fi
-	case "$TERM" in
-		screen-256color)
-			alias mc="TERM=screen . $MCWRAPPERSH -a -x"
-			;;
-		*)
-			alias mc=". $MCWRAPPERSH -a"
-			;;
-	esac
+	if [[ ! -z $MCWRAPPERSH ]]; then
+		case "$TERM" in
+			screen-256color)
+				alias mc="TERM=screen . $MCWRAPPERSH -a -x"
+				;;
+			*)
+				alias mc=". $MCWRAPPERSH -a"
+				;;
+		esac
+	fi
 fi
 #}}}
 
