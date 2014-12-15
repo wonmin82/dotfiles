@@ -95,9 +95,9 @@ if [[ ! ":$PATH:" == *":$HOME/.local/bin:"* ]]; then
 	export PATH
 fi
 
-if [[ ! ":$(manpath):" == *":$HOME/.local/share/man:"* ]]; then
+if [[ ! ":$(manpath 2> /dev/null):" == *":$HOME/.local/share/man:"* ]]; then
 	unset MANPATH
-	MANPATH=$HOME/.local/share/man:$(manpath)
+	MANPATH=$HOME/.local/share/man:$(manpath 2> /dev/null)
 	MANPATH=$(echo $MANPATH | sed -e 's/^:*//g' -e 's/:*$//g')
 	export MANPATH
 fi
@@ -208,7 +208,11 @@ if (( $+terminfo[colors] )) && (( $terminfo[colors] == 256 )); then
 fi
 
 # Load the theme.
-antigen theme bira
+if [[ ${_SYSENV_OS} == "cygwin" ]]; then
+	antigen theme mortalscumbag
+else
+	antigen theme bira
+fi
 
 # Tell antigen that you're done.
 antigen-apply
