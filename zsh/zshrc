@@ -1,3 +1,13 @@
+#*****************************************
+#*                                       *
+#*                .zshrc                 *
+#*                                       *
+#*            by Wonmin Jung             *
+#*          wonmin82@gmail.com           *
+#*      https://github.com/wonmin82      *
+#*                                       *
+#*****************************************
+
 # Determine system environment {{{
 function determine-sysenv()
 {
