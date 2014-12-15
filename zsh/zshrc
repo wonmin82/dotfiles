@@ -243,7 +243,7 @@ zmodload -i zsh/complist
 
 # completion stuff
 zstyle ':completion::complete:*' use-cache on
-zstyle ':completion::complete:*' cache-path $ZSHDATADIR
+zstyle ':completion::complete:*' cache-path "$ZSHDATADIR"
 
 zstyle ':completion:*' list-prompt '%SAt %p: Hit TAB for more, or the character to insert%s'
 zstyle ':completion:*' menu select=1 _complete _ignored _approximate
@@ -272,9 +272,17 @@ zstyle ':completion:*' group-name ''
 zstyle ':completion:*:options' auto-description '%d'
 
 # match uppercase from lowercase, and left-side substrings
-zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}' '+l:|=*'
+#zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}' '+l:|=*'
 
-# command completion: highlight matching part of command, and
+#case-insensitive -> partial-word (cs) -> substring completion:
+#zstyle ':completion:*' matcher-list 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+
+# matcher-list
+zstyle ':completion:*' matcher-list     \
+	'm:{A-Zöäüa-zÖÄÜ}={a-zÖÄÜA-Zöäü}'   \
+	'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+
+ # command completion: highlight matching part of command, and
 zstyle -e ':completion:*:-command-:*:commands' list-colors 'reply=( '\''=(#b)('\''$words[CURRENT]'\''|)*-- #(*)=0=38;5;45=38;5;136'\'' '\''=(#b)('\''$words[CURRENT]'\''|)*=0=38;5;45'\'' )'
 
 # This is needed to workaround a bug in _setup:12, causing almost 2 seconds delay for bigger LS_COLORS
