@@ -141,13 +141,15 @@ fi
 
 # TERM variable {{{
 # force TERM environment to xterm-256color when we are in gnome-terminal
-if [[ $(ps -p $PPID o comm | grep gnome-terminal | wc -l) == 1 ]]; then
-	# we are in gnome-terminal.
-	# gnome-terminal does not set TERM to xterm-256color
-	export TERM=xterm-256color
-else
-	# we are not in gnome-terminal.
-	:
+if [[ ${_SYSENV_DIST} == "ubuntu" ]]; then
+	if [[ $(ps -p $PPID o comm | grep gnome-terminal | wc -l) == 1 ]]; then
+		# we are in gnome-terminal.
+		# gnome-terminal does not set TERM to xterm-256color
+		export TERM=xterm-256color
+	else
+		# we are not in gnome-terminal.
+		:
+	fi
 fi
 
 # if you want to force TERM to xterm-256color
@@ -187,12 +189,12 @@ antigen bundle screen
 # Syntax highlighting bundle.
 antigen bundle zsh-users/zsh-syntax-highlighting
 
-if [[ $_SYSENV_DIST == "ubuntu" ]]; then
+if [[ ${_SYSENV_DIST} == "ubuntu" ]]; then
 	antigen bundle command-not-found
 	antigen bundle debian
 fi
 
-if [[ $_SYSENV_OS == "macos" ]]; then
+if [[ ${_SYSENV_OS} == "macos" ]]; then
 	antigen bundle osx
 	antigen bundle brew
 	antigen bundle brew-cask
@@ -216,7 +218,11 @@ antigen-apply
 # only available for 256 color terminals
 if (( $+terminfo[colors] )) && (( $terminfo[colors] == 256 )); then
 	# load trapd00r's LS_COLORS things
-	eval $( dircolors -b $ADOTDIR/repos/https-COLON--SLASH--SLASH-github.com-SLASH-trapd00r-SLASH-LS_COLORS.git/LS_COLORS )
+	if (( $+commands[dircolors] )); then
+		eval $( dircolors -b $ADOTDIR/repos/https-COLON--SLASH--SLASH-github.com-SLASH-trapd00r-SLASH-LS_COLORS.git/LS_COLORS )
+	elif (( $+commands[gdircolors] )); then
+		eval $( gdircolors -b $ADOTDIR/repos/https-COLON--SLASH--SLASH-github.com-SLASH-trapd00r-SLASH-LS_COLORS.git/LS_COLORS )
+	fi
 fi
 #}}}
 
@@ -365,7 +371,7 @@ export MANPAGER='/bin/bash -c "vim -MRn -c \"set ft=man\" </dev/tty <(col -b)"'
 #}}}
 
 # Functions {{{
-if [[ $_SYSENV_DIST == "ubuntu" ]]; then
+if [[ ${_SYSENV_DIST} == "ubuntu" ]]; then
 	function clean-old-kernels()
 	{
 		local cur_kernel=$(uname -r|sed 's/-*[a-z]//g'|sed 's/-386//g')
@@ -432,7 +438,15 @@ alias mv='mv -i'
 # Default to human readable figures
 alias df='df -h'
 alias du='du -h'
-alias ls='ls -hF --color=auto'
+if [[ ${_SYSENV_OS} == "linux" ]]; then
+	alias ls='ls -hF --color=auto'
+elif [[ ${_SYSENV_OS} == "macos" ]]; then
+	if (( $+commands[gls] )); then
+		alias ls='gls -hF --color=auto'
+	else
+		alias ls='ls -hF -G'
+	fi
+fi
 
 # astyle options
 alias astyle='astyle --style=break --indent=force-tab=4 --unpad-paren --pad-header --pad-oper --unpad-paren --align-pointer=name --align-reference=name'
@@ -451,6 +465,11 @@ if type -p -a mc > /dev/null; then
 		local MCWRAPPERSH="$HOME/.local/libexec/mc/mc-wrapper.sh"
 	elif [[ -x /usr/share/mc/bin/mc-wrapper.sh ]]; then
 		local MCWRAPPERSH="/usr/share/mc/bin/mc-wrapper.sh"
+	elif (( $+commands[brew] )); then
+		brew --prefix mc &> /dev/null
+		if [[ $? -eq 0 ]]; then
+			local MCWRAPPERSH="$(brew --prefix mc)/libexec/mc/mc-wrapper.sh"
+		fi
 	fi
 	if [[ ! -z $MCWRAPPERSH ]]; then
 		case "$TERM" in
@@ -503,7 +522,6 @@ title-preexec()
 	local prefix
 	while (( $+precommands[(r)$buf[1]] )); do
 		if [[ $buf[1] == sudo ]]; then
-
 			# show sudo as a prefix
 			prefix="sudo "
 
@@ -512,7 +530,6 @@ title-preexec()
 			while [[ $buf[1] == -* ]]; do
 				shift buf
 			done
-
 		else
 			shift buf
 		fi
