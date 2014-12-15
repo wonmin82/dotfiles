@@ -448,6 +448,9 @@ elif [[ ${_SYSENV_OS} == "macos" ]]; then
 	fi
 fi
 
+# use vim instead of vi
+alias vi='vim'
+
 # astyle options
 alias astyle='astyle --style=break --indent=force-tab=4 --unpad-paren --pad-header --pad-oper --unpad-paren --align-pointer=name --align-reference=name'
 
