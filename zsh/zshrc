@@ -8,8 +8,26 @@
 #*                                       *
 #*****************************************
 
-# Determine system environment {{{
-function determine-sysenv()
+# Functions for internal use {{{
+# function: __ensure_dir_exists
+# $1: directory name to make if doesn't exist
+function __ensure_dir_exists()
+{
+	if [[ ! -d $1 ]]; then
+		mkdir -p $1
+	fi
+}
+
+# function: __strip
+# $1: string
+# $2: character to strip (only ONE character!!)
+function __strip()
+{
+	echo $1 | sed -e 's/^'$2'*//g' -e 's/'$2'*$//g'
+}
+
+# function: __determine_sysenv
+function __determine_sysenv()
 {
 	_SYSENV_OS=${$(uname):l}
 	_SYSENV_KERNEL=$(uname -r)
@@ -60,65 +78,44 @@ function determine-sysenv()
 		fi
 	fi
 }
+#}}}
 
-determine-sysenv
+# Determine system environment {{{
+__determine_sysenv
 readonly _SYSENV_OS _SYSENV_OSSTR _SYSENV_DIST _SYSENV_DISTROBASEDON \
 	SYSENV_PSEUDONAME _SYSENV_REV _SYSENV_KERNEL _SYSENV_MACH
 #}}}
 
 # Path configurations {{{
 # Ensure some directories exist.
-if [[ ! -d $HOME/.local/bin ]]; then
-	mkdir -p $HOME/.local/bin
-fi
-
-if [[ ! -d $HOME/.local/share/man ]]; then
-	mkdir -p $HOME/.local/share/man
-fi
-
-if [[ ! -d $HOME/.local/share/info ]]; then
-	mkdir -p $HOME/.local/share/info
-fi
-
-if [[ ! -d $HOME/.local/lib ]]; then
-	mkdir -p $HOME/.local/lib
-fi
-
+__ensure_dir_exists $HOME/.local/bin
+__ensure_dir_exists $HOME/.local/share/man
+__ensure_dir_exists $HOME/.local/share/info
+__ensure_dir_exists $HOME/.local/lib
 if [[ $(uname -m | grep 'x86_64' | wc -l) != 0 ]]; then
-	if [[ ! -d $HOME/.local/lib64 ]]; then
-		mkdir -p $HOME/.local/lib64
-	fi
-
-	if [[ ! -d $HOME/.local/lib32 ]]; then
-		mkdir -p $HOME/.local/lib32
-	fi
+	__ensure_dir_exists $HOME/.local/lib64
+	__ensure_dir_exists $HOME/.local/lib32
 fi
-
-if [[ ! -d $HOME/.local/include ]]; then
-	mkdir -p $HOME/.local/include
-fi
-
-if [[ ! -d $HOME/.local/lib/pkgconfig ]]; then
-	mkdir -p $HOME/.local/lib/pkgconfig
-fi
+__ensure_dir_exists $HOME/.local/include
+__ensure_dir_exists $HOME/.local/lib/pkgconfig
 
 # Set some paths
 if [[ ! ":$PATH:" == *":$HOME/.local/bin:"* ]]; then
 	PATH=$HOME/.local/bin:$PATH
-	PATH=$(echo $PATH | sed -e 's/^:*//g' -e 's/:*$//g')
+	PATH=$(__strip $PATH ':')
 	export PATH
 fi
 
 if [[ ! ":$(manpath 2> /dev/null):" == *":$HOME/.local/share/man:"* ]]; then
 	unset MANPATH
 	MANPATH=$HOME/.local/share/man:$(manpath 2> /dev/null)
-	MANPATH=$(echo $MANPATH | sed -e 's/^:*//g' -e 's/:*$//g')
+	MANPATH=$(__strip $MANPATH ':')
 	export MANPATH
 fi
 
 if [[ ! ":$INFOPATH:" == *":$HOME/.local/share/info:"* ]]; then
 	INFOPATH=$HOME/.local/share/info:$INFOPATH
-	INFOPATH=$(echo $INFOPATH | sed -e 's/^:*//g' -e 's/:*$//g')
+	INFOPATH=$(__strip $INFOPATH ':')
 	export INFOPATH
 fi
 
@@ -126,7 +123,6 @@ unset LD_LIBRARY_PATH_SCRATCH
 if [[ ! ":$LD_LIBRARY_PATH:" == *":$HOME/.local/lib:"* ]]; then
 	LD_LIBRARY_PATH_SCRATCH=$LD_LIBRARY_PATH_SCRATCH:$HOME/.local/lib
 fi
-
 if [[ $(uname -m | grep 'x86_64' | wc -l) != 0 ]]; then
 	if [[ ! ":$LD_LIBRARY_PATH:" == *":$HOME/.local/lib64:"* ]]; then
 		LD_LIBRARY_PATH_SCRATCH=$LD_LIBRARY_PATH_SCRATCH:$HOME/.local/lib64
@@ -136,10 +132,9 @@ if [[ $(uname -m | grep 'x86_64' | wc -l) != 0 ]]; then
 		LD_LIBRARY_PATH_SCRATCH=$LD_LIBRARY_PATH_SCRATCH:$HOME/.local/lib32
 	fi
 fi
-
-LD_LIBRARY_PATH_SCRATCH=$(echo $LD_LIBRARY_PATH_SCRATCH | sed -e 's/^:*//g' -e 's/:*$//g')
+LD_LIBRARY_PATH_SCRATCH=$(__strip $LD_LIBRARY_PATH_SCRATCH ':')
 LD_LIBRARY_PATH=$LD_LIBRARY_PATH_SCRATCH:$LD_LIBRARY_PATH
-LD_LIBRARY_PATH=$(echo $LD_LIBRARY_PATH | sed -e 's/^:*//g' -e 's/:*$//g')
+LD_LIBRARY_PATH=$(__strip $LD_LIBRARY_PATH ':')
 unset LD_LIBRARY_PATH_SCRATCH
 export LD_LIBRARY_PATH
 
@@ -147,7 +142,6 @@ unset LD_RUN_PATH_SCRATCH
 if [[ ! ":$LD_RUN_PATH:" == *":$HOME/.local/lib:"* ]]; then
 	LD_RUN_PATH_SCRATCH=$LD_RUN_PATH_SCRATCH:$HOME/.local/lib
 fi
-
 if [[ $(uname -m | grep 'x86_64' | wc -l) != 0 ]]; then
 	if [[ ! ":$LD_RUN_PATH:" == *":$HOME/.local/lib64:"* ]]; then
 		LD_RUN_PATH_SCRATCH=$LD_RUN_PATH_SCRATCH:$HOME/.local/lib64
@@ -157,10 +151,9 @@ if [[ $(uname -m | grep 'x86_64' | wc -l) != 0 ]]; then
 		LD_RUN_PATH_SCRATCH=$LD_RUN_PATH_SCRATCH:$HOME/.local/lib32
 	fi
 fi
-
-LD_RUN_PATH_SCRATCH=$(echo $LD_RUN_PATH_SCRATCH | sed -e 's/^:*//g' -e 's/:*$//g')
+LD_RUN_PATH_SCRATCH=$(__strip $LD_RUN_PATH_SCRATCH ':')
 LD_RUN_PATH=$LD_RUN_PATH_SCRATCH:$LD_RUN_PATH
-LD_RUN_PATH=$(echo $LD_RUN_PATH | sed -e 's/^:*//g' -e 's/:*$//g')
+LD_RUN_PATH=$(__strip $LD_RUN_PATH ':')
 unset LD_RUN_PATH_SCRATCH
 export LD_RUN_PATH
 
@@ -168,7 +161,6 @@ unset LIBRARY_PATH_SCRATCH
 if [[ ! ":$LIBRARY_PATH:" == *":$HOME/.local/lib:"* ]]; then
 	LIBRARY_PATH_SCRATCH=$LIBRARY_PATH_SCRATCH:$HOME/.local/lib
 fi
-
 if [[ $(uname -m | grep 'x86_64' | wc -l) != 0 ]]; then
 	if [[ ! ":$LIBRARY_PATH:" == *":$HOME/.local/lib64:"* ]]; then
 		LIBRARY_PATH_SCRATCH=$LIBRARY_PATH_SCRATCH:$HOME/.local/lib64
@@ -178,22 +170,21 @@ if [[ $(uname -m | grep 'x86_64' | wc -l) != 0 ]]; then
 		LIBRARY_PATH_SCRATCH=$LIBRARY_PATH_SCRATCH:$HOME/.local/lib32
 	fi
 fi
-
-LIBRARY_PATH_SCRATCH=$(echo $LIBRARY_PATH_SCRATCH | sed -e 's/^:*//g' -e 's/:*$//g')
+LIBRARY_PATH_SCRATCH=$(__strip $LIBRARY_PATH_SCRATCH ':')
 LIBRARY_PATH=$LIBRARY_PATH_SCRATCH:$LIBRARY_PATH
-LIBRARY_PATH=$(echo $LIBRARY_PATH | sed -e 's/^:*//g' -e 's/:*$//g')
+LIBRARY_PATH=$(__strip $LIBRARY_PATH ':')
 unset LIBRARY_PATH_SCRATCH
 export LIBRARY_PATH
 
 if [[ ! ":$CPATH:" == *":$HOME/.local/include:"* ]]; then
 	CPATH=$HOME/.local/include:$CPATH
-	CPATH=$(echo $CPATH | sed -e 's/^:*//g' -e 's/:*$//g')
+	CPATH=$(__strip $CPATH ':')
 	export CPATH
 fi
 
 if [[ ! ":$PKG_CONFIG_PATH:" == *":$HOME/.local/lib/pkgconfig:"* ]]; then
 	PKG_CONFIG_PATH=$HOME/.local/lib/pkgconfig:$PKG_CONFIG_PATH
-	PKG_CONFIG_PATH=$(echo $PKG_CONFIG_PATH | sed -e 's/^:*//g' -e 's/:*$//g')
+	PKG_CONFIG_PATH=$(__strip $PKG_CONFIG_PATH ':')
 	export PKG_CONFIG_PATH
 fi
 #}}}
