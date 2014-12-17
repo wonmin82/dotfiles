@@ -214,15 +214,12 @@ ZSH_TMUX_AUTOQUIT=false
 ZSH_TMUX_FIXTERM=true
 #}}}
 
-# Ensure $ZSHDATADIR exists {{{
-if [[ ! -d $ZSHDATADIR ]]; then
-	mkdir -p $ZSHDATADIR
-fi
-#}}}
-
 # Antigen bundle configurations {{{
+# Ensure $ZSHDATADIR existts.
+__ensure_dir_exists $ZSHDATADIR
+
+__ensure_dir_exists $ANTIGENDIR
 if [[ ! -f $ANTIGENDIR/antigen.zsh ]]; then
-	mkdir -p $ANTIGENDIR
 	git clone https://github.com/zsh-users/antigen.git $ANTIGENDIR
 fi
 
