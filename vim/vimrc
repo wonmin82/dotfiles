@@ -941,24 +941,27 @@ endfunc
 " toggle mouse mode
 nmap <leader>mm :call ToggleMouse()<cr>
 
-" Function: toggle vim's mouse copy mode {{{
-function! ToggleMouseCopyMode()
-	if &number
+" Function: toggle copy mode {{{
+let s:is_copy_mode = 0
+function! ToggleCopyMode()
+	if s:is_copy_mode == 0
 		set mouse=
 		set nonumber
 		set nolist
-		echo "Mouse Copy Mode: TERMINAL COPY"
+		echo "Copy mode: ON"
+		let s:is_copy_mode = 1
 	else
 		set mouse=a
 		set number
 		set list
-		echo "Mouse Copy Mode: VIM COPY"
+		echo "Copy mode: OFF"
+		let s:is_copy_mode = 0
 	endif
 endfunc
 "}}}
 "
 " toggle mouse copy mode
-nmap <leader>pp :call ToggleMouseCopyMode()<cr>
+nmap <leader>mc :call ToggleCopyMode()<cr>
 
 " Function: Append modeline after last line in buffer. {{{
 " Use substitute() instead of printf() to handle '%%s' modeline in LaTeX
