@@ -1595,7 +1595,11 @@ let g:bufferline_rotate = 2
 nnoremap <silent> <expr> <f4> @% != "[BufExplorer]" ? ':TagbarToggle<cr>' : '\<nop>'
 inoremap <silent> <expr> <f4> @% != "[BufExplorer]" ? '<esc>:TagbarToggle<cr>a' : '\<nop>'
 
-let g:tagbar_ctags_bin = exepath('ctags')
+try
+	let g:tagbar_ctags_bin = exepath('ctags')
+catch
+	let g:tagbar_ctags_bin = 'ctags'
+endtry
 let g:tagbar_left = 0
 
 if 1 " 1: open only when used, 0: open always
@@ -1819,7 +1823,12 @@ let s:clang_format_detecting_candidates = [
 function! s:clang_format_detect()
 	for candidate in s:clang_format_detecting_candidates
 		if executable(candidate)
-			return exepath(candidate)
+			try
+				let command = exepath(candidate)
+			catch
+				let command = candidate
+			endtry
+			return command
 		endif
 	endfor
 	throw 'clang-format could not be detected.'
