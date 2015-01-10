@@ -509,7 +509,7 @@ alias mv='mv -i'
 # Default to human readable figures
 alias df='df -h'
 alias du='du -h'
-if [[ ${_SYSENV_OS} == "linux" ]]; then
+if [[ ${_SYSENV_OS} == "linux" || ${_SYSENV_OS} == "cygwin" ]]; then
 	alias ls='ls -hF --color=auto'
 elif [[ ${_SYSENV_OS} == "macos" ]]; then
 	if (( $+commands[gls] )); then
