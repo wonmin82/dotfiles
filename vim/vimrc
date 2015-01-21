@@ -394,6 +394,7 @@ set magic
 set history=1000
 "set km=startsel,stopsel
 set laststatus=2
+set nomore
 set matchpairs+=<:>
 set mouse=a
 if &term =~ '^screen'
@@ -906,6 +907,8 @@ map Y y$
 nmap <leader>ml :set list!<cr>
 " toggle paste mode
 nmap <leader>mp :set paste!<cr>
+" toggle more-prompt
+nmap <leader>mo :set more!<cr>
 " change directory to that of current file
 nmap <leader>cd :cd%:p:h<cr>
 " change local directory to that of current file
