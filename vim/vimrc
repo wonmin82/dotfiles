@@ -140,14 +140,15 @@ while ! s:is_neobundle_inited
 		NeoBundleFetch 'Shougo/neobundle.vim'
 		let s:is_neobundle_inited = 1
 	catch /^Vim\%((\a\+)\)\=:E117/
-		if s:retry_count >= s:max_retry_count
-			execute ':silent !echo "==> NeoBundle installation has been failed."'
-			quit!
-		endif
 		" If NeoBundle is missing, define an installer for it
 		function! NeoBundleInstaller()
 			if s:is_cygwin || s:is_macos || s:is_linux64 || s:is_linux32 || s:is_unix
 				let s:retry_count = s:retry_count + 1
+				if s:retry_count > s:max_retry_count
+					execute ':silent !echo "==> NeoBundle installation has been failed."'
+					quit!
+				endif
+
 				execute ':silent !echo "==> Starting NeoBundle installation... (retry count: ' . s:retry_count . '/' . s:max_retry_count . ')"'
 				let destination = expand($PLUGINPATH . '/neobundle.vim')
 				if ! isdirectory(destination)
@@ -168,6 +169,11 @@ while ! s:is_neobundle_inited
 			elseif s:is_win32 || s:is_win64
 				" TODO: need to be checked if it is working or not.
 				let s:retry_count = s:retry_count + 1
+				if s:retry_count > s:max_retry_count
+					execute ':silent !echo "==> NeoBundle installation has been failed."'
+					quit!
+				endif
+
 				execute ':silent !echo "==> Starting NeoBundle installation... (retry count: ' . s:retry_count . '/' . s:max_retry_count . ')"'
 				let destination = expand($PLUGINPATH . '/neobundle.vim')
 				if ! isdirectory(destination)
@@ -310,15 +316,19 @@ if neobundle#exists_not_installed_bundles()
 	let showcmd_save = &showcmd
 	let ruler_save = &ruler
 	let cmdheight_save = &cmdheight
+
 	set nomore
 	set noshowcmd
 	set noruler
 	set cmdheight=5
+
 	NeoBundleInstall
+
 	let &more = more_save
 	let &showcmd = showcmd_save
 	let &ruler = ruler_save
 	let &cmdheight = cmdheight_save
+
 	if neobundle#exists_not_installed_bundles()
 		execute ':silent !echo ""'
 		execute ':silent !echo "==> Failed to install some bundles, try run vim again."'
