@@ -310,7 +310,7 @@ filetype plugin indent on
 
 if neobundle#exists_not_installed_bundles()
 	" Prevent vim-session's confirmation.
-	let g:session_autosave = 'yes'
+	let g:session_autosave = 'no'
 
 	let more_save = &more
 	let showcmd_save = &showcmd
