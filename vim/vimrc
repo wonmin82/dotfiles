@@ -127,49 +127,74 @@ if has('vim_starting')
 endif
 
 " Begin NeoBundle {{{
-try
-	" Required:
-	call neobundle#begin(expand($PLUGINPATH))
+let s:max_retry_count = 5
+let s:retry_count = 0
+let s:is_neobundle_inited = 0
+while ! s:is_neobundle_inited
+	try
+		" Required:
+		call neobundle#begin(expand($PLUGINPATH))
 
-	" Let NeoBundle manage NeoBundle
-	" Required:
-	NeoBundleFetch 'Shougo/neobundle.vim'
-catch /^Vim\%((\a\+)\)\=:E117/
-	" If NeoBundle is missing, define an installer for it
-	function! NeoBundleInstaller()
-		if s:is_cygwin || s:is_macos || s:is_linux64 || s:is_linux32 || s:is_unix
-			execute ':silent !echo "==> Starting NeoBundle installation..."'
-			let destination = expand($PLUGINPATH . '/neobundle.vim')
-			if ! isdirectory(destination)
-				call mkdir(destination, "p")
-			endif
-			let install_command = printf('git clone %s://github.com/Shougo/neobundle.vim.git %s',
-				\ (exists('$http_proxy') ? 'https' : 'git'),
-				\ destination)
-			execute ':silent !echo "==> Executing command: ' . install_command . '"'
-			execute ':silent !' . install_command
-			execute ':silent !echo "==> NeoBundle has been installed. Restart vim to continue."'
-			quit!
-		elseif s:is_win32 || s:is_win64
-			" TODO: need to be checked if it is working or not.
-			execute ':silent !echo ""'
-			execute ':silent !echo "==> Starting NeoBundle installation..."'
-			let destination = expand($PLUGINPATH . '/neobundle.vim')
-			if ! isdirectory(destination)
-				call mkdir(destination, "p")
-			endif
-			let install_command = printf('git clone %s://github.com/Shougo/neobundle.vim.git %s',
-				\ (exists('$http_proxy') ? 'https' : 'git'),
-				\ destination)
-			execute ':silent !echo "==> Executing command: ' . install_command . '"'
-			execute ':silent !' . install_command
-			execute ':silent !echo "==> NeoBundle has been installed. Restart vim to continue."'
+		" Let NeoBundle manage NeoBundle
+		" Required:
+		NeoBundleFetch 'Shougo/neobundle.vim'
+		let s:is_neobundle_inited = 1
+	catch /^Vim\%((\a\+)\)\=:E117/
+		if s:retry_count >= s:max_retry_count
+			execute ':silent !echo "==> NeoBundle installation has been failed."'
 			quit!
 		endif
-	endfunction
+		" If NeoBundle is missing, define an installer for it
+		function! NeoBundleInstaller()
+			if s:is_cygwin || s:is_macos || s:is_linux64 || s:is_linux32 || s:is_unix
+				let s:retry_count = s:retry_count + 1
+				execute ':silent !echo "==> Starting NeoBundle installation... (retry count: ' . s:retry_count . '/' . s:max_retry_count . ')"'
+				let destination = expand($PLUGINPATH . '/neobundle.vim')
+				if ! isdirectory(destination)
+					call mkdir(destination, "p")
+				endif
+				let install_command = printf('git clone %s://github.com/Shougo/neobundle.vim.git %s',
+							\ (exists('$http_proxy') ? 'https' : 'git'),
+							\ destination)
+				execute ':silent !echo "==> Executing command: ' . install_command . '"'
+				execute ':silent !' . install_command
+				let neobundle_plugin = expand($PLUGINPATH . '/neobundle.vim/autoload/neobundle.vim')
+				try
+					execute ':source ' . neobundle_plugin
+					execute ':silent !echo "==> NeoBundle has been installed."'
+				catch
+					execute ':silent !echo "==> Failed to load NeoBundle."'
+				endtry
+			elseif s:is_win32 || s:is_win64
+				" TODO: need to be checked if it is working or not.
+				let s:retry_count = s:retry_count + 1
+				execute ':silent !echo "==> Starting NeoBundle installation... (retry count: ' . s:retry_count . '/' . s:max_retry_count . ')"'
+				let destination = expand($PLUGINPATH . '/neobundle.vim')
+				if ! isdirectory(destination)
+					call mkdir(destination, "p")
+				endif
+				let install_command = printf('git clone %s://github.com/Shougo/neobundle.vim.git %s',
+							\ (exists('$http_proxy') ? 'https' : 'git'),
+							\ destination)
+				execute ':silent !echo "==> Executing command: ' . install_command . '"'
+				execute ':silent !' . install_command
+				execute ':silent !echo "==> NeoBundle has been installed."'
+				let neobundle_plugin = expand($PLUGINPATH . '/neobundle.vim/autoload/neobundle.vim')
+				try
+					execute ':source ' . neobundle_plugin
+					execute ':silent !echo "==> NeoBundle has been installed."'
+				catch
+					execute ':silent !echo "==> Failed to load NeoBundle."'
+				endtry
+			endif
+		endfunction
 
-	call NeoBundleInstaller()
-endtry
+		call NeoBundleInstaller()
+	catch
+		execute ':silent !echo "==> NeoBundle initialization has been failed."'
+		quit!
+	endtry
+endwhile
 "}}}
 
 " My Bundles here:
@@ -277,6 +302,32 @@ call neobundle#end()
 " Required:
 filetype plugin indent on
 
+if neobundle#exists_not_installed_bundles()
+	" Prevent vim-session's confirmation.
+	let g:session_autosave = 'yes'
+
+	let more_save = &more
+	let showcmd_save = &showcmd
+	let ruler_save = &ruler
+	let cmdheight_save = &cmdheight
+	set nomore
+	set noshowcmd
+	set noruler
+	set cmdheight=5
+	NeoBundleInstall
+	let &more = more_save
+	let &showcmd = showcmd_save
+	let &ruler = ruler_save
+	let &cmdheight = cmdheight_save
+	if neobundle#exists_not_installed_bundles()
+		execute ':silent !echo ""'
+		execute ':silent !echo "==> Failed to install some bundles, try run vim again."'
+	else
+		execute ':silent !echo ""'
+		execute ':silent !echo "==> Bundles have been installed. Restart vim to continue."'
+	endif
+	quit!
+endif
 " If there are uninstalled bundles found on startup,
 " this will conveniently prompt you to install them.
 NeoBundleCheck
@@ -482,20 +533,21 @@ else
 		set t_Co=16
 	endif
 
+	function! OverrideColorScheme()
+		if g:colors_name == 'molokai'
+			execute "hi VertSplit cterm=none"
+		endif
+		if g:colors_name == 'molokai' && &t_Co >= 256
+			execute "hi MatchParen ctermfg=226 ctermbg=bg"
+		endif
+	endfunction
 	" customizing colorschemes
 	" disable bold attribute for VertSplit in molokai colorscheme,
 	" because certain font(Dejavu Sans Mono Bold) lacks
 	" line drawing characters.
 	augroup MyAutoCmd
 		autocmd ColorScheme *
-					\   try |
-					\       if g:colors_name == 'molokai' |
-					\           execute "hi VertSplit cterm=none" |
-					\       endif |
-					\       if g:colors_name == 'molokai' && &t_Co >= 256 |
-					\           execute "hi MatchParen ctermfg=226 ctermbg=bg" |
-					\       endif |
-					\   endtry
+					\   execute "try | call OverrideColorScheme() | catch | endtry"
 	augroup END
 
 	if &t_Co >= 256
@@ -1291,7 +1343,7 @@ call unite#custom#source('file_rec,file_rec/async,file_mru,file,buffer,grep',
 			\   '\|')
 			\)
 
-" Enable histo  ry yank source
+" Enable history yank source
 let g:unite_source_history_yank_enable = 1
 
 let g:neomru#file_mru_limit = 1000
