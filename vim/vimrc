@@ -1048,10 +1048,20 @@ nnoremap <silent> <localleader>ml :call AppendModeline()<cr>
 " Function: Generating tags. {{{
 function! MakeTagsAndCscope()
 	if s:is_cygwin || s:is_macos || s:is_linux64 || s:is_linux32 || s:is_unix
-		silent execute "!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q --verbose=yes"
-		silent execute "!rm -fv cscope.files"
-		silent execute "!find . \\( -name '*.c' -o -name '*.cpp' -o -name '*.cc' -o -name '*.h' -o -name '*.s' -o -name '*.S' \\) -print > cscope.files"
-		execute "!cscope -v -q -b -i cscope.files $*"
+		call system("make --silent --dry-run tags")
+		if v:shell_error == 0
+			silent execute "!make tags"
+		else
+			silent execute "!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q --verbose=yes"
+		endif
+		call system("make --silent --dry-run cscope")
+		if v:shell_error == 0
+			execute "!make cscope"
+		else
+			silent execute "!rm -fv cscope.files"
+			silent execute "!find . \\( -name '*.c' -o -name '*.cpp' -o -name '*.cc' -o -name '*.h' -o -name '*.s' -o -name '*.S' \\) -print > cscope.files"
+			execute "!cscope -v -q -b -i cscope.files $*"
+		endif
 		execute "cscope reset"
 		redraw!
 	elseif s:is_win32 || s:is_win64
