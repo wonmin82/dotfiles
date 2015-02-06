@@ -1073,7 +1073,7 @@ endfunction
 " Function: Cleaning tags. {{{
 function! CleaningTagsAndCscope()
 	if s:is_cygwin || s:is_macos || s:is_linux64 || s:is_linux32 || s:is_unix
-		execute "!rm -fv tags cscope.out cscope.in.out cscope.po.out cscope.files"
+		execute "!rm -fv tags TAGS cscope.out cscope.in.out cscope.po.out cscope.out.in cscope.out.po cscope.files"
 	elseif s:is_win32 || s:is_win64
 		" TODO: add routine for cleaning ctags and cscope for windows.
 	endif
