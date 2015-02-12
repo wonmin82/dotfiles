@@ -1727,12 +1727,15 @@ let g:indentconsistencycop_non_indent_pattern = ' \*\%([*/ \t]\|$\)'
 "}}}
 
 " Plugin: IndentConsistencyCopAutoCmds {{{
-" DOES NOT WORK
-" TODO: investigate why it's not working
+" Turn off by autocmd because the interface is so annoying.
+augroup MyAutoCmd
+	autocmd BufNewFile * execute ":IndentConsistencyCopAutoCmdsOff"
+	autocmd BufReadPre * execute ":IndentConsistencyCopAutoCmdsOff"
+augroup END
 nmap <leader>ice :IndentConsistencyCopAutoCmdsOn<cr>
 nmap <leader>icd :IndentConsistencyCopAutoCmdsOff<cr>
 let g:indentconsistencycop_CheckOnLoad = 0
-let g:indentconsistencycop_CheckAfteRWrite = 1
+let g:indentconsistencycop_CheckAfterWrite = 1
 let g:indentconsistencycop_CheckAfterWriteMaxLinesForImmediateCheck = 1000
 "}}}
 
