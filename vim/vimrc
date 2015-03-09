@@ -1974,14 +1974,13 @@ if s:clang_format_is_available
 	let v = s:clang_format_get_version()
 	" clang-format style options {{{
 	if v[0] == 3 && v[1] == 6           " style options for clang-format 3.6
-		" clang-format 3.6 has not been released yet.
-		" this style options for clang-format svn revision 218612
 		let g:clang_format#style_options = {
 					\   "Language" : "Cpp",
 					\   "BasedOnStyle" : "google",
 					\   "AccessModifierOffset" : -4,
-					\   "ConstructorInitializerIndentWidth" : 4,
+					\   "AlignAfterOpenBracket" : "true",
 					\   "AlignEscapedNewlinesLeft" : "true",
+					\   "AlignOperands" : "true",
 					\   "AlignTrailingComments" : "true",
 					\   "AllowAllParametersOfDeclarationOnNextLine" : "true",
 					\   "AllowShortBlocksOnASingleLine" : "false",
@@ -1996,8 +1995,10 @@ if s:clang_format_is_available
 					\   "BreakBeforeTernaryOperators" : "true",
 					\   "BreakConstructorInitializersBeforeComma" : "false",
 					\   "BinPackParameters" : "true",
+					\   "BinPackArguments" : "true",
 					\   "ColumnLimit" : 80,
 					\   "ConstructorInitializerAllOnOneLineOrOnePerLine" : "true",
+					\   "ConstructorInitializerIndentWidth" : 4,
 					\   "DerivePointerAlignment" : "false",
 					\   "ExperimentalAutoDetectBinPacking" : "false",
 					\   "IndentCaseLabels" : "false",
@@ -2006,6 +2007,7 @@ if s:clang_format_is_available
 					\   "MaxEmptyLinesToKeep" : 1,
 					\   "KeepEmptyLinesAtTheStartOfBlocks" : "false",
 					\   "NamespaceIndentation" : "All",
+					\   "ObjCBlockIndentWidth" : 4,
 					\   "ObjCSpaceAfterProperty" : "false",
 					\   "ObjCSpaceBeforeProtocolList" : "false",
 					\   "PenaltyBreakBeforeFirstCallParameter" : 1,
