@@ -522,7 +522,7 @@ endif
 " override special chars avoid using not supported by some fonts,
 " above settings will be ignored.
 let &fillchars="vert:\u2502,fold:\u2500,diff:\u2014"
-let &listchars="eol:\u00b6,tab:\u00bb\u00b7,trail:\u00d7,extends:\u00bb,precedes:\u00ab,nbsp:\u00d7"
+let &listchars="eol:\u00b6,tab:\u00bb\u0020,trail:\u00b7,extends:\u00bb,precedes:\u00ab,nbsp:\u00b7"
 let &showbreak="\u2026"
 "}}}
 
