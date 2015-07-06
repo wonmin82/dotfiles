@@ -283,7 +283,9 @@ NeoBundle 'ntpeters/vim-better-whitespace'
 NeoBundle 'rhysd/vim-clang-format', {
 			\   'depends': 'kana/vim-operator-user'
 			\}
-NeoBundle 'SirVer/ultisnips'
+if v:version >= 704
+	NeoBundle 'SirVer/ultisnips'
+endif
 NeoBundle 'honza/vim-snippets'
 
 " ensure vim version >= 7.3.584 and not in cygwin.
@@ -1420,7 +1422,11 @@ endfunction
 " Use the fuzzy matcher for everything, except grep, line and etc. see the docs.
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
 " Use the selecta sorter for all source.
-call unite#filters#sorter_default#use(['sorter_selecta'])
+if has('ruby')
+	call unite#filters#sorter_default#use(['sorter_selecta'])
+else
+	call unite#filters#sorter_default#use(['sorter_rank'])
+endif
 
 " Global default context
 call unite#custom#profile('default', 'context', {
