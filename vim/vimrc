@@ -270,6 +270,7 @@ if v:version > 703 || v:version == 703 && has('patch465')
 endif
 NeoBundle 'wesleyche/SrcExpl'
 NeoBundle 'jlanzarotta/bufexplorer'
+NeoBundle 'dbakker/vim-projectroot'
 NeoBundle 'godlygeek/tabular'
 NeoBundle 'Lokaltog/vim-easymotion'
 NeoBundle 'scrooloose/syntastic'
@@ -889,6 +890,56 @@ if has("cscope")
 endif
 "}}}
 
+" Load ctag and cscope database {{{
+function! LoadCtags()
+	let currentdir = getcwd()
+	try
+		execute "cd %:p:h"
+	catch
+	endtry
+	let db = findfile("tags", ".;")
+
+	if (!empty(db))
+		let db = fnamemodify(db, ':p')
+		let path = strpart(db, 0, match(db, "/tags$"))
+		let path = fnamemodify(path, ':p')
+		execute "set tags=" . db
+		let b:ctags_db_path = path
+	else
+		let b:ctags_db_path = projectroot#guess()
+	endif
+	execute "cd " . currentdir
+endfunction
+
+function! LoadCscope()
+	let currentdir = getcwd()
+	try
+		execute "cd %:p:h"
+	catch
+	endtry
+	let db = findfile("cscope.out", ".;")
+
+	if (!empty(db))
+		let db = fnamemodify(db, ':p')
+		let path = strpart(db, 0, match(db, "/cscope.out$"))
+		let path = fnamemodify(path, ':p')
+		set nocsverb " suppress 'duplicate connection' error
+		execute "cscope add " . db . " " . path
+		let b:cscope_db_path = path
+		set csverb   " switch back to verbose mode
+	else
+		let b:cscope_db_path = projectroot#guess()
+	endif
+	execute "cd " . currentdir
+endfunction
+
+augroup MyAutoCmd
+	autocmd Filetype c,cpp
+				\   execute "call LoadCtags()"  |
+				\   execute "call LoadCscope()"
+augroup END
+"}}}
+
 " tabs {{{
 " (leader is ",")
 " Function: reorder tabs {{{
@@ -1056,21 +1107,38 @@ nnoremap <silent> <localleader>ml :call AppendModeline()<cr>
 " Function: Generating tags. {{{
 function! MakeTagsAndCscope()
 	if s:is_cygwin || s:is_macos || s:is_linux64 || s:is_linux32 || s:is_unix
+		let currentdir = getcwd()
+		if (empty(b:ctags_db_path))
+			let b:ctags_db_path = projectroot#guess()
+		endif
+		silent execute "cd " . b:ctags_db_path
 		call system("make --silent --dry-run tags")
 		if v:shell_error == 0
 			silent execute "!make tags"
 		else
 			silent execute "!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q --verbose=yes"
 		endif
+		silent execute "set tags=" . b:ctags_db_path
+		silent execute "cd " . currentdir
+
+		let currentdir = getcwd()
+		if (empty(b:cscope_db_path))
+			let b:cscope_db_path = projectroot#guess()
+		endif
+		silent execute "cd " . b:cscope_db_path
 		call system("make --silent --dry-run cscope")
 		if v:shell_error == 0
-			execute "!make cscope"
+			silent execute "!make cscope"
 		else
 			silent execute "!rm -fv cscope.files"
 			silent execute "!find . \\( -name '*.c' -o -name '*.cpp' -o -name '*.cc' -o -name '*.h' -o -name '*.s' -o -name '*.S' \\) -print > cscope.files"
-			execute "!cscope -v -q -b -i cscope.files $*"
+			silent execute "!cscope -v -q -b -i cscope.files $*"
 		endif
-		execute "cscope reset"
+		set nocsverb " suppress 'duplicate connection' error
+		silent execute "cscope add " . b:cscope_db_path . "/cscope.out " . b:cscope_db_path
+		silent execute "cscope reset"
+		set csverb   " switch back to verbose mode
+		execute "cd " . currentdir
 		redraw!
 	elseif s:is_win32 || s:is_win64
 		" TODO: add routine for generating ctags and cscope for windows.
@@ -1081,7 +1149,20 @@ endfunction
 " Function: Cleaning tags. {{{
 function! CleaningTagsAndCscope()
 	if s:is_cygwin || s:is_macos || s:is_linux64 || s:is_linux32 || s:is_unix
-		execute "!rm -fv tags TAGS cscope.out cscope.in.out cscope.po.out cscope.out.in cscope.out.po cscope.files"
+		let currentdir = getcwd()
+
+		if (!empty(b:ctags_db_path))
+			silent execute "cd " . b:ctags_db_path
+		endif
+		silent execute "!rm -fv tags TAGS"
+
+		if (!empty(b:cscope_db_path))
+			silent execute "cd " . b:cscope_db_path
+		endif
+		silent execute "!rm -fv cscope.out cscope.in.out cscope.po.out cscope.out.in cscope.out.po cscope.files"
+
+		execute "cd " . currentdir
+		redraw!
 	elseif s:is_win32 || s:is_win64
 		" TODO: add routine for cleaning ctags and cscope for windows.
 	endif
@@ -1147,6 +1228,25 @@ nnoremap <bs> :set hlsearch! hlsearch?<cr>
 
 " Enter: Highlight visual selections
 xnoremap <silent> <cr> y:let @/ = @"<cr>:set hlsearch<cr>
+"}}}
+
+" Plugin: vim-projectroot {{{
+let g:rootmarkers = ['.projectroot', '.git', '.hg', '.svn', '.bzr', '_darcs', 'build.xml', 'tags', 'TAGS', 'cscope.out']
+function! <SID>AutoProjectRootCD()
+	try
+		if &ft != 'help' && &ft != 'vimshell' && &ft != 'unite'
+			ProjectRootCD
+		endif
+	catch
+		" Silently ignore invalid buffers
+	endtry
+endfunction
+autocmd BufEnter * call <SID>AutoProjectRootCD()
+
+nnoremap <leader>g :ProjectRootExe grep<space>
+nnoremap <expr> <leader>ep ':edit '.projectroot#guess().'/'
+nnoremap <expr> <leader>rg ':!touch '.getcwd().'/.projectroot'
+nnoremap <expr> <leader>re ':!rm -f '.projectroot#guess().'/.projectroot'
 "}}}
 
 " Plugin: localvimrc {{{
