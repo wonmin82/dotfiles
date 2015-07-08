@@ -1110,7 +1110,9 @@ nnoremap <silent> <localleader>ml :call AppendModeline()<cr>
 function! MakeTagsAndCscope()
 	if s:is_cygwin || s:is_macos || s:is_linux64 || s:is_linux32 || s:is_unix
 		let currentdir = getcwd()
-		if (empty(b:ctags_db_path))
+		if (!exists('b:ctags_db_path'))
+			let b:ctags_db_path = projectroot#guess()
+		elseif (empty(b:ctags_db_path))
 			let b:ctags_db_path = projectroot#guess()
 		endif
 		silent execute "cd " . b:ctags_db_path
@@ -1124,7 +1126,9 @@ function! MakeTagsAndCscope()
 		silent execute "cd " . currentdir
 
 		let currentdir = getcwd()
-		if (empty(b:cscope_db_path))
+		if (!exists('b:cscope_db_path'))
+			let b:cscope_db_path = projectroot#guess()
+		elseif (empty(b:cscope_db_path))
 			let b:cscope_db_path = projectroot#guess()
 		endif
 		silent execute "cd " . b:cscope_db_path
@@ -1153,13 +1157,17 @@ function! CleaningTagsAndCscope()
 	if s:is_cygwin || s:is_macos || s:is_linux64 || s:is_linux32 || s:is_unix
 		let currentdir = getcwd()
 
-		if (!empty(b:ctags_db_path))
-			silent execute "cd " . b:ctags_db_path
+		if (exists('b:ctags_db_path'))
+			if (!empty(b:ctags_db_path))
+				silent execute "cd " . b:ctags_db_path
+			endif
 		endif
 		silent execute "!rm -fv tags TAGS"
 
-		if (!empty(b:cscope_db_path))
-			silent execute "cd " . b:cscope_db_path
+		if (exists('b:cscope_db_path'))
+			if (!empty(b:cscope_db_path))
+				silent execute "cd " . b:cscope_db_path
+			endif
 		endif
 		silent execute "!rm -fv cscope.out cscope.in.out cscope.po.out cscope.out.in cscope.out.po cscope.files"
 
