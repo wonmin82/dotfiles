@@ -114,7 +114,7 @@ let g:neomru#directory_mru_path = $NEOMRUPATH . '/directory'
 "}}}
 
 " Plugin: NeoBundle {{{
-let g:neobundle#types#git#default_protocol = 'git'
+let g:neobundle#types#git#default_protocol = 'https'
 " YouCompleteMe install process tooks time.
 let g:neobundle#install_process_timeout = 1200
 
