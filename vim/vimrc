@@ -2115,7 +2115,7 @@ if s:clang_format_is_available
 					\   "BasedOnStyle" : "google",
 					\   "AccessModifierOffset" : -4,
 					\   "AlignAfterOpenBracket" : "true",
-					\   "AlignConsecutiveAssignments" : "true",
+					\   "AlignConsecutiveAssignments" : "false",
 					\   "AlignEscapedNewlinesLeft" : "true",
 					\   "AlignOperands" : "true",
 					\   "AlignTrailingComments" : "true",
