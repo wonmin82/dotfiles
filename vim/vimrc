@@ -2031,10 +2031,11 @@ let g:UltiSnipsListSnippets = "<c-s>"
 
 " Plugin: vim-clang-format {{{
 " NOTE: clang-format 3.4 or later is required
-" NOTE: currently, style options are ready for 3.4, 3.5 and 3.6 only
+" NOTE: currently, style options are ready for 3.4, 3.5, 3.6 and 3.7 only
 let s:clang_format_detecting_candidates = [
-			\   'clang-format', 'clang-format-3.6',
-			\   'clang-format-3.5', 'clang-format-3.4'
+			\   'clang-format', 'clang-format-3.7',
+			\   'clang-format-3.6', 'clang-format-3.5',
+			\   'clang-format-3.4'
 			\]
 
 function! s:clang_format_detect()
