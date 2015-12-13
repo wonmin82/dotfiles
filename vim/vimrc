@@ -231,6 +231,7 @@ NeoBundle 'Shougo/vimfiler'
 
 " Session
 NeoBundle 'xolox/vim-session', {
+			\   'lazy': 0,
 			\   'depends': 'xolox/vim-misc',
 			\   'augroup': 'PluginSession',
 			\   'autoload': {
