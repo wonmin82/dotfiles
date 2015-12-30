@@ -22,7 +22,7 @@ ANTIGENDIR=$ZSHDATADIR/antigen
 ADOTDIR=$ZSHDATADIR/antigen-repo
 
 skip_global_compinit=1
-# COMPDUMPFILE=$ZSHDATADIR/.zcompdump
+ANTIGEN_COMPDUMPFILE=$ZSHDATADIR/.zcompdump
 
 # EDITOR setting
 export EDITOR=vim
