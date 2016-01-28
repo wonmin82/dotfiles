@@ -295,10 +295,10 @@ if (v:version > 703 || v:version == 703 && has('patch584'))
 			\   && !(s:is_win32 || s:is_win64)
 	NeoBundle 'Valloric/YouCompleteMe', {
 				\   'build' : {
-				\       'windows' : './install.sh --clang-completer --system-libclang --omnisharp-completer',
-				\       'cygwin' : './install.sh --clang-completer --system-libclang',
-				\       'mac' : './install.sh --clang-completer --system-libclang --omnisharp-completer',
-				\       'unix' : './install.sh --clang-completer --system-libclang --omnisharp-completer --gocode-completer --tern-completer',
+				\       'windows' : './install.py --clang-completer --system-libclang --omnisharp-completer',
+				\       'cygwin' : './install.py --clang-completer --system-libclang',
+				\       'mac' : './install.py --clang-completer --system-libclang --omnisharp-completer',
+				\       'unix' : './install.py --clang-completer --system-libclang --omnisharp-completer --gocode-completer --tern-completer',
 				\   }
 				\}
 endif
