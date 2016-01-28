@@ -261,7 +261,8 @@ NeoBundle 'tpope/vim-fugitive'
 NeoBundle 'majutsushi/tagbar'
 
 " Status line
-NeoBundle 'bling/vim-airline'
+NeoBundle 'vim-airline/vim-airline'
+NeoBundle 'vim-airline/vim-airline-themes'
 NeoBundle 'bling/vim-bufferline'
 
 NeoBundle 'embear/vim-localvimrc'
@@ -1781,6 +1782,8 @@ nnoremap <leader><@> :Unite<cr>
 "}}}
 
 " Plugin: airline {{{
+let g:airline_theme = 'solarized'
+
 let g:airline#extensions#whitespace#enabled = 1
 let g:airline#extensions#whitespace#mixed_indent_algo = 1
 let g:airline#extensions#whitespace#checks = [ 'indent', 'trailing' ]
