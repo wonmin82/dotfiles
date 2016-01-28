@@ -1830,8 +1830,8 @@ nnoremap <silent> <expr> <f2> @% != "[BufExplorer]" ? ':NERDTreeToggle<cr>' : '\
 inoremap <silent> <expr> <f2> @% != "[BufExplorer]" ? '<esc>:NERDTreeToggle<cr>a' : '\<nop>'
 
 let g:NERDTreeShowHidden = 1
-"let g:NERDTreeDirArrows = 1
-let g:NERDTreeDirArrows = 0
+let g:NERDTreeDirArrowExpandable = '+'
+let g:NERDTreeDirArrowCollapsible = '~'
 let g:NERDTreeIgnore = ['\~$', '\.swp$', '\.git', '\.hg', '\.svn', '\.bzr']
 " Close vim if the only window open is nerdtree
 autocmd MyAutoCmd BufEnter *
