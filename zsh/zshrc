@@ -410,10 +410,13 @@ unsetopt list_beep
 
 # History options {{{
 # history file location set in .zshenv
-HISTSIZE=10000
-SAVEHIST=10000
+export HISTSIZE=10000
+export SAVEHIST=10000
+
+export HISTCONTROL=erasedups
 
 setopt hist_ignore_all_dups
+setopt hist_save_no_dups
 unsetopt hist_ignore_space
 
 setopt append_history
