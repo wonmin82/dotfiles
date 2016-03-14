@@ -449,7 +449,7 @@ export GREP_COLOR='1;31'
 export MANPAGER='/bin/bash -c "vim -MRn -c \"set ft=man\" </dev/tty <(col -b)"'
 
 # less configuration
-export LESS="-F -X -R"
+export LESS="-FRXK"
 #}}}
 
 # Functions {{{
