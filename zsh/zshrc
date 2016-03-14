@@ -423,6 +423,13 @@ setopt hist_verify
 setopt share_history
 setopt bang_hist
 setopt extended_history
+
+# hh(https://github.com/dvorka/hstr.git) configuration
+if (( $+commands[hh] )); then
+	export HISTFILE
+	export HH_CONFIG=hicolor        # get more colors
+	bindkey -s "\C-r" "\eqhh\n"     # bind hh to Ctrl-r (for Vi mode check doc)
+fi
 #}}}
 
 # Variables {{{
@@ -439,6 +446,9 @@ export GREP_COLOR='1;31'
 # Note we use bash explicitly here to support process substitution
 # which in turn suppresses the "Vim: Reading from stdin..." warning.
 export MANPAGER='/bin/bash -c "vim -MRn -c \"set ft=man\" </dev/tty <(col -b)"'
+
+# less configuration
+export LESS="-F -X -R"
 #}}}
 
 # Functions {{{
@@ -463,6 +473,18 @@ if [[ ${_SYSENV_DIST} == "ubuntu" ]]; then
 	function update-packages()
 	{
 		retry sudo aptitude update && retry sudo aptitude -d -y upgrade && sudo aptitude -y upgrade
+	}
+fi
+
+if [[ ${_SYSENV_OS} == "macos" ]]; then
+	function clean-packages()
+	{
+		brew cleanup
+	}
+
+	function update-packages()
+	{
+		retry brew update && brew outdated && retry brew upgrade && brew cleanup
 	}
 fi
 
