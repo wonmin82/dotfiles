@@ -64,7 +64,8 @@ function __determine_sysenv()
 #}}}
 
 # Determine system environment {{{
-__determine_sysenv
+# call __determine_sysenv function if _SYSENV_OS is not read-only.
+(unset _SYSENV_OS 2> /dev/null) && __determine_sysenv
 readonly _SYSENV_OS _SYSENV_OSSTR _SYSENV_DIST _SYSENV_DISTROBASEDON \
 	SYSENV_PSEUDONAME _SYSENV_REV _SYSENV_KERNEL _SYSENV_MACH
 #}}}
