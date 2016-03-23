@@ -430,11 +430,11 @@ setopt bang_hist
 setopt extended_history
 
 # hh(https://github.com/dvorka/hstr.git) configuration
-if (( $+commands[hh] )); then
-	export HISTFILE
-	export HH_CONFIG=hicolor        # get more colors
-	bindkey -s "\C-r" "\eqhh\n"     # bind hh to Ctrl-r (for Vi mode check doc)
-fi
+# if (( $+commands[hh] )); then
+#     export HISTFILE
+#     export HH_CONFIG=hicolor        # get more colors
+#     bindkey -s "\C-r" "\eqhh\n"     # bind hh to Ctrl-r (for Vi mode check doc)
+# fi
 #}}}
 
 # Variables {{{
