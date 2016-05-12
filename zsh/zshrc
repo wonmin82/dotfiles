@@ -378,6 +378,18 @@ if (( ${+terminfo[smkx]} )) && (( ${+terminfo[rmkx]} )); then
 	zle -N zle-line-init
 	zle -N zle-line-finish
 fi
+
+# fancy-ctrl-z: from http://superuser.com/a/161922/35223
+fancy-ctrl-z () {
+	if [[ $#BUFFER -eq 0 ]]; then
+		bg
+		zle redisplay
+	else
+		zle push-input
+	fi
+}
+zle -N fancy-ctrl-z
+bindkey '^Z' fancy-ctrl-z
 #}}}
 
 # Options {{{
