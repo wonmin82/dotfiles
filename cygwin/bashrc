@@ -48,7 +48,7 @@ stty erase "^?;^H"
 
 LESSCHARSET=dos;export LESSCHARSET
 VIMRUNTIME=;export VIMRUNTIME
-DISPLAY="localhost:0.0";export DISPLAY
+DISPLAY=":0.0";export DISPLAY
 
 # Timeout
 TMOUT=8640000;export TMOUT
