@@ -274,6 +274,11 @@ list_pkgs_to_be_installed=(
 "hh"
 )
 
+list_vm_pkgs_to_be_installed=(
+"open-vm-tools"
+"open-vm-tools-desktop"
+)
+
 retry()
 {
 	local nTrys=0
@@ -372,6 +377,17 @@ install_all()
 	eval $aptitude_install_command
 }
 
+install_vm_tools()
+{
+	aptitude_fetch_command="retry sudo aptitude -y --with-recommends --download-only install"
+	aptitude_fetch_command="${aptitude_fetch_command} ${list_vm_pkgs_to_be_installed[@]}"
+	eval $aptitude_fetch_command
+
+	aptitude_install_command="sudo aptitude -y --with-recommends install"
+	aptitude_install_command="${aptitude_install_command} ${list_vm_pkgs_to_be_installed[@]}"
+	eval $aptitude_install_command
+}
+
 main()
 {
 	set_preferences
@@ -380,6 +396,7 @@ main()
 	install_ttfs
 	install_java
 	install_all
+	install_vm_tools
 }
 
 main
