@@ -491,6 +491,14 @@ if [[ ${_SYSENV_DIST} == "ubuntu" ]]; then
 	{
 		retry sudo aptitude update && retry sudo aptitude -d -y upgrade && sudo aptitude -y upgrade
 	}
+
+	function update-system()
+	{
+		update-packages
+		antigen selfupdate
+		antigen update
+		vim +NeoBundleUpdate +quit!
+	}
 fi
 
 if [[ ${_SYSENV_OS} == "macos" ]]; then
