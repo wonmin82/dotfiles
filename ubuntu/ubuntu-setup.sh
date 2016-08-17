@@ -311,9 +311,9 @@ add_ppa()
 
 set_preferences()
 {
-	bash -c 'echo "Package: kaccounts-providers kde-config-telepathy-accounts runit git-daemon-run" > /etc/apt/preferences'
-	bash -c 'echo "Pin: release *" >> /etc/apt/preferences'
-	bash -c 'echo "Pin-Priority: -99" >> /etc/apt/preferences'
+	sudo bash -c 'echo "Package: kaccounts-providers kde-config-telepathy-accounts runit git-daemon-run" > /etc/apt/preferences'
+	sudo bash -c 'echo "Pin: release *" >> /etc/apt/preferences'
+	sudo bash -c 'echo "Pin-Priority: -99" >> /etc/apt/preferences'
 }
 
 install_ttfs()
