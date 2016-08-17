@@ -309,6 +309,13 @@ add_ppa()
 	retry sudo aptitude update
 }
 
+set_preferences()
+{
+	bash -c 'echo "Package: kaccounts-providers kde-config-telepathy-accounts runit git-daemon-run" > /etc/apt/preferences'
+	bash -c 'echo "Pin: release *" >> /etc/apt/preferences'
+	bash -c 'echo "Pin-Priority: -99" >> /etc/apt/preferences'
+}
+
 install_ttfs()
 {
 	mkdir -p /tmp/msttf
@@ -363,14 +370,11 @@ install_all()
 	aptitude_install_command="sudo aptitude -y --with-recommends install"
 	aptitude_install_command="${aptitude_install_command} ${list_pkgs_to_be_installed[@]}"
 	eval $aptitude_install_command
-
-	aptitude_cleanup_command="sudo aptitude -y purge"
-	aptitude_cleanup_command="${aptitude_cleanup_command} runit git-daemon-run"
-	eval $aptitude_cleanup_command
 }
 
 main()
 {
+	set_preferences
 	add_ppa
 	fetch_all
 	install_ttfs
