@@ -142,6 +142,7 @@ if [[ ${_SYSENV_OS} == "cygwin" ]]; then
 	antigen theme mortalscumbag
 else
 	# antigen theme bira
+	export LP_ENABLE_TEMP=0
 	antigen bundle nojhan/liquidprompt
 fi
 
