@@ -512,6 +512,14 @@ if [[ ${_SYSENV_OS} == "macos" ]]; then
 	{
 		retry brew update && brew outdated && retry brew upgrade && brew cleanup
 	}
+
+	function update-system()
+	{
+		update-packages
+		antigen selfupdate
+		antigen update
+		vim +NeoBundleUpdate +quit!
+	}
 fi
 
 if [[ -f /usr/bin/vmware-config-tools.pl ]]; then
