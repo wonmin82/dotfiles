@@ -496,8 +496,8 @@ if [[ ${_SYSENV_DIST} == "ubuntu" ]]; then
 	function update-system()
 	{
 		update-packages
-		antigen selfupdate
-		antigen update
+		retry antigen selfupdate
+		retry antigen update
 		vim +NeoBundleUpdate +quit!
 	}
 fi
