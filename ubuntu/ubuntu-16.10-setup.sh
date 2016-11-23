@@ -111,7 +111,7 @@ list_pkgs_to_be_installed=(
 "graphviz"
 "pandoc"
 "asciidoc"
-"sphinx"
+"sphinx-common"
 "cpp"
 "gcc"
 "g++"
