@@ -2138,7 +2138,7 @@ if s:clang_format_is_available
 					\   "BinPackArguments" : "true",
 					\   "BinPackParameters" : "true",
 					\   "BraceWrapping" :
-					\   '{
+					\   {
 					\       "AfterClass" :      "true",
 					\       "AfterControlStatement" : "true",
 					\       "AfterEnum" :       "true",
@@ -2150,7 +2150,7 @@ if s:clang_format_is_available
 					\       "BeforeCatch" :     "true",
 					\       "BeforeElse" :      "true",
 					\       "IndentBraces" :    "true"
-					\   }',
+					\   },
 					\   "BreakBeforeBinaryOperators" : "None",
 					\   "BreakBeforeBraces" : "Allman",
 					\   "BreakBeforeTernaryOperators" : "true",
@@ -2165,15 +2165,6 @@ if s:clang_format_is_available
 					\   "DisableFormat" : "false",
 					\   "ExperimentalAutoDetectBinPacking" : "false",
 					\   "ForEachMacros" : "[ foreach, Q_FOREACH, BOOST_FOREACH ]",
-					\   "IncludeCategories" :
-					\   '[
-					\       "Regex" : "^\\<.*\\.h\\>",
-					\       "Priority" : 1,
-					\       "Regex" : "^\\<.*",
-					\       "Priority" : 2,
-					\       "Regex" : ".*",
-					\       "Priority" : 3
-					\   ]',
 					\   "IndentCaseLabels" : "false",
 					\   "IndentWidth" : 4,
 					\   "IndentWrappedFunctionNames" : "false",
