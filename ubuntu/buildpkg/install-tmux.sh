@@ -9,7 +9,7 @@ branch="2.3"
 mkdir -p ${build_dir}
 pushd ${build_dir}
 
-git clone https://github.com/tmux/tmux.git --no-checkout --single-branch -b ${branch}
+git clone https://github.com/tmux/tmux.git --no-checkout --depth 1 --single-branch -b ${branch}
 pushd tmux
 git checkout ${branch} -b build
 ./autogen.sh
