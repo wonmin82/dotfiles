@@ -2,8 +2,8 @@
 
 set -e -x
 
-./install-wget.sh
 ./install-git.sh
+./install-wget.sh
 ./install-repo.sh
 ./install-cmake.sh
 ./install-llvm.sh
