@@ -4,14 +4,14 @@ set -e -x
 
 source ./build-env.sh
 
-version="3.7.0"
+tag="v3.7.0"
 
 mkdir ${build_dir}
 pushd ${build_dir}
 
-wget http://www.cmake.org/files/v3.7/cmake-${version}.tar.gz
-tar xzpf cmake-${version}.tar.gz
-pushd cmake-${version}
+git clone https://gitlab.kitware.com/cmake/cmake.git --no-checkout --depth 1 --single-branch -b ${tag}
+pushd cmake
+git checkout refs/tags/${tag} -b build
 ./bootstrap --prefix=${install_prefix} --parallel=${jobs}
 make -j ${jobs}
 make -j ${jobs} install
