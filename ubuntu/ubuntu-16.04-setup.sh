@@ -281,6 +281,7 @@ list_pkgs_to_be_installed=(
 "wine"
 "apcalc"
 "hh"
+"docker-engine"
 )
 
 list_vm_pkgs_to_be_installed=(
@@ -309,6 +310,13 @@ retry()
 	done
 }
 
+install_apt_prerequisites()
+{
+	retry sudo aptitude update
+	retry sudo aptitude -y --with-recommends --download-only install apt-transport-https ca-certificates
+	sudo aptitude -y --with-recommends install apt-transport-https ca-certificates
+}
+
 add_ppa()
 {
 	# oracle java
@@ -319,6 +327,10 @@ add_ppa()
 	# mono
 	sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
 	echo "deb http://download.mono-project.com/repo/debian wheezy main" | sudo tee /etc/apt/sources.list.d/mono-xamarin.list
+
+	# docker
+	sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
+	echo "deb https://apt.dockerproject.org/repo ubuntu-xenial main" | sudo tee /etc/apt/sources.list.d/docker.list
 
 	retry sudo aptitude update
 }
@@ -397,15 +409,23 @@ install_vm_tools()
 	eval $aptitude_install_command
 }
 
+post_process()
+{
+	# docker
+	sudo usermod -aG docker $(getent passwd 1000 | cut -d: -f1)
+}
+
 main()
 {
 	set_preferences
+	install_apt_prerequisites
 	add_ppa
 	fetch_all
 	install_ttfs
 	install_java
 	install_all
 	install_vm_tools
+	post_process
 }
 
 main
