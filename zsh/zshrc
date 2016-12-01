@@ -120,14 +120,20 @@ antigen bundle screen
 antigen bundle zsh-users/zsh-syntax-highlighting
 
 if [[ ${_SYSENV_DIST} == "ubuntu" ]]; then
+	antigen bundle sudo
 	antigen bundle command-not-found
 	antigen bundle debian
+	if (( $+commands[docker] )); then
+		antigen bundle docker
+	fi
 fi
 
 if [[ ${_SYSENV_OS} == "macos" ]]; then
+	antigen bundle sudo
 	antigen bundle osx
 	antigen bundle brew
 	antigen bundle brew-cask
+	antigen bundle gnu-utils
 fi
 
 # more LS_COLORS
