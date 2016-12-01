@@ -528,6 +528,21 @@ if [[ ${_SYSENV_OS} == "macos" ]]; then
 	}
 fi
 
+if (( $+commands[docker] )); then
+	purge-docker()
+	{
+		# Delete all containers
+		if [[ $(docker ps -a -q | wc -l) != 0 ]]; then
+			docker rm $(docker ps -a -q)
+		fi
+
+		# Delete all images
+		if [[ $(docker images -q | wc -l) != 0 ]]; then
+			docker rmi $(docker images -q)
+		fi
+	}
+fi
+
 if [[ -f /usr/bin/vmware-config-tools.pl ]]; then
 	function reconfigure-vmware-tools()
 	{
