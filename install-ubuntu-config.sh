@@ -10,5 +10,6 @@ cp -f -v ./ubuntu/fonts.conf ~/.config/fontconfig/
 sudo mkdir -p -v /root/.config/fontconfig
 sudo cp -f -v ./ubuntu/fonts.conf /root/.config/fontconfig/
 sudo chown -v root:root /root/.config/fontconfig/fonts.conf
+sudo mkdir -p -v /etc/fonts
 sudo cp -f -v ./ubuntu/local.conf /etc/fonts/
 sudo chown -v root:root /etc/fonts/local.conf
