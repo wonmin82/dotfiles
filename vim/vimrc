@@ -292,7 +292,7 @@ NeoBundle 'honza/vim-snippets'
 
 " ensure vim version >= 7.3.584 and not in cygwin.
 if (v:version > 703 || v:version == 703 && has('patch584'))
-			\   && !(s:is_win32 || s:is_win64)
+			\   && !(s:is_win32 || s:is_win64 || s:is_cygwin)
 	NeoBundle 'Valloric/YouCompleteMe', {
 				\   'build' : {
 				\       'windows' : './install.py --clang-completer --system-libclang --omnisharp-completer',
