@@ -62,6 +62,7 @@ list_pkgs_to_be_installed=(
 "vlc"
 "lame"
 "lame-doc"
+"debconf-utils"
 "ubuntu-restricted-extras"
 "libreoffice"
 "ttf-mscorefonts-installer"
