@@ -13,28 +13,28 @@ umask 022
 # }}}
 
 # Variables {{{
-ZDOTDIR=~/.zsh
+ZDOTDIR="$HOME/.zsh"
 
-ZSHDATADIR=$HOME/.zsh_data
-HISTFILE=$ZSHDATADIR/.zsh_history
+ZSHDATADIR="$HOME/.zsh_data"
+HISTFILE="$ZSHDATADIR/.zsh_history"
 
-ANTIGENDIR=$ZSHDATADIR/antigen
-ADOTDIR=$ZSHDATADIR/antigen-repo
+ANTIGENDIR="$ZSHDATADIR/antigen"
+ADOTDIR="$ZSHDATADIR/antigen-repo"
 
 skip_global_compinit=1
-ANTIGEN_COMPDUMPFILE=$ZSHDATADIR/.zcompdump
+ANTIGEN_COMPDUMPFILE="$ZSHDATADIR/.zcompdump"
 
 # locale setting
-export LC_ALL=en_US.UTF-8
-export LANG=en_US.UTF-8
-export LANGUAGE=en_US.UTF-8
+export LC_ALL="en_US.UTF-8"
+export LANG="en_US.UTF-8"
+export LANGUAGE="en_US.UTF-8"
 
 # PAGER, EDITOR setting
-export PAGER=less
-export EDITOR=vim
+export PAGER="less"
+export EDITOR="vim"
 
 # gcc color setting
-export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+export GCC_COLORS="error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01"
 #}}}
 
 # Functions for internal use {{{
@@ -61,103 +61,103 @@ function __strip()
 
 # Path configurations {{{
 # Ensure '.local' directories exist.
-__ensure_dir_exists $HOME/.local/bin
-__ensure_dir_exists $HOME/.local/share/man
-__ensure_dir_exists $HOME/.local/share/info
-__ensure_dir_exists $HOME/.local/lib
+__ensure_dir_exists "$HOME/.local/bin"
+__ensure_dir_exists "$HOME/.local/share/man"
+__ensure_dir_exists "$HOME/.local/share/info"
+__ensure_dir_exists "$HOME/.local/lib"
 if [[ $(uname -m | grep 'x86_64' | wc -l) != 0 ]]; then
-	__ensure_dir_exists $HOME/.local/lib64
-	__ensure_dir_exists $HOME/.local/lib32
+	__ensure_dir_exists "$HOME/.local/lib64"
+	__ensure_dir_exists "$HOME/.local/lib32"
 fi
-__ensure_dir_exists $HOME/.local/include
-__ensure_dir_exists $HOME/.local/lib/pkgconfig
+__ensure_dir_exists "$HOME/.local/include"
+__ensure_dir_exists "$HOME/.local/lib/pkgconfig"
 
 # Set some paths
 if [[ ! ":$PATH:" == *":$HOME/.local/bin:"* ]]; then
-	PATH=$HOME/.local/bin:$PATH
-	PATH=$(__strip $PATH ':')
+	PATH="$HOME/.local/bin:$PATH"
+	PATH="$(__strip $PATH ':')"
 	export PATH
 fi
 
 if [[ ! ":$(manpath 2> /dev/null):" == *":$HOME/.local/share/man:"* ]]; then
 	unset MANPATH
-	MANPATH=$HOME/.local/share/man:$(manpath 2> /dev/null)
-	MANPATH=$(__strip $MANPATH ':')
+	MANPATH="$HOME/.local/share/man:$(manpath 2> /dev/null)"
+	MANPATH="$(__strip $MANPATH ':')"
 	export MANPATH
 fi
 
 if [[ ! ":$INFOPATH:" == *":$HOME/.local/share/info:"* ]]; then
-	INFOPATH=$HOME/.local/share/info:$INFOPATH
-	INFOPATH=$(__strip $INFOPATH ':')
+	INFOPATH="$HOME/.local/share/info:$INFOPATH"
+	INFOPATH="$(__strip $INFOPATH ':')"
 	export INFOPATH
 fi
 
 unset LD_LIBRARY_PATH_SCRATCH
 if [[ ! ":$LD_LIBRARY_PATH:" == *":$HOME/.local/lib:"* ]]; then
-	LD_LIBRARY_PATH_SCRATCH=$LD_LIBRARY_PATH_SCRATCH:$HOME/.local/lib
+	LD_LIBRARY_PATH_SCRATCH="$LD_LIBRARY_PATH_SCRATCH:$HOME/.local/lib"
 fi
 if [[ $(uname -m | grep 'x86_64' | wc -l) != 0 ]]; then
 	if [[ ! ":$LD_LIBRARY_PATH:" == *":$HOME/.local/lib64:"* ]]; then
-		LD_LIBRARY_PATH_SCRATCH=$LD_LIBRARY_PATH_SCRATCH:$HOME/.local/lib64
+		LD_LIBRARY_PATH_SCRATCH="$LD_LIBRARY_PATH_SCRATCH:$HOME/.local/lib64"
 	fi
 
 	if [[ ! ":$LD_LIBRARY_PATH:" == *":$HOME/.local/lib32:"* ]]; then
-		LD_LIBRARY_PATH_SCRATCH=$LD_LIBRARY_PATH_SCRATCH:$HOME/.local/lib32
+		LD_LIBRARY_PATH_SCRATCH="$LD_LIBRARY_PATH_SCRATCH:$HOME/.local/lib32"
 	fi
 fi
-LD_LIBRARY_PATH_SCRATCH=$(__strip $LD_LIBRARY_PATH_SCRATCH ':')
-LD_LIBRARY_PATH=$LD_LIBRARY_PATH_SCRATCH:$LD_LIBRARY_PATH
-LD_LIBRARY_PATH=$(__strip $LD_LIBRARY_PATH ':')
+LD_LIBRARY_PATH_SCRATCH="$(__strip $LD_LIBRARY_PATH_SCRATCH ':')"
+LD_LIBRARY_PATH="$LD_LIBRARY_PATH_SCRATCH:$LD_LIBRARY_PATH"
+LD_LIBRARY_PATH="$(__strip $LD_LIBRARY_PATH ':')"
 unset LD_LIBRARY_PATH_SCRATCH
 export LD_LIBRARY_PATH
 
 unset LD_RUN_PATH_SCRATCH
 if [[ ! ":$LD_RUN_PATH:" == *":$HOME/.local/lib:"* ]]; then
-	LD_RUN_PATH_SCRATCH=$LD_RUN_PATH_SCRATCH:$HOME/.local/lib
+	LD_RUN_PATH_SCRATCH="$LD_RUN_PATH_SCRATCH:$HOME/.local/lib"
 fi
 if [[ $(uname -m | grep 'x86_64' | wc -l) != 0 ]]; then
 	if [[ ! ":$LD_RUN_PATH:" == *":$HOME/.local/lib64:"* ]]; then
-		LD_RUN_PATH_SCRATCH=$LD_RUN_PATH_SCRATCH:$HOME/.local/lib64
+		LD_RUN_PATH_SCRATCH="$LD_RUN_PATH_SCRATCH:$HOME/.local/lib64"
 	fi
 
 	if [[ ! ":$LD_RUN_PATH:" == *":$HOME/.local/lib32:"* ]]; then
-		LD_RUN_PATH_SCRATCH=$LD_RUN_PATH_SCRATCH:$HOME/.local/lib32
+		LD_RUN_PATH_SCRATCH="$LD_RUN_PATH_SCRATCH:$HOME/.local/lib32"
 	fi
 fi
-LD_RUN_PATH_SCRATCH=$(__strip $LD_RUN_PATH_SCRATCH ':')
-LD_RUN_PATH=$LD_RUN_PATH_SCRATCH:$LD_RUN_PATH
-LD_RUN_PATH=$(__strip $LD_RUN_PATH ':')
+LD_RUN_PATH_SCRATCH="$(__strip $LD_RUN_PATH_SCRATCH ':')"
+LD_RUN_PATH="$LD_RUN_PATH_SCRATCH:$LD_RUN_PATH"
+LD_RUN_PATH="$(__strip $LD_RUN_PATH ':')"
 unset LD_RUN_PATH_SCRATCH
 export LD_RUN_PATH
 
 unset LIBRARY_PATH_SCRATCH
 if [[ ! ":$LIBRARY_PATH:" == *":$HOME/.local/lib:"* ]]; then
-	LIBRARY_PATH_SCRATCH=$LIBRARY_PATH_SCRATCH:$HOME/.local/lib
+	LIBRARY_PATH_SCRATCH="$LIBRARY_PATH_SCRATCH:$HOME/.local/lib"
 fi
 if [[ $(uname -m | grep 'x86_64' | wc -l) != 0 ]]; then
 	if [[ ! ":$LIBRARY_PATH:" == *":$HOME/.local/lib64:"* ]]; then
-		LIBRARY_PATH_SCRATCH=$LIBRARY_PATH_SCRATCH:$HOME/.local/lib64
+		LIBRARY_PATH_SCRATCH="$LIBRARY_PATH_SCRATCH:$HOME/.local/lib64"
 	fi
 
 	if [[ ! ":$LIBRARY_PATH:" == *":$HOME/.local/lib32:"* ]]; then
-		LIBRARY_PATH_SCRATCH=$LIBRARY_PATH_SCRATCH:$HOME/.local/lib32
+		LIBRARY_PATH_SCRATCH="$LIBRARY_PATH_SCRATCH:$HOME/.local/lib32"
 	fi
 fi
-LIBRARY_PATH_SCRATCH=$(__strip $LIBRARY_PATH_SCRATCH ':')
-LIBRARY_PATH=$LIBRARY_PATH_SCRATCH:$LIBRARY_PATH
-LIBRARY_PATH=$(__strip $LIBRARY_PATH ':')
+LIBRARY_PATH_SCRATCH="$(__strip $LIBRARY_PATH_SCRATCH ':')"
+LIBRARY_PATH="$LIBRARY_PATH_SCRATCH:$LIBRARY_PATH"
+LIBRARY_PATH="$(__strip $LIBRARY_PATH ':')"
 unset LIBRARY_PATH_SCRATCH
 export LIBRARY_PATH
 
 if [[ ! ":$CPATH:" == *":$HOME/.local/include:"* ]]; then
-	CPATH=$HOME/.local/include:$CPATH
-	CPATH=$(__strip $CPATH ':')
+	CPATH="$HOME/.local/include:$CPATH"
+	CPATH="$(__strip $CPATH ':')"
 	export CPATH
 fi
 
 if [[ ! ":$PKG_CONFIG_PATH:" == *":$HOME/.local/lib/pkgconfig:"* ]]; then
-	PKG_CONFIG_PATH=$HOME/.local/lib/pkgconfig:$PKG_CONFIG_PATH
-	PKG_CONFIG_PATH=$(__strip $PKG_CONFIG_PATH ':')
+	PKG_CONFIG_PATH="$HOME/.local/lib/pkgconfig:$PKG_CONFIG_PATH"
+	PKG_CONFIG_PATH="$(__strip $PKG_CONFIG_PATH ':')"
 	export PKG_CONFIG_PATH
 fi
 #}}}
