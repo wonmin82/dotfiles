@@ -52,7 +52,10 @@ function __ensure_dir_exists()
 # $2: character to strip (only ONE character!!)
 function __strip()
 {
-	echo $1 | sed -e 's/^'$2'*//g' -e 's/'$2'*$//g'
+	string="$1"
+	string="${string%${string##*[^$2]}}"
+	string="${string#${string%%[^$2]*}}"
+	echo ${string}
 }
 #}}}
 
