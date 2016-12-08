@@ -336,7 +336,7 @@ add_ppa()
 	retry sudo aptitude update
 }
 
-set_preferences()
+apply_apt_configurations()
 {
 	sudo bash -c 'echo "Package: kaccounts-providers kde-config-telepathy-accounts runit git-daemon-run" > /etc/apt/preferences'
 	sudo bash -c 'echo "Pin: release *" >> /etc/apt/preferences'
@@ -419,7 +419,7 @@ post_process()
 
 main()
 {
-	set_preferences
+	apply_apt_configurations
 	install_apt_prerequisites
 	add_ppa
 	fetch_all
