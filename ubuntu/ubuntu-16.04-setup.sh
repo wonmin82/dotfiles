@@ -341,6 +341,11 @@ apply_apt_configurations()
 	sudo bash -c 'echo "Package: kaccounts-providers kde-config-telepathy-accounts runit git-daemon-run" > /etc/apt/preferences'
 	sudo bash -c 'echo "Pin: release *" >> /etc/apt/preferences'
 	sudo bash -c 'echo "Pin-Priority: -99" >> /etc/apt/preferences'
+
+	sudo bash -c 'echo "Dpkg::Options {" > /etc/apt/apt.conf.d/local'
+	sudo bash -c 'echo -e "\t\"--force-confdef\";" >> /etc/apt/apt.conf.d/local'
+	sudo bash -c 'echo -e "\t\"--force-confold\";" >> /etc/apt/apt.conf.d/local'
+	sudo bash -c 'echo "}" >> /etc/apt/apt.conf.d/local'
 }
 
 install_ttfs()
