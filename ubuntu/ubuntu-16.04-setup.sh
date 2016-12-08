@@ -320,6 +320,8 @@ install_apt_prerequisites()
 
 add_ppa()
 {
+	sudo add-apt-repository multiverse
+
 	# oracle java
 	sudo add-apt-repository ppa:webupd8team/java < /dev/null
 
