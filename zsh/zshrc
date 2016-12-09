@@ -490,10 +490,10 @@ if [[ ${_SYSENV_DIST} == "ubuntu" ]]; then
 
 	function clean-packages()
 	{
-		sudo aptitude -y autoclean
 		if [[ $(dpkg --get-selections | grep deinstall | cut -f1 | wc -l) != 0 ]]; then
 			sudo aptitude -y purge $(dpkg --get-selections | grep deinstall | cut -f1)
 		fi
+		sudo aptitude -y autoclean
 	}
 
 	function update-packages()
