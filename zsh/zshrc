@@ -501,6 +501,7 @@ if [[ ${_SYSENV_DIST} == "ubuntu" ]]; then
 		retry sudo aptitude update
 		retry sudo aptitude -d -y upgrade
 		sudo aptitude -y upgrade
+		clean-packages
 	}
 
 	function update-system()
