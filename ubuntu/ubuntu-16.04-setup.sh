@@ -256,11 +256,13 @@ list_pkgs_to_be_installed=(
 "python-all"
 "python-dev"
 "python-all-dev"
+"python-pip"
 "python-doc"
 "python-flake8"
 "python3-all"
 "python3-dev"
 "python3-all-dev"
+"python3-pip"
 "python3-doc"
 "python3-flake8"
 # need to be checked for existence when ubuntu is upgraded {
