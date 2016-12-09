@@ -498,7 +498,9 @@ if [[ ${_SYSENV_DIST} == "ubuntu" ]]; then
 
 	function update-packages()
 	{
-		retry sudo aptitude update && retry sudo aptitude -d -y upgrade && sudo aptitude -y upgrade
+		retry sudo aptitude update
+		retry sudo aptitude -d -y upgrade
+		sudo aptitude -y upgrade
 	}
 
 	function update-system()
@@ -518,7 +520,10 @@ if [[ ${_SYSENV_OS} == "macos" ]]; then
 
 	function update-packages()
 	{
-		retry brew update && brew outdated && retry brew upgrade && brew cleanup
+		retry brew update
+		brew outdated
+		retry brew upgrade
+		brew cleanup
 	}
 
 	function update-system()
