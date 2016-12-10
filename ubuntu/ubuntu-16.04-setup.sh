@@ -458,6 +458,10 @@ post_process()
 	update-alternatives --set default.plymouth /usr/share/plymouth/themes/ubuntu-logo/ubuntu-logo.plymouth
 	update-grub2
 	update-initramfs -k all -u
+
+	rm -f $(getent passwd 0 | cut -d: -f6)/.bash_history
+	rm -f $(getent passwd 1000 | cut -d: -f6)/.bash_history
+	rm -r -f $(getent passwd 1000 | cut -d: -f6)/.gvfs
 }
 
 main()
