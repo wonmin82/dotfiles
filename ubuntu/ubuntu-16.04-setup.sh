@@ -451,6 +451,15 @@ post_process()
 {
 	# docker
 	usermod -aG docker $(getent passwd 1000 | cut -d: -f1)
+
+	ln -s /usr/bin/xscreensaver-command /usr/bin/gnome-screensaver-command
+
+	dbus-launch --exit-with-session gsettings set org.gnome.settings-daemon.plugins.background active true
+	dbus-launch --exit-with-session gsettings reset org.gnome.desktop.background show-desktop-icons
+
+	update-alternatives --set default.plymouth /usr/share/plymouth/themes/ubuntu-logo/ubuntu-logo.plymouth
+	update-grub2
+	update-initramfs -k all -u
 }
 
 main()
