@@ -24,6 +24,12 @@ list_tasks_to_be_installed=(
 "ubuntustudio-font-meta"
 )
 
+list_pkgs_priority=(
+"mysql-server"
+"phpmyadmin"
+"postfix"
+)
+
 list_pkgs_to_be_uninstalled=(
 "gnome-screensaver"
 "qt4-default"
@@ -354,6 +360,25 @@ add_repo()
 	retry sudo aptitude update
 }
 
+prepare_unattended_install()
+{
+	echo "gdm3 shared/default-x-display-manager select lightdm" | sudo debconf-set-selections
+	echo "lightdm shared/default-x-display-manager select lightdm" | sudo debconf-set-selections
+	echo "sddm shared/default-x-display-manager select lightdm" | sudo debconf-set-selections
+	echo "jackd2 jackd/tweak_rt_limits boolean false" | sudo debconf-set-selections
+}
+
+install_priority_packages()
+{
+	aptitude_fetch_command="retry sudo aptitude -y --with-recommends --download-only install"
+	aptitude_fetch_command="${aptitude_fetch_command} ${list_pkgs_priority[@]}"
+	eval $aptitude_fetch_command
+
+	aptitude_install_command="sudo aptitude -y --with-recommends install"
+	aptitude_install_command="${aptitude_install_command} ${list_pkgs_priority[@]}"
+	eval $aptitude_install_command
+}
+
 install_ttfs()
 {
 	mkdir -p /tmp/msttf
@@ -433,6 +458,8 @@ main()
 	apply_apt_configurations
 	install_apt_prerequisites
 	add_repo
+	prepare_unattended_install
+	install_priority_packages
 	fetch_all
 	install_ttfs
 	install_java
