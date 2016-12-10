@@ -28,6 +28,7 @@ list_pkgs_priority=(
 "mysql-server"
 "phpmyadmin"
 "postfix"
+"sddm"
 )
 
 list_pkgs_to_be_uninstalled=(
@@ -370,11 +371,11 @@ prepare_unattended_install()
 
 install_priority_packages()
 {
-	aptitude_fetch_command="retry aptitude -y --with-recommends --download-only install"
+	aptitude_fetch_command="retry aptitude -y --download-only install"
 	aptitude_fetch_command="${aptitude_fetch_command} ${list_pkgs_priority[@]}"
 	eval $aptitude_fetch_command
 
-	aptitude_install_command="aptitude -y --with-recommends install"
+	aptitude_install_command="aptitude -y install"
 	aptitude_install_command="${aptitude_install_command} ${list_pkgs_priority[@]}"
 	eval $aptitude_install_command
 }
