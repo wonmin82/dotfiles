@@ -347,14 +347,6 @@ add_repo()
 	retry aptitude update
 }
 
-prepare_unattended_install()
-{
-	echo "gdm3 shared/default-x-display-manager select lightdm" | debconf-set-selections
-	echo "lightdm shared/default-x-display-manager select lightdm" | debconf-set-selections
-	echo "sddm shared/default-x-display-manager select lightdm" | debconf-set-selections
-	echo "jackd2 jackd/tweak_rt_limits boolean false" | debconf-set-selections
-}
-
 install_priority_packages()
 {
 	aptitude_fetch_command="retry aptitude -y --download-only install"
@@ -364,6 +356,14 @@ install_priority_packages()
 	aptitude_install_command="aptitude -y install"
 	aptitude_install_command="${aptitude_install_command} ${list_pkgs_priority[@]}"
 	eval $aptitude_install_command
+}
+
+prepare_unattended_install()
+{
+	echo "gdm3 shared/default-x-display-manager select lightdm" | debconf-set-selections
+	echo "lightdm shared/default-x-display-manager select lightdm" | debconf-set-selections
+	echo "sddm shared/default-x-display-manager select lightdm" | debconf-set-selections
+	echo "jackd2 jackd/tweak_rt_limits boolean false" | debconf-set-selections
 }
 
 install_ttfs()
@@ -473,8 +473,8 @@ main()
 
 	install_apt_prerequisites
 	add_repo
-	prepare_unattended_install
 	install_priority_packages
+	prepare_unattended_install
 	fetch_all
 	install_ttfs
 	install_java
