@@ -29,6 +29,7 @@ list_pkgs_priority=(
 "phpmyadmin"
 "postfix"
 "sddm"
+"gdm3"
 )
 
 list_pkgs_to_be_uninstalled=(
