@@ -334,7 +334,7 @@ install_apt_prerequisites()
 	sudo aptitude -y --with-recommends install apt-transport-https ca-certificates
 }
 
-add_ppa()
+add_repo()
 {
 	sudo add-apt-repository multiverse
 
@@ -432,7 +432,7 @@ main()
 {
 	apply_apt_configurations
 	install_apt_prerequisites
-	add_ppa
+	add_repo
 	fetch_all
 	install_ttfs
 	install_java
