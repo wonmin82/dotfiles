@@ -321,60 +321,60 @@ retry()
 
 apply_apt_configurations()
 {
-	sudo rm -f /etc/apt/preferences
-	sudo bash -c 'echo "Package: kaccounts-providers kde-config-telepathy-accounts runit git-daemon-run" > /etc/apt/preferences'
-	sudo bash -c 'echo "Pin: release *" >> /etc/apt/preferences'
-	sudo bash -c 'echo "Pin-Priority: -99" >> /etc/apt/preferences'
+	rm -f /etc/apt/preferences
+	bash -c 'echo "Package: kaccounts-providers kde-config-telepathy-accounts runit git-daemon-run" > /etc/apt/preferences'
+	bash -c 'echo "Pin: release *" >> /etc/apt/preferences'
+	bash -c 'echo "Pin-Priority: -99" >> /etc/apt/preferences'
 
-	sudo rm -f /etc/apt/apt.conf.d/local
-	sudo bash -c 'echo "Dpkg::Options {" > /etc/apt/apt.conf.d/local'
-	sudo bash -c 'echo -e "\t\"--force-confdef\";" >> /etc/apt/apt.conf.d/local'
-	sudo bash -c 'echo -e "\t\"--force-confold\";" >> /etc/apt/apt.conf.d/local'
-	sudo bash -c 'echo "}" >> /etc/apt/apt.conf.d/local'
+	rm -f /etc/apt/apt.conf.d/local
+	bash -c 'echo "Dpkg::Options {" > /etc/apt/apt.conf.d/local'
+	bash -c 'echo -e "\t\"--force-confdef\";" >> /etc/apt/apt.conf.d/local'
+	bash -c 'echo -e "\t\"--force-confold\";" >> /etc/apt/apt.conf.d/local'
+	bash -c 'echo "}" >> /etc/apt/apt.conf.d/local'
 }
 
 install_apt_prerequisites()
 {
-	retry sudo aptitude update
-	retry sudo aptitude -y --with-recommends --download-only install apt-transport-https ca-certificates
-	sudo aptitude -y --with-recommends install apt-transport-https ca-certificates
+	retry aptitude update
+	retry aptitude -y --with-recommends --download-only install apt-transport-https ca-certificates
+	aptitude -y --with-recommends install apt-transport-https ca-certificates
 }
 
 add_repo()
 {
-	sudo add-apt-repository multiverse
+	add-apt-repository multiverse
 
 	# oracle java
-	sudo add-apt-repository ppa:webupd8team/java < /dev/null
+	add-apt-repository ppa:webupd8team/java < /dev/null
 
-	sudo add-apt-repository ppa:ultradvorka/ppa < /dev/null
+	add-apt-repository ppa:ultradvorka/ppa < /dev/null
 
 	# mono
-	sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
-	echo "deb http://download.mono-project.com/repo/debian wheezy main" | sudo tee /etc/apt/sources.list.d/mono-xamarin.list
+	apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
+	echo "deb http://download.mono-project.com/repo/debian wheezy main" | tee /etc/apt/sources.list.d/mono-xamarin.list
 
 	# docker
-	sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
-	echo "deb https://apt.dockerproject.org/repo ubuntu-xenial main" | sudo tee /etc/apt/sources.list.d/docker.list
+	apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
+	echo "deb https://apt.dockerproject.org/repo ubuntu-xenial main" | tee /etc/apt/sources.list.d/docker.list
 
-	retry sudo aptitude update
+	retry aptitude update
 }
 
 prepare_unattended_install()
 {
-	echo "gdm3 shared/default-x-display-manager select lightdm" | sudo debconf-set-selections
-	echo "lightdm shared/default-x-display-manager select lightdm" | sudo debconf-set-selections
-	echo "sddm shared/default-x-display-manager select lightdm" | sudo debconf-set-selections
-	echo "jackd2 jackd/tweak_rt_limits boolean false" | sudo debconf-set-selections
+	echo "gdm3 shared/default-x-display-manager select lightdm" | debconf-set-selections
+	echo "lightdm shared/default-x-display-manager select lightdm" | debconf-set-selections
+	echo "sddm shared/default-x-display-manager select lightdm" | debconf-set-selections
+	echo "jackd2 jackd/tweak_rt_limits boolean false" | debconf-set-selections
 }
 
 install_priority_packages()
 {
-	aptitude_fetch_command="retry sudo aptitude -y --with-recommends --download-only install"
+	aptitude_fetch_command="retry aptitude -y --with-recommends --download-only install"
 	aptitude_fetch_command="${aptitude_fetch_command} ${list_pkgs_priority[@]}"
 	eval $aptitude_fetch_command
 
-	aptitude_install_command="sudo aptitude -y --with-recommends install"
+	aptitude_install_command="aptitude -y --with-recommends install"
 	aptitude_install_command="${aptitude_install_command} ${list_pkgs_priority[@]}"
 	eval $aptitude_install_command
 }
@@ -383,66 +383,66 @@ install_ttfs()
 {
 	mkdir -p /tmp/msttf
 	wget --no-verbose --no-hsts --show-progress --directory-prefix=/tmp/msttf http://sourceforge.net/projects/corefonts/files/the%20fonts/final/andale32.exe http://sourceforge.net/projects/corefonts/files/the%20fonts/final/arial32.exe http://sourceforge.net/projects/corefonts/files/the%20fonts/final/arialb32.exe http://sourceforge.net/projects/corefonts/files/the%20fonts/final/comic32.exe http://sourceforge.net/projects/corefonts/files/the%20fonts/final/courie32.exe http://sourceforge.net/projects/corefonts/files/the%20fonts/final/georgi32.exe http://sourceforge.net/projects/corefonts/files/the%20fonts/final/impact32.exe http://sourceforge.net/projects/corefonts/files/the%20fonts/final/times32.exe http://sourceforge.net/projects/corefonts/files/the%20fonts/final/trebuc32.exe http://sourceforge.net/projects/corefonts/files/the%20fonts/final/verdan32.exe http://sourceforge.net/projects/corefonts/files/the%20fonts/final/webdin32.exe
-	sudo chown -v _apt:nogroup /tmp/msttf/*
-	sudo chmod -v 644 /tmp/msttf/*
-	echo ttf-mscorefonts-installer msttcorefonts/dldir string /tmp/msttf | sudo debconf-set-selections
-	echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
-	sudo aptitude -y install ttf-mscorefonts-installer
+	chown -v _apt:nogroup /tmp/msttf/*
+	chmod -v 644 /tmp/msttf/*
+	echo ttf-mscorefonts-installer msttcorefonts/dldir string /tmp/msttf | debconf-set-selections
+	echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections
+	aptitude -y install ttf-mscorefonts-installer
 	rm -rf /tmp/msttf
 }
 
 install_java()
 {
 	ORACLE_JAVA_PKG_PREFIX="oracle-java8"
-	retry sudo aptitude -y -d install ${ORACLE_JAVA_PKG_PREFIX}-installer ${ORACLE_JAVA_PKG_PREFIX}-set-default ${ORACLE_JAVA_PKG_PREFIX}-unlimited-jce-policy
+	retry aptitude -y -d install ${ORACLE_JAVA_PKG_PREFIX}-installer ${ORACLE_JAVA_PKG_PREFIX}-set-default ${ORACLE_JAVA_PKG_PREFIX}-unlimited-jce-policy
 	lastStatus=256
 	until [[ ${lastStatus} == 0 ]]; do
-		sudo aptitude -y purge ${ORACLE_JAVA_PKG_PREFIX}-installer ${ORACLE_JAVA_PKG_PREFIX}-set-default ${ORACLE_JAVA_PKG_PREFIX}-unlimited-jce-policy
-		echo ${ORACLE_JAVA_PKG_PREFIX}-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections
-		sudo aptitude -y install ${ORACLE_JAVA_PKG_PREFIX}-installer ${ORACLE_JAVA_PKG_PREFIX}-set-default ${ORACLE_JAVA_PKG_PREFIX}-unlimited-jce-policy
+		aptitude -y purge ${ORACLE_JAVA_PKG_PREFIX}-installer ${ORACLE_JAVA_PKG_PREFIX}-set-default ${ORACLE_JAVA_PKG_PREFIX}-unlimited-jce-policy
+		echo ${ORACLE_JAVA_PKG_PREFIX}-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections
+		aptitude -y install ${ORACLE_JAVA_PKG_PREFIX}-installer ${ORACLE_JAVA_PKG_PREFIX}-set-default ${ORACLE_JAVA_PKG_PREFIX}-unlimited-jce-policy
 		lastStatus=$?
 	done
 }
 
 fetch_all()
 {
-	aptitude_fetch_command="retry sudo aptitude -y --with-recommends --download-only install"
+	aptitude_fetch_command="retry aptitude -y --with-recommends --download-only install"
 	for task in "${list_tasks_to_be_installed[@]}"; do
 		list_pkg=($(tasksel --task-packages ${task}))
 		aptitude_fetch_command="${aptitude_fetch_command} ${list_pkg[@]}"
 		eval $aptitude_fetch_command
 	done
 
-	aptitude_fetch_command="retry sudo aptitude -y --with-recommends --download-only install"
+	aptitude_fetch_command="retry aptitude -y --with-recommends --download-only install"
 	aptitude_fetch_command="${aptitude_fetch_command} ${list_pkgs_to_be_installed[@]}"
 	eval $aptitude_fetch_command
 }
 
 install_all()
 {
-	aptitude_install_command="sudo aptitude -y --with-recommends install"
+	aptitude_install_command="aptitude -y --with-recommends install"
 	for task in "${list_tasks_to_be_installed[@]}"; do
 		list_pkg=($(tasksel --task-packages ${task}))
 		aptitude_install_command="${aptitude_install_command} ${list_pkg[@]}"
 		eval $aptitude_install_command
 	done
 
-	aptitude_remove_command="sudo aptitude -y purge"
+	aptitude_remove_command="aptitude -y purge"
 	aptitude_remove_command="${aptitude_remove_command} ${list_pkgs_to_be_uninstalled[@]}"
 	eval $aptitude_remove_command
 
-	aptitude_install_command="sudo aptitude -y --with-recommends install"
+	aptitude_install_command="aptitude -y --with-recommends install"
 	aptitude_install_command="${aptitude_install_command} ${list_pkgs_to_be_installed[@]}"
 	eval $aptitude_install_command
 }
 
 install_vm_tools()
 {
-	aptitude_fetch_command="retry sudo aptitude -y --with-recommends --download-only install"
+	aptitude_fetch_command="retry aptitude -y --with-recommends --download-only install"
 	aptitude_fetch_command="${aptitude_fetch_command} ${list_vm_pkgs_to_be_installed[@]}"
 	eval $aptitude_fetch_command
 
-	aptitude_install_command="sudo aptitude -y --with-recommends install"
+	aptitude_install_command="aptitude -y --with-recommends install"
 	aptitude_install_command="${aptitude_install_command} ${list_vm_pkgs_to_be_installed[@]}"
 	eval $aptitude_install_command
 }
@@ -450,7 +450,7 @@ install_vm_tools()
 post_process()
 {
 	# docker
-	sudo usermod -aG docker $(getent passwd 1000 | cut -d: -f1)
+	usermod -aG docker $(getent passwd 1000 | cut -d: -f1)
 }
 
 main()
