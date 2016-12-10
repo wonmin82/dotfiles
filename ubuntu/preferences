@@ -1,0 +1,3 @@
+Package: gnome-screensaver kaccounts-providers kde-config-telepathy-accounts runit git-daemon-run
+Pin: release *
+Pin-Priority: -99
