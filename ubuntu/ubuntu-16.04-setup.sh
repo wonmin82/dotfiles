@@ -434,6 +434,17 @@ install_vm_tools()
 	eval $aptitude_install_command
 }
 
+install_recommended()
+{
+	aptitude_fetch_command="retry aptitude -y --with-recommends --download-only install"
+	aptitude_fetch_command="${aptitude_fetch_command} '~RBrecommends:~i'"
+	eval $aptitude_fetch_command
+
+	aptitude_install_command="aptitude -y --with-recommends install"
+	aptitude_install_command="${aptitude_install_command} '~RBrecommends:~i'"
+	eval $aptitude_install_command
+}
+
 post_process()
 {
 	# docker
@@ -465,6 +476,7 @@ main()
 	install_java
 	install_all
 	install_vm_tools
+	install_recommended
 	post_process
 }
 
