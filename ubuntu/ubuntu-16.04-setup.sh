@@ -320,20 +320,6 @@ retry()
 	done
 }
 
-apply_apt_configurations()
-{
-	rm -f /etc/apt/preferences
-	bash -c 'echo "Package: kaccounts-providers kde-config-telepathy-accounts runit git-daemon-run" > /etc/apt/preferences'
-	bash -c 'echo "Pin: release *" >> /etc/apt/preferences'
-	bash -c 'echo "Pin-Priority: -99" >> /etc/apt/preferences'
-
-	rm -f /etc/apt/apt.conf.d/local
-	bash -c 'echo "Dpkg::Options {" > /etc/apt/apt.conf.d/local'
-	bash -c 'echo -e "\t\"--force-confdef\";" >> /etc/apt/apt.conf.d/local'
-	bash -c 'echo -e "\t\"--force-confold\";" >> /etc/apt/apt.conf.d/local'
-	bash -c 'echo "}" >> /etc/apt/apt.conf.d/local'
-}
-
 install_apt_prerequisites()
 {
 	retry aptitude update
@@ -470,7 +456,6 @@ main()
 		exit 1
 	fi
 
-	apply_apt_configurations
 	install_apt_prerequisites
 	add_repo
 	prepare_unattended_install
