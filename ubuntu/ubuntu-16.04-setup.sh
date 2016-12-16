@@ -45,6 +45,8 @@ list_pkgs_to_be_installed=(
 "v86d"
 "x11vnc"
 "ubuntu-sdk"
+"nfs-common"
+"nfs-kernel-server"
 "ecryptfs-utils"
 "iproute-doc"
 "libatm1"
