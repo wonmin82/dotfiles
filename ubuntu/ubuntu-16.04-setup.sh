@@ -25,6 +25,7 @@ list_tasks_to_be_installed=(
 )
 
 list_pkgs_priority=(
+"tasksel"
 "mysql-server"
 "phpmyadmin"
 "postfix"
@@ -42,6 +43,7 @@ list_pkgs_to_be_prohibited=(
 )
 
 list_pkgs_to_be_installed=(
+"synaptic"
 "v86d"
 "x11vnc"
 "ubuntu-sdk"
