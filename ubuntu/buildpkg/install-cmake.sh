@@ -9,8 +9,9 @@ tag="v3.7.1"
 mkdir ${build_dir}
 pushd ${build_dir}
 
-git clone https://gitlab.kitware.com/cmake/cmake.git --no-checkout --depth 1 --single-branch -b ${tag}
-pushd cmake
+mkdir -p $PWD/cmake
+pushd $PWD/cmake
+git clone https://gitlab.kitware.com/cmake/cmake.git --no-checkout --depth 1 --single-branch -b ${tag} $PWD
 git checkout refs/tags/${tag} -b build
 ./bootstrap --prefix=${install_prefix} --parallel=${jobs}
 make -j ${jobs}

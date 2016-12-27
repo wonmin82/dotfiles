@@ -9,8 +9,9 @@ tag="4.8.18"
 mkdir ${build_dir}
 pushd ${build_dir}
 
-git clone https://github.com/MidnightCommander/mc.git --no-checkout --depth 1 --single-branch -b ${tag}
-pushd mc
+mkdir -p $PWD/mc
+pushd $PWD/mc
+git clone https://github.com/MidnightCommander/mc.git --no-checkout --depth 1 --single-branch -b ${tag} $PWD
 git checkout refs/tags/${tag} -b build
 ./autogen.sh
 ./configure --target=x86_64-linux-gnu --host=x86_64-linux-gnu --build=x86_64-linux-gnu --prefix=${install_prefix} --enable-vfs-sftp --enable-vfs-undelfs --enable-doxygen-man
