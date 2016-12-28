@@ -57,7 +57,7 @@ function __strip()
 	string="$*"
 	[[ ! -z "${string}" ]] && string="${string%${string##*[^${char}]}}"
 	[[ ! -z "${string}" ]] && string="${string#${string%%[^${char}]*}}"
-	echo ${string}
+	print ${string}
 }
 #}}}
 
