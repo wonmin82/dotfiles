@@ -85,6 +85,7 @@ if [[ ! ":$(manpath 2> /dev/null):" == *":$HOME/.local/share/man:"* ]]; then
 	unset MANPATH
 	MANPATH="$HOME/.local/share/man:$(manpath 2> /dev/null)"
 	MANPATH="$(__strip ':' $MANPATH)"
+	MANPATH="$MANPATH:"
 	export MANPATH
 fi
 
