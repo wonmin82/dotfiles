@@ -204,4 +204,11 @@ __rationalize_path pkg_config_path
 export PKG_CONFIG_PATH
 #}}}
 
+if [[ -f $HOME/.zshenv.path ]]; then
+	source $HOME/.zshenv.path
+	typeset -U path
+	__rationalize_path path
+	export PATH
+fi
+
 #  vim: set ft=zsh ts=4 sts=4 sw=4 tw=0 noet fdm=marker :
