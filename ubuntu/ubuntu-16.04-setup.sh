@@ -325,6 +325,12 @@ retry()
 	done
 }
 
+pre_process()
+{
+	echo "dash dash/sh boolean false" | debconf-set-selections
+	dpkg-reconfigure --frontend noninteractive dash
+}
+
 install_apt_prerequisites()
 {
 	retry aptitude update
@@ -475,6 +481,7 @@ main()
 		exit 1
 	fi
 
+	pre_process
 	install_apt_prerequisites
 	add_repo
 	install_priority_packages
