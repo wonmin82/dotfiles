@@ -113,7 +113,9 @@ antigen bundle git
 antigen bundle gitignore
 if (( $+commands[tmux] )); then
 	antigen bundle tmux
-	antigen bundle thewtex/tmux-mem-cpu-load
+	if [[ ${_SYSENV_OS} != "cygwin" ]]; then
+		antigen bundle thewtex/tmux-mem-cpu-load
+	fi
 fi
 antigen bundle screen
 
