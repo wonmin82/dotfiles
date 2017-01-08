@@ -473,6 +473,7 @@ post_process()
 	user="$(id -un 1000)"
 	home="$(getent passwd 1000 | cut -d: -f6)"
 
+	rm -f /usr/bin/gnome-screensaver-command
 	ln -s /usr/bin/xscreensaver-command /usr/bin/gnome-screensaver-command
 
 	sudo -u ${user} -H -i bash -c "mkdir -p ${home}/.config/autostart/"
