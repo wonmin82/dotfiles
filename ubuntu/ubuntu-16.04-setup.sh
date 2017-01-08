@@ -472,6 +472,8 @@ post_process()
 
 	rm -f $(getent passwd 0 | cut -d: -f6)/.bash_history
 	rm -f $(getent passwd 1000 | cut -d: -f6)/.bash_history
+
+	rm -r -f $(getent passwd 1000 | cut -d: -f6)/.gvfs || true
 }
 
 main()
