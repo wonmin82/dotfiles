@@ -459,7 +459,7 @@ install_recommended()
 post_process()
 {
 	# docker
-	usermod -aG docker $(getent passwd 1000 | cut -d: -f1)
+	usermod -aG docker $(id -un 1000)
 
 	dbus-launch --exit-with-session gsettings set org.gnome.settings-daemon.plugins.background active true
 	dbus-launch --exit-with-session gsettings reset org.gnome.desktop.background show-desktop-icons
