@@ -458,8 +458,6 @@ post_process()
 	# docker
 	usermod -aG docker $(getent passwd 1000 | cut -d: -f1)
 
-	ln -s /usr/bin/xscreensaver-command /usr/bin/gnome-screensaver-command
-
 	dbus-launch --exit-with-session gsettings set org.gnome.settings-daemon.plugins.background active true
 	dbus-launch --exit-with-session gsettings reset org.gnome.desktop.background show-desktop-icons
 
@@ -471,6 +469,24 @@ post_process()
 	rm -f $(getent passwd 1000 | cut -d: -f6)/.bash_history
 
 	rm -r -f $(getent passwd 1000 | cut -d: -f6)/.gvfs || true
+
+	user="$(id -un 1000)"
+	home="$(getent passwd 1000 | cut -d: -f6)"
+
+	ln -s /usr/bin/xscreensaver-command /usr/bin/gnome-screensaver-command
+
+	sudo -u ${user} -H -i bash -c "mkdir -p ${home}/.config/autostart/"
+
+	sudo -u ${user} -H -i bash -c "echo \"[Desktop Entry]\" > ${home}/.config/autostart/xscreensaver.desktop"
+	sudo -u ${user} -H -i bash -c "echo \"Type=Application\" >> ${home}/.config/autostart/xscreensaver.desktop"
+	sudo -u ${user} -H -i bash -c "echo \"Exec=xscreensaver -nosplash\" >> ${home}/.config/autostart/xscreensaver.desktop"
+	sudo -u ${user} -H -i bash -c "echo \"Hidden=false\" >> ${home}/.config/autostart/xscreensaver.desktop"
+	sudo -u ${user} -H -i bash -c "echo \"NoDisplay=false\" >> ${home}/.config/autostart/xscreensaver.desktop"
+	sudo -u ${user} -H -i bash -c "echo \"X-GNOME-Autostart-enabled=true\" >> ${home}/.config/autostart/xscreensaver.desktop"
+	sudo -u ${user} -H -i bash -c "echo \"Name[ko]=XScreenSaver\" >> ${home}/.config/autostart/xscreensaver.desktop"
+	sudo -u ${user} -H -i bash -c "echo \"Name=XScreenSaver\" >> ${home}/.config/autostart/xscreensaver.desktop"
+	sudo -u ${user} -H -i bash -c "echo \"Comment[ko]=\" >> ${home}/.config/autostart/xscreensaver.desktop"
+	sudo -u ${user} -H -i bash -c "echo \"Comment=\" >> ${home}/.config/autostart/xscreensaver.desktop"
 }
 
 main()
