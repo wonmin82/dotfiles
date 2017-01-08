@@ -745,4 +745,10 @@ if [[ -z $LP_ENABLE_TITLE ]]; then
 fi
 #}}}
 
+# etc. {{{
+# The file that I don't want to see.
+if [[ ${_SYSENV_DIST} == "ubuntu" && -f ~/.xsession-errors.old ]]; then
+	rm -f ~/.xsession-errors.old
+fi
+#}}}
 #  vim: set ft=zsh ts=4 sts=4 sw=4 tw=0 noet fdm=marker :
