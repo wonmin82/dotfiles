@@ -13,15 +13,7 @@ sudo chown -v root:root /root/.config/fontconfig/fonts.conf
 sudo mkdir -p -v /etc/fonts
 sudo cp -f -v ./ubuntu/local.conf /etc/fonts/
 sudo chown -v root:root /etc/fonts/local.conf
-DISTRIB_RELEASE=`cat /etc/lsb-release | grep '^DISTRIB_RELEASE' | cut -d '=' -f 2`
-case $DISTRIB_RELEASE in
-	"16.10")
-		sudo cp -f -v ./ubuntu/preferences-16.10 /etc/apt/preferences
-		;;
-	*)
-		sudo cp -f -v ./ubuntu/preferences /etc/apt/preferences
-		;;
-esac
+sudo cp -f -v ./ubuntu/preferences /etc/apt/preferences
 sudo chown -v root:root /etc/apt/preferences
 sudo cp -f -v ./ubuntu/local /etc/apt/apt.conf.d/local
 sudo chown -v root:root /etc/apt/apt.conf.d/local
