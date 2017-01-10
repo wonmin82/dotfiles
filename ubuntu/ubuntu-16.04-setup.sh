@@ -468,6 +468,10 @@ post_process()
 	update-grub2
 	update-initramfs -k all -u
 
+	if [[ -f $(getent passwd 1000 | cut -d: -f6)/.config/monitors.xml ]]; then
+		cp -f $(getent passwd 1000 | cut -d: -f6)/.config/monitors.xml /var/lib/lightdm/.config
+	fi
+
 	rm -f $(getent passwd 0 | cut -d: -f6)/.bash_history
 	rm -f $(getent passwd 1000 | cut -d: -f6)/.bash_history
 
