@@ -458,8 +458,12 @@ install_recommended()
 
 post_process()
 {
+	user="$(id -un 1000)"
+	home="$(getent passwd 1000 | cut -d: -f6)"
+	home_root="$(getent passwd 0 | cut -d: -f6)"
+
 	# docker
-	usermod -aG docker $(id -un 1000)
+	usermod -aG docker ${user}
 
 	dbus-launch --exit-with-session gsettings set org.gnome.settings-daemon.plugins.background active true
 	dbus-launch --exit-with-session gsettings reset org.gnome.desktop.background show-desktop-icons
@@ -468,17 +472,14 @@ post_process()
 	update-grub2
 	update-initramfs -k all -u
 
-	if [[ -f $(getent passwd 1000 | cut -d: -f6)/.config/monitors.xml ]]; then
-		cp -f $(getent passwd 1000 | cut -d: -f6)/.config/monitors.xml /var/lib/lightdm/.config
+	if [[ -f ${home}/.config/monitors.xml ]]; then
+		cp -f ${home}/.config/monitors.xml /var/lib/lightdm/.config
 	fi
 
-	rm -f $(getent passwd 0 | cut -d: -f6)/.bash_history
-	rm -f $(getent passwd 1000 | cut -d: -f6)/.bash_history
+	rm -f ${home_root}/.bash_history
+	rm -f ${home}/.bash_history
 
-	rm -r -f $(getent passwd 1000 | cut -d: -f6)/.gvfs || true
-
-	user="$(id -un 1000)"
-	home="$(getent passwd 1000 | cut -d: -f6)"
+	rm -r -f ${home}/.gvfs || true
 
 	rm -f /usr/bin/gnome-screensaver-command
 	ln -s /usr/bin/xscreensaver-command /usr/bin/gnome-screensaver-command
