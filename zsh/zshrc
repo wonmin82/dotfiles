@@ -173,7 +173,7 @@ fi
 
 # Autocompletion configuration {{{
 # borrowed from https://github.com/Valodim/zshrc
-unsetopt menu_complete
+setopt no_menu_complete
 setopt auto_menu complete_in_word always_to_end
 
 zmodload -i zsh/complist
@@ -414,7 +414,7 @@ setopt list_types
 setopt rc_quotes
 setopt interactive_comments
 setopt no_clobber
-unsetopt rm_star_silent
+setopt no_rm_star_silent
 
 setopt extended_glob
 setopt numeric_glob_sort
@@ -425,10 +425,10 @@ setopt bg_nice
 setopt long_list_jobs
 setopt notify
 
-unsetopt auto_param_slash
-unsetopt beep
-unsetopt hist_beep
-unsetopt list_beep
+setopt no_auto_param_slash
+setopt no_beep
+setopt no_hist_beep
+setopt no_list_beep
 #}}}
 
 # History options {{{
@@ -440,7 +440,7 @@ export HISTCONTROL=erasedups
 
 setopt hist_ignore_all_dups
 setopt hist_save_no_dups
-unsetopt hist_ignore_space
+setopt no_hist_ignore_space
 
 setopt append_history
 setopt inc_append_history
