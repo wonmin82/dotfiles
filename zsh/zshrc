@@ -420,10 +420,13 @@ setopt extended_glob
 setopt numeric_glob_sort
 setopt magic_equal_subst
 
+setopt auto_continue
 setopt auto_resume
 setopt bg_nice
 setopt long_list_jobs
 setopt notify
+setopt check_jobs
+setopt hup
 
 setopt no_auto_param_slash
 setopt no_beep
