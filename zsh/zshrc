@@ -543,17 +543,62 @@ if [[ ${_SYSENV_OS} == "macos" ]]; then
 fi
 
 if (( $+commands[docker] )); then
-	purge-docker()
+	nuke-docker()
 	{
-		# Delete all containers
-		if [[ $(docker ps -a -q | wc -l) != 0 ]]; then
-			docker rm $(docker ps -a -q)
+		print "Starting procedure for removing all docker environment..."
+		answer=""
+		vared -p "Are you sure[y/N]? " answer
+		if [[ ${answer} != "y" && ${answer} != "Y" ]]; then
+			return 0
 		fi
 
-		# Delete all images
-		if [[ $(docker images -q | wc -l) != 0 ]]; then
-			docker rmi $(docker images -q)
+		sudo -v
+		print -n "Reading docker root directory... "
+		docker_root=$(sudo docker info 2>&1 | grep "^Docker Root Dir: " | sed -e "s/Docker Root Dir: //")
+		if [[ $(print ${docker_root} | wc -m) -le 1 ]]; then
+			print "Failed" 1>&2
+			return 1
 		fi
+		print "OK, docker root is ${docker_root}"
+
+		# Delete all containers
+		print -n "Removing all containers... "
+		if [[ $(sudo docker ps -a -q | wc -l) != 0 ]]; then
+			sudo docker rm $(sudo docker ps -a -q) 1> /dev/null 2>&1
+		fi
+		print "OK"
+
+		# Delete all images
+		print -n "Removing all images... "
+		if [[ $(sudo docker images -q | wc -l) != 0 ]]; then
+			sudo docker rmi $(sudo docker images -q) 1> /dev/null 2>&1
+		fi
+		print "OK"
+
+		# Delete all volumes
+		print -n "Removing all volumes... "
+		if [[ $(sudo docker volume ls -q | wc -l) != 0 ]]; then
+			sudo docker volume rm $(sudo docker volume ls -q) 1> /dev/null 2>&1
+		fi
+		print "OK"
+
+		print -n "Stopping docker service... "
+		sudo service docker stop 1> /dev/null 2>&1
+		print "OK"
+
+		# Delete all btrfs subvolumes (it may be dangerous)
+		print -n "Checking btrfs subvolumes existence and removing them... "
+		sudo zsh -c "[[ -d "${docker_root}/btrfs/subvolumes" ]] && stat --printf='' ${docker_root}/btrfs/subvolumes/*(N) 2> /dev/null && btrfs subvolume delete ${docker_root}/btrfs/subvolumes/* 2> /dev/null || true"
+		print "OK"
+
+		# Delete all subdirectories in docker storage
+		print -n "Removing all files and directories under docker root... "
+		sudo zsh -c "stat --printf='' ${docker_root}/*(N) 2> /dev/null && rm -r -f ${docker_root}/*"
+		print "OK"
+
+		print -n "Starting docker service... "
+		sudo service docker start 1> /dev/null 2>&1
+		print "OK"
 	}
 fi
 
