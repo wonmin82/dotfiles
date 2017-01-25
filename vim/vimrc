@@ -685,6 +685,9 @@ augroup END
 "}}}
 
 " some autocmds {{{
+" Only set more option after VimEnter occurred.
+autocmd VimEnter * set more
+
 if 0
 	" automatically delete trailing Dos-returns,whitespace
 	"autocmd BufRead * silent! %s/[\r \t]\+$//
@@ -1111,6 +1114,8 @@ nnoremap <silent> <localleader>ml :call AppendModeline()<cr>
 " Function: Generating tags. {{{
 function! MakeTagsAndCscope()
 	if s:is_cygwin || s:is_macos || s:is_linux64 || s:is_linux32 || s:is_unix
+		let more_save = &more
+		set nomore
 		let currentdir = getcwd()
 		if (!exists('b:ctags_db_path'))
 			let b:ctags_db_path = projectroot#guess()
@@ -1147,6 +1152,7 @@ function! MakeTagsAndCscope()
 		silent execute "cscope reset"
 		set csverb   " switch back to verbose mode
 		execute "cd " . currentdir
+		let &more = more_save
 		redraw!
 	elseif s:is_win32 || s:is_win64
 		" TODO: add routine for generating ctags and cscope for windows.
@@ -1157,6 +1163,8 @@ endfunction
 " Function: Cleaning tags. {{{
 function! CleaningTagsAndCscope()
 	if s:is_cygwin || s:is_macos || s:is_linux64 || s:is_linux32 || s:is_unix
+		let more_save = &more
+		set nomore
 		let currentdir = getcwd()
 
 		if (exists('b:ctags_db_path'))
@@ -1174,6 +1182,7 @@ function! CleaningTagsAndCscope()
 		silent execute "!rm -fv cscope.out cscope.in.out cscope.po.out cscope.out.in cscope.out.po cscope.files"
 
 		execute "cd " . currentdir
+		let &more = more_save
 		redraw!
 	elseif s:is_win32 || s:is_win64
 		" TODO: add routine for cleaning ctags and cscope for windows.
