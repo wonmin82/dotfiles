@@ -602,6 +602,17 @@ if (( $+commands[docker] )); then
 	}
 fi
 
+if (( $+commands[btrfs] )); then
+	optimize-btrfs()
+	{
+		print "Starting btrfs defragmentation..."
+		sudo btrfs filesystem defragment -r -f / 2> /dev/null
+		print "Starting btrfs rebalancing..."
+		sudo btrfs balance start --full-balance /
+		print "Done."
+	}
+fi
+
 if [[ -f /usr/bin/vmware-config-tools.pl ]]; then
 	function reconfigure-vmware-tools()
 	{
