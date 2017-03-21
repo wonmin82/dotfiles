@@ -122,6 +122,8 @@ antigen bundle screen
 # Syntax highlighting bundle.
 antigen bundle zsh-users/zsh-syntax-highlighting
 
+antigen bundle zsh-users/zsh-autosuggestions
+
 if [[ ${_SYSENV_DIST} == "ubuntu" ]]; then
 	antigen bundle sudo
 	antigen bundle command-not-found
@@ -169,6 +171,12 @@ if (( $+terminfo[colors] )) && (( $terminfo[colors] == 256 )); then
 		eval $( gdircolors -b $ADOTDIR/repos/https-COLON--SLASH--SLASH-github.com-SLASH-trapd00r-SLASH-LS_COLORS.git/LS_COLORS )
 	fi
 fi
+#}}}
+
+# zsh-autosugesstions configuration {{{
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=8"
+ZSH_AUTOSUGGEST_STRATEGY="default"
+ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=""
 #}}}
 
 # Autocompletion configuration {{{
