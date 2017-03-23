@@ -152,7 +152,9 @@ fi
 if [[ ${_SYSENV_OS} == "cygwin" ]]; then
 	antigen theme mortalscumbag
 else
-	export LP_ENABLE_TEMP=0
+	export LP_ENABLE_TEMP="0"
+	export LP_ENABLE_SHORTEN_PATH="1"
+	export LP_PATH_LENGTH="35"
 	antigen bundle nojhan/liquidprompt
 fi
 
