@@ -122,7 +122,9 @@ antigen bundle screen
 # Syntax highlighting bundle.
 antigen bundle zsh-users/zsh-syntax-highlighting
 
-antigen bundle zsh-users/zsh-autosuggestions
+if [[ ${_SYSENV_OS} != "cygwin" ]]; then
+	antigen bundle zsh-users/zsh-autosuggestions
+fi
 
 if [[ ${_SYSENV_DIST} == "ubuntu" ]]; then
 	antigen bundle sudo
