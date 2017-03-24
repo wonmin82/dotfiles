@@ -152,7 +152,7 @@ fi
 
 # Load the theme.
 if [[ ${_SYSENV_OS} == "cygwin" ]]; then
-	antigen theme mortalscumbag
+	antigen theme risto
 else
 	export LP_ENABLE_TEMP="0"
 	export LP_ENABLE_SHORTEN_PATH="1"
