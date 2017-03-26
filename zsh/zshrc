@@ -553,6 +553,15 @@ if [[ ${_SYSENV_OS} == "macos" ]]; then
 	}
 fi
 
+if [[ ${_SYSENV_OS} == "cygwin" ]]; then
+	function update-system()
+	{
+		antigen selfupdate
+		antigen update
+		vim +NeoBundleUpdate +quit!
+	}
+fi
+
 if (( $+commands[docker] )); then
 	nuke-docker()
 	{
