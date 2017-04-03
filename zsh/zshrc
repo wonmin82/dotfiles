@@ -169,9 +169,9 @@ antigen apply
 if (( $+terminfo[colors] )) && (( $terminfo[colors] == 256 )); then
 	# load trapd00r's LS_COLORS things
 	if (( $+commands[dircolors] )); then
-		eval $( dircolors -b $ADOTDIR/repos/https-COLON--SLASH--SLASH-github.com-SLASH-trapd00r-SLASH-LS_COLORS.git/LS_COLORS )
+		eval $( dircolors -b $ADOTDIR/bundles/trapd00r/LS_COLORS/LS_COLORS )
 	elif (( $+commands[gdircolors] )); then
-		eval $( gdircolors -b $ADOTDIR/repos/https-COLON--SLASH--SLASH-github.com-SLASH-trapd00r-SLASH-LS_COLORS.git/LS_COLORS )
+		eval $( gdircolors -b $ADOTDIR/bundles/trapd00r/LS_COLORS/LS_COLORS )
 	fi
 fi
 #}}}
