@@ -7,5 +7,7 @@
 	default = simple
 [color]
 	ui = auto
+[alias]
+	tags = !"git tag | xargs -I@ git log --format=format:\"%ai @%n\" -1 @ | sort"
 [url "https://github.com/"]
 	insteadOf = git://github.com/
