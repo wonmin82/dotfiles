@@ -9,7 +9,7 @@ version="2.11.0"
 mkdir ${build_dir}
 pushd ${build_dir}
 
-curl -O ftp://ftp.kernel.org/pub/software/scm/git/git-${version}.tar.xz
+curl -O http://www.kernel.org/pub/software/scm/git/git-${version}.tar.xz
 tar xJpf git-${version}.tar.xz
 pushd git-${version}
 ./configure --target=x86_64-linux-gnu --host=x86_64-linux-gnu --build=x86_64-linux-gnu --prefix=${install_prefix}
