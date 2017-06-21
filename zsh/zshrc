@@ -322,7 +322,7 @@ zstyle ':completion:complete-history:*' completer _history
 
 # Highlight style {{{
 # variables for zsh-syntax-highlighting
-ZSH_HIGHLIGHT_HIGHLIGHTERS_DIR=$ADOTDIR/repos/https-COLON--SLASH--SLASH-github.com-SLASH-zsh-users-SLASH-zsh-syntax-highlighting.git/highlighters
+ZSH_HIGHLIGHT_HIGHLIGHTERS_DIR=$ADOTDIR/bundles/zsh-users/zsh-syntax-highlighting/highlighters
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
 ZSH_HIGHLIGHT_MAXLENGTH=300
 
