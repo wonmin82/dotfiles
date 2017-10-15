@@ -4,7 +4,7 @@ set -e -x
 
 source ./build-env.sh
 
-llvm_branch="release_39"
+llvm_branch="release_50"
 
 mkdir ${build_dir}
 pushd ${build_dir}
