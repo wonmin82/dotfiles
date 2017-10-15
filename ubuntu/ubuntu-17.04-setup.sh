@@ -233,7 +233,6 @@ list_pkgs_to_be_installed=(
 "ko.tex-extra"
 "ko.tex-extra-hlfont"
 "sun-javadb-client"
-"sun-javadb-common"
 "sun-javadb-core"
 "sun-javadb-demo"
 "sun-javadb-doc"
