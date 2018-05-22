@@ -4,13 +4,13 @@ set -e -x
 
 source ./build-env.sh
 
-version="1.19.1"
+version="1.19.5"
 
 mkdir ${build_dir}
 pushd ${build_dir}
 
-curl -O http://ftp.gnu.org/gnu/wget/wget-${version}.tar.xz
-tar xJpf wget-${version}.tar.xz
+curl -O http://ftp.gnu.org/gnu/wget/wget-${version}.tar.gz
+tar xzpf wget-${version}.tar.gz
 pushd wget-${version}
 ./configure --prefix=${install_prefix}
 make -j ${jobs}
