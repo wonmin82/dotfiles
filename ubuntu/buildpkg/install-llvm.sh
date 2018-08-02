@@ -78,7 +78,7 @@ pushd build
 
 CC="${stage1_host_gcc_dir}/bin/gcc" \
 CXX="${stage1_host_gcc_dir}/bin/g++" \
-cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="${install_prefix}" -DCMAKE_BUILD_TYPE="Release" -DLLVM_BUILD_TOOLS=ON -DLLVM_BUILD_DOCS=ON -DLLVM_ENABLE_DOXYGEN=OFF -DLLVM_ENABLE_SPHINX=ON -DSPHINX_OUTPUT_HTML=OFF -DSPHINX_OUTPUT_MAN=ON -DSPHINX_WARNINGS_AS_ERRORS=OFF -DLLVM_BUILD_LLVM_DYLIB=ON -DLLVM_ENABLE_FFI=ON -DLLVM_ENABLE_RTTI=ON -DGCC_INSTALL_PREFIX="${stage1_host_gcc_dir}" -DC_INCLUDE_DIRS="${stage1_default_includes}" -DCMAKE_CXX_LINK_FLAGS="-L${stage1_host_gcc_dir}/lib64 -Wl,-rpath,${stage1_host_gcc_dir}/lib64" -DLLVM_PARALLEL_COMPILE_JOBS="${jobs}" -DLLVM_PARALLEL_LINK_JOBS="${jobs}" ${stage1_src}
+cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="${install_prefix}" -DCMAKE_BUILD_TYPE="Release" -DLLVM_BUILD_TOOLS=ON -DLLVM_BUILD_DOCS=ON -DLLVM_ENABLE_DOXYGEN=OFF -DLLVM_ENABLE_SPHINX=OFF -DSPHINX_OUTPUT_HTML=OFF -DSPHINX_OUTPUT_MAN=ON -DSPHINX_WARNINGS_AS_ERRORS=OFF -DLLVM_BUILD_LLVM_DYLIB=ON -DLLVM_ENABLE_FFI=ON -DLLVM_ENABLE_RTTI=ON -DGCC_INSTALL_PREFIX="${stage1_host_gcc_dir}" -DC_INCLUDE_DIRS="${stage1_default_includes}" -DCMAKE_CXX_LINK_FLAGS="-L${stage1_host_gcc_dir}/lib64 -Wl,-rpath,${stage1_host_gcc_dir}/lib64" -DLLVM_PARALLEL_COMPILE_JOBS="${jobs}" -DLLVM_PARALLEL_LINK_JOBS="${jobs}" ${stage1_src}
 make -j ${jobs}
 make -j ${jobs} install
 
