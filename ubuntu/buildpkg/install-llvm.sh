@@ -24,52 +24,52 @@ stage1_default_includes="${stage1_host_include}:${stage1_system_include}:${stage
 
 mkdir -p ${stage1_src}
 pushd ${stage1_src}
-git clone http://llvm.org/git/llvm.git --no-checkout --depth 1 --single-branch -b ${llvm_branch} $PWD
+git clone https://git.llvm.org/git/llvm.git --no-checkout --depth 1 --single-branch -b ${llvm_branch} $PWD
 git checkout ${llvm_branch} -b build
 popd
 mkdir -p ${stage1_src}/tools/clang
 pushd ${stage1_src}/tools/clang
-git clone http://llvm.org/git/clang.git --no-checkout --depth 1 --single-branch -b ${llvm_branch} $PWD
+git clone https://git.llvm.org/git/clang.git --no-checkout --depth 1 --single-branch -b ${llvm_branch} $PWD
 git checkout ${llvm_branch} -b build
 popd
 mkdir -p ${stage1_src}/tools/clang/tools/extra
 pushd ${stage1_src}/tools/clang/tools/extra
-git clone http://llvm.org/git/clang-tools-extra.git --no-checkout --depth 1 --single-branch -b ${llvm_branch} $PWD
+git clone https://git.llvm.org/git/clang-tools-extra.git --no-checkout --depth 1 --single-branch -b ${llvm_branch} $PWD
 git checkout ${llvm_branch} -b build
 popd
 mkdir -p ${stage1_src}/projects/compiler-rt
 pushd ${stage1_src}/projects/compiler-rt
-git clone http://llvm.org/git/compiler-rt.git --no-checkout --depth 1 --single-branch -b ${llvm_branch} $PWD
+git clone https://git.llvm.org/git/compiler-rt.git --no-checkout --depth 1 --single-branch -b ${llvm_branch} $PWD
 git checkout ${llvm_branch} -b build
 popd
 mkdir -p ${stage1_src}/projects/openmp
 pushd ${stage1_src}/projects/openmp
-git clone http://llvm.org/git/openmp.git --no-checkout --depth 1 --single-branch -b ${llvm_branch} $PWD
+git clone https://git.llvm.org/git/openmp.git --no-checkout --depth 1 --single-branch -b ${llvm_branch} $PWD
 git checkout ${llvm_branch} -b build
 popd
 mkdir -p ${stage1_src}/projects/libcxx
 pushd ${stage1_src}/projects/libcxx
-git clone http://llvm.org/git/libcxx.git --no-checkout --depth 1 --single-branch -b ${llvm_branch} $PWD
+git clone https://git.llvm.org/git/libcxx.git --no-checkout --depth 1 --single-branch -b ${llvm_branch} $PWD
 git checkout ${llvm_branch} -b build
 popd
 mkdir -p ${stage1_src}/projects/libcxxabi
 pushd ${stage1_src}/projects/libcxxabi
-git clone http://llvm.org/git/libcxxabi.git --no-checkout --depth 1 --single-branch -b ${llvm_branch} $PWD
+git clone https://git.llvm.org/git/libcxxabi.git --no-checkout --depth 1 --single-branch -b ${llvm_branch} $PWD
 git checkout ${llvm_branch} -b build
 popd
 mkdir -p ${stage1_src}/projects/test-suite
 pushd ${stage1_src}/projects/test-suite
-git clone http://llvm.org/git/test-suite.git --no-checkout --depth 1 --single-branch -b ${llvm_branch} $PWD
+git clone https://git.llvm.org/git/test-suite.git --no-checkout --depth 1 --single-branch -b ${llvm_branch} $PWD
 git checkout ${llvm_branch} -b build
 popd
 mkdir -p ${stage1_src}/lldb
 pushd ${stage1_src}/lldb
-git clone http://llvm.org/git/lldb.git --no-checkout --depth 1 --single-branch -b ${llvm_branch} $PWD
+git clone https://git.llvm.org/git/lldb.git --no-checkout --depth 1 --single-branch -b ${llvm_branch} $PWD
 git checkout ${llvm_branch} -b build
 popd
 mkdir -p ${stage1_src}/lld
 pushd ${stage1_src}/lld
-git clone http://llvm.org/git/lld.git --no-checkout --depth 1 --single-branch -b ${llvm_branch} $PWD
+git clone https://git.llvm.org/git/lld.git --no-checkout --depth 1 --single-branch -b ${llvm_branch} $PWD
 git checkout ${llvm_branch} -b build
 popd
 
