@@ -675,6 +675,14 @@ alias rm='rm -i'
 alias cp='cp -i'
 alias mv='mv -i'
 
+# These aliases already exists in ubuntu, but they are useful
+# in other distributes.
+alias l='ls -lah'
+alias la='ls -lAh'
+alias ll='ls -lh'
+alias ls='ls -hF --color=auto'
+alias lsa='ls -lah'
+
 # Default to human readable figures
 alias df='df -h'
 alias du='du -h'
