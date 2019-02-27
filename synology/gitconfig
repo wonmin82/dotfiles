@@ -1,0 +1,13 @@
+[user]
+	name = Wonmin Jung
+	email = wonmin82@gmail.com
+[credential]
+	helper = cache --timeout=7200
+[push]
+	default = simple
+[color]
+	ui = auto
+[alias]
+	tags = !"git tag | xargs -I@ git log --format=format:\"%ai @%n\" -1 @ | sort"
+[url "https://github.com/"]
+	insteadOf = git://github.com/
