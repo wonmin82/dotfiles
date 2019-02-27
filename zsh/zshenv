@@ -105,6 +105,12 @@ path=(
 "$HOME/.local/bin"
 $path
 )
+if [[ -a /etc/synoinfo.conf ]]; then
+	path=(
+	"/usr/local/git/bin"
+	$path
+	)
+fi
 typeset -U path
 __rationalize_path path
 export PATH

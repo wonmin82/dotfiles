@@ -51,6 +51,8 @@ function __determine_sysenv()
 					_SYSENV_PSEUDONAME=$(cat /etc/lsb-release | grep '^DISTRIB_CODENAME' | awk -F= '{ print $2 }')
 					_SYSENV_REV=$(cat /etc/lsb-release | grep '^DISTRIB_RELEASE' | awk -F= '{ print $2 }')
 				fi
+			elif [[ -f /etc/synoinfo.conf ]]; then
+				_SYSENV_DIST="SynologyDSM"
 			fi
 			if [[ -f /etc/UnitedLinux-release ]]; then
 				_SYSENV_DIST="${_SYSENV_DIST}[$(cat /etc/UnitedLinux-release | tr "\n" ' ' | sed s/VERSION.*//)]"
@@ -152,6 +154,8 @@ fi
 
 # Load the theme.
 if [[ ${_SYSENV_OS} == "cygwin" ]]; then
+	antigen theme risto
+elif [[ ${_SYSENV_DIST} == "synologydsm" ]]; then
 	antigen theme risto
 else
 	export LP_ENABLE_TEMP="0"
