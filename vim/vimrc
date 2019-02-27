@@ -22,6 +22,7 @@ let s:is_win64 = 0
 let s:is_win32 = 0
 let s:is_cygwin = 0
 let s:is_macos = 0
+let s:is_synology = 0
 let s:is_linux64 = 0
 let s:is_linux32 = 0
 let s:is_unix = 0
@@ -41,6 +42,9 @@ elseif !has('win32') && (has('mac') || has('macunix') || has('gui_macvim') ||
 			\ (!isdirectory('/proc') && executable('sw_vers')))
 	" MacOS
 	let s:is_macos = 1
+elseif glob('/etc/synouser.conf') != ''
+	" Synology DSM
+	let s:is_synology = 1
 elseif glob('/lib*/ld-linux*64.so.2') != ''
 	" Linux 64-bit
 	let s:is_linux64 = 1
@@ -142,7 +146,7 @@ while ! s:is_neobundle_inited
 	catch /^Vim\%((\a\+)\)\=:E117/
 		" If NeoBundle is missing, define an installer for it
 		function! NeoBundleInstaller()
-			if s:is_cygwin || s:is_macos || s:is_linux64 || s:is_linux32 || s:is_unix
+			if s:is_cygwin || s:is_macos || s:is_synology || s:is_linux64 || s:is_linux32 || s:is_unix
 				let s:retry_count = s:retry_count + 1
 				if s:retry_count > s:max_retry_count
 					execute ':silent !echo "==> NeoBundle installation has been failed."'
@@ -207,13 +211,15 @@ endwhile
 " Refer to |:NeoBundle-examples|.
 " Note: You don't set neobundle setting in .gvimrc!
 
-NeoBundle 'Shougo/vimproc', {
-			\   'build': {
-			\       'windows': 'make -f make_mingw32.mak',
-			\       'cygwin': 'make -f make_cygwin.mak',
-			\       'mac': 'make -f make_mac.mak',
-			\       'unix': 'make -f make_unix.mak',
-			\}}
+if !s:is_synology
+	NeoBundle 'Shougo/vimproc', {
+				\   'build': {
+				\       'windows': 'make -f make_mingw32.mak',
+				\       'cygwin': 'make -f make_cygwin.mak',
+				\       'mac': 'make -f make_mac.mak',
+				\       'unix': 'make -f make_unix.mak',
+				\}}
+endif
 
 " Fuzzy search
 NeoBundle 'Shougo/unite.vim'
@@ -285,14 +291,14 @@ NeoBundle 'ntpeters/vim-better-whitespace'
 NeoBundle 'rhysd/vim-clang-format', {
 			\   'depends': 'kana/vim-operator-user'
 			\}
-if v:version >= 704
+if v:version >= 704 && !s:is_synology
 	NeoBundle 'SirVer/ultisnips'
 endif
 NeoBundle 'honza/vim-snippets'
 
 " ensure vim version >= 7.3.584 and not in cygwin.
 if (v:version > 703 || v:version == 703 && has('patch584'))
-			\   && !(s:is_win32 || s:is_win64 || s:is_cygwin)
+			\   && !(s:is_win32 || s:is_win64 || s:is_cygwin || s:is_synology)
 	NeoBundle 'Valloric/YouCompleteMe', {
 				\   'build' : {
 				\       'windows' : './install.py --clang-completer --system-libclang --omnisharp-completer',
