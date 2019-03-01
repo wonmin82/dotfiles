@@ -9,18 +9,15 @@ list_tasks_to_be_installed=(
 "postgresql-server"
 "samba-server"
 "tomcat-server"
-"virt-host"
-"kubuntu-active"
+"vanilla-gnome-desktop"
 "kubuntu-desktop"
 "kubuntu-full"
-"ubuntu-gnome-desktop"
 "ubuntustudio-graphics"
 "ubuntustudio-audio"
-"ubuntustudio-audio-core"
 "ubuntustudio-video"
 "ubuntustudio-photography"
 "ubuntustudio-publishing"
-"ubuntustudio-font-meta"
+"ubuntustudio-fonts"
 )
 
 list_pkgs_priority=(
