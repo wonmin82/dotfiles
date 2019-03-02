@@ -237,6 +237,7 @@ list_pkgs_to_be_installed=(
 "unrar"
 "unalz"
 "curl"
+"libcurl4-openssl-dev"
 "unixodbc"
 "gperf"
 # need to be checked for existence when ubuntu is upgraded {
