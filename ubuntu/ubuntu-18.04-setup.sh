@@ -363,10 +363,10 @@ prepare_unattended_install()
 
 install_ttfs()
 {
+	mkdir -p /tmp/msttf
 	if [[ -f /tmp/msttf/ttf-mscorefonts.tar.xz ]]; then
-		tar xvJpf /tmp/msttf/ttf-mscorefonts.tar.xz -C /tmp/msttf/
+		tar xvJpf /tmp/ttf-mscorefonts.tar.xz -C /tmp/msttf/
 	else
-		mkdir -p /tmp/msttf
 		wget --no-verbose --no-hsts --show-progress --tries=10 --retry-connrefused --directory-prefix=/tmp/msttf http://sourceforge.net/projects/corefonts/files/the%20fonts/final/andale32.exe http://sourceforge.net/projects/corefonts/files/the%20fonts/final/arial32.exe http://sourceforge.net/projects/corefonts/files/the%20fonts/final/arialb32.exe http://sourceforge.net/projects/corefonts/files/the%20fonts/final/comic32.exe http://sourceforge.net/projects/corefonts/files/the%20fonts/final/courie32.exe http://sourceforge.net/projects/corefonts/files/the%20fonts/final/georgi32.exe http://sourceforge.net/projects/corefonts/files/the%20fonts/final/impact32.exe http://sourceforge.net/projects/corefonts/files/the%20fonts/final/times32.exe http://sourceforge.net/projects/corefonts/files/the%20fonts/final/trebuc32.exe http://sourceforge.net/projects/corefonts/files/the%20fonts/final/verdan32.exe http://sourceforge.net/projects/corefonts/files/the%20fonts/final/webdin32.exe
 	fi
 	chown -v _apt:nogroup /tmp/msttf/*
