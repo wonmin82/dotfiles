@@ -269,7 +269,6 @@ list_pkgs_to_be_installed=(
 # }
 "golang"
 "nodejs"
-"npm"
 "mono-complete"
 "hexchat"
 "wine-stable"
@@ -327,6 +326,9 @@ add_repo()
 	add-apt-repository ppa:webupd8team/java < /dev/null
 
 	add-apt-repository ppa:ultradvorka/ppa < /dev/null
+
+	# node.js v8.x
+	curl -sL --retry 10 --retry-connrefused --retry-delay 3 https://deb.nodesource.com/setup_8.x | bash -
 
 	# mono
 	retry apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
