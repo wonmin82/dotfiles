@@ -489,6 +489,14 @@ post_process()
 	sudo -u ${user} -H -i bash -c "echo \"X-GNOME-Autostart-enabled=false\" >> ${home}/.config/autostart/org.kde.klipper.desktop"
 }
 
+cleanup_packages()
+{
+	if [[ $(dpkg --get-selections | grep deinstall | cut -f1 | wc -l) != 0 ]]; then
+		aptitude -y purge $(dpkg --get-selections | grep deinstall | cut -f1)
+	fi
+	aptitude -y autoclean
+}
+
 main()
 {
 	if [[ $EUID -ne 0 ]]; then
@@ -507,6 +515,7 @@ main()
 	install_all
 	install_vm_tools
 	install_recommended
+	cleanup_packages
 	post_process
 }
 
