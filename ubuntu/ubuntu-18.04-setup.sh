@@ -34,7 +34,15 @@ list_pkgs_to_be_uninstalled=(
 )
 
 list_pkgs_to_be_prohibited=(
-
+# conflicts with oracle-java11-installer
+"openjdk-11-jdk"
+"openjdk-11-jre"
+"openjdk-11-jre-headless"
+"openjdk-11-jre-zero"
+"openjdk-11-demo"
+"openjdk-11-dbg"
+"openjdk-11-doc"
+"openjdk-11-source"
 )
 
 list_pkgs_to_be_installed=(
@@ -341,6 +349,13 @@ add_repo()
 	retry aptitude update
 }
 
+hold_packages()
+{
+	aptitude_hold_command="aptitude hold"
+	aptitude_hold_command="${aptitude_hold_command} ${list_pkgs_to_be_prohibited[@]}"
+	eval $aptitude_hold_command
+}
+
 install_priority_packages()
 {
 	aptitude_fetch_command="retry aptitude -y --download-only install"
@@ -506,6 +521,7 @@ main()
 	pre_process
 	install_apt_prerequisites
 	add_repo
+	hold_packages
 	install_priority_packages
 	prepare_unattended_install
 	fetch_all
