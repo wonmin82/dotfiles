@@ -1,10 +1,10 @@
-#!/bin/bash
+#! /bin/bash
 
 set -e -x
 
 source ./build-env.sh
 
-tag="2.7"
+tag="2.8"
 
 mkdir -p ${build_dir}
 pushd ${build_dir}

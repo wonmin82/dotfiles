@@ -1,4 +1,4 @@
-#!/bin/bash
+#! /bin/bash
 
 set -e -x
 
@@ -9,6 +9,6 @@ jobs="$(($(grep -c '^processor' /proc/cpuinfo) + 1))"
 export jobs
 
 export MAKEFLAGS="-j ${jobs}"
-export CFLAGS="-O3"
-export CXXFLAGS="-O3"
+export CFLAGS="-O2"
+export CXXFLAGS="-O2"
 export LDFLAGS=""

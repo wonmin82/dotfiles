@@ -1,10 +1,10 @@
-#!/bin/bash
+#! /bin/bash
 
 set -e -x
 
 source ./build-env.sh
 
-version="1.19.5"
+version="1.20.1"
 
 mkdir ${build_dir}
 pushd ${build_dir}

@@ -1,10 +1,10 @@
-#!/bin/bash
+#! /bin/bash
 
 set -e -x
 
 source ./build-env.sh
 
-llvm_branch="release_60"
+llvm_branch="release_70"
 
 mkdir ${build_dir}
 pushd ${build_dir}
