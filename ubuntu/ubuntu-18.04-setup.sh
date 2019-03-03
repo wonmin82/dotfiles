@@ -220,11 +220,10 @@ list_pkgs_to_be_installed=(
 "ko.tex-base"
 "ko.tex-extra"
 "ko.tex-extra-hlfont"
-"sun-javadb-client"
-"sun-javadb-core"
-"sun-javadb-demo"
-"sun-javadb-doc"
-"sun-javadb-javadoc"
+"derby-tools"
+"derby-doc"
+"libderby-java"
+"libderbyclient-java"
 "flashplugin-installer"
 "gparted"
 "kvpm"
@@ -274,7 +273,6 @@ list_pkgs_to_be_installed=(
 "hexchat"
 "wine-stable"
 "apcalc"
-"hh"
 "docker-ce"
 "docker-ce-cli"
 "containerd.io"
@@ -321,12 +319,10 @@ install_apt_prerequisites()
 
 add_repo()
 {
-	add-apt-repository multiverse
+	add-apt-repository --no-update multiverse
 
 	# oracle java
-	add-apt-repository ppa:webupd8team/java < /dev/null
-
-	add-apt-repository ppa:ultradvorka/ppa < /dev/null
+	add-apt-repository --no-update ppa:linuxuprising/java < /dev/null
 
 	# node.js v8.x
 	curl -sL --retry 10 --retry-connrefused --retry-delay 3 https://deb.nodesource.com/setup_8.x | bash -
@@ -337,7 +333,7 @@ add_repo()
 
 	# docker
 	curl -fsSL --retry 10 --retry-connrefused --retry-delay 3 https://download.docker.com/linux/ubuntu/gpg | apt-key add -
-	sudo add-apt-repository \
+	sudo add-apt-repository --no-update \
 		"deb [arch=amd64] https://download.docker.com/linux/ubuntu \
 		$(lsb_release -cs) \
 		stable"
@@ -382,13 +378,13 @@ install_ttfs()
 
 install_java()
 {
-	ORACLE_JAVA_PKG_PREFIX="oracle-java8"
-	retry aptitude -y -d install ${ORACLE_JAVA_PKG_PREFIX}-installer ${ORACLE_JAVA_PKG_PREFIX}-set-default ${ORACLE_JAVA_PKG_PREFIX}-unlimited-jce-policy
+	ORACLE_JAVA_PKG_PREFIX="oracle-java11"
+	retry aptitude -y -d install ${ORACLE_JAVA_PKG_PREFIX}-installer ${ORACLE_JAVA_PKG_PREFIX}-set-default
 	lastStatus=256
 	until [[ ${lastStatus} == 0 ]]; do
-		aptitude -y purge ${ORACLE_JAVA_PKG_PREFIX}-installer ${ORACLE_JAVA_PKG_PREFIX}-set-default ${ORACLE_JAVA_PKG_PREFIX}-unlimited-jce-policy
-		echo "${ORACLE_JAVA_PKG_PREFIX}-installer shared/accepted-oracle-license-v1-1 select true" | debconf-set-selections
-		aptitude -y install ${ORACLE_JAVA_PKG_PREFIX}-installer ${ORACLE_JAVA_PKG_PREFIX}-set-default ${ORACLE_JAVA_PKG_PREFIX}-unlimited-jce-policy
+		aptitude -y purge ${ORACLE_JAVA_PKG_PREFIX}-installer ${ORACLE_JAVA_PKG_PREFIX}-set-default
+		echo "${ORACLE_JAVA_PKG_PREFIX}-installer shared/accepted-oracle-license-v1-2 select true" | debconf-set-selections
+		aptitude -y install ${ORACLE_JAVA_PKG_PREFIX}-installer ${ORACLE_JAVA_PKG_PREFIX}-set-default
 		lastStatus=$?
 	done
 }
