@@ -457,7 +457,7 @@ post_process()
 	usermod -aG docker ${user}
 
 	# java
-	update-alternatives --set java /usr/lib/jvm/java-11-openjdk-amd64/bin/java
+	update-java-alternatives --auto
 
 	dbus-launch --exit-with-session gsettings set org.gnome.settings-daemon.plugins.background active true
 	dbus-launch --exit-with-session gsettings reset org.gnome.desktop.background show-desktop-icons
