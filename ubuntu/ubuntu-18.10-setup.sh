@@ -34,15 +34,6 @@ list_pkgs_to_be_uninstalled=(
 )
 
 list_pkgs_to_be_prohibited=(
-# conflicts with oracle-java11-installer
-"openjdk-11-jdk"
-"openjdk-11-jre"
-"openjdk-11-jre-headless"
-"openjdk-11-jre-zero"
-"openjdk-11-demo"
-"openjdk-11-dbg"
-"openjdk-11-doc"
-"openjdk-11-source"
 )
 
 list_pkgs_to_be_installed=(
@@ -330,7 +321,7 @@ add_repo()
 	add-apt-repository --no-update multiverse
 
 	# oracle java
-	add-apt-repository --no-update ppa:linuxuprising/java < /dev/null
+	add-apt-repository --no-update ppa:webupd8team/java < /dev/null
 
 	# node.js v8.x
 	curl -sL --retry 10 --retry-connrefused --retry-delay 3 https://deb.nodesource.com/setup_8.x | bash -
@@ -347,13 +338,6 @@ add_repo()
 		stable"
 
 	retry aptitude update
-}
-
-hold_packages()
-{
-	aptitude_hold_command="aptitude hold"
-	aptitude_hold_command="${aptitude_hold_command} ${list_pkgs_to_be_prohibited[@]}"
-	eval $aptitude_hold_command
 }
 
 install_priority_packages()
@@ -393,13 +377,13 @@ install_ttfs()
 
 install_java()
 {
-	ORACLE_JAVA_PKG_PREFIX="oracle-java11"
-	retry aptitude -y -d install ${ORACLE_JAVA_PKG_PREFIX}-installer ${ORACLE_JAVA_PKG_PREFIX}-set-default
+	ORACLE_JAVA_PKG_PREFIX="oracle-java8"
+	retry aptitude -y -d install ${ORACLE_JAVA_PKG_PREFIX}-installer ${ORACLE_JAVA_PKG_PREFIX}-set-default ${ORACLE_JAVA_PKG_PREFIX}-unlimited-jce-policy
 	lastStatus=256
 	until [[ ${lastStatus} == 0 ]]; do
-		aptitude -y purge ${ORACLE_JAVA_PKG_PREFIX}-installer ${ORACLE_JAVA_PKG_PREFIX}-set-default
-		echo "${ORACLE_JAVA_PKG_PREFIX}-installer shared/accepted-oracle-license-v1-2 select true" | debconf-set-selections
-		aptitude -y install ${ORACLE_JAVA_PKG_PREFIX}-installer ${ORACLE_JAVA_PKG_PREFIX}-set-default
+		aptitude -y purge ${ORACLE_JAVA_PKG_PREFIX}-installer ${ORACLE_JAVA_PKG_PREFIX}-set-default ${ORACLE_JAVA_PKG_PREFIX}-unlimited-jce-policy
+		echo "${ORACLE_JAVA_PKG_PREFIX}-installer shared/accepted-oracle-license-v1-1 select true" | debconf-set-selections
+		aptitude -y install ${ORACLE_JAVA_PKG_PREFIX}-installer ${ORACLE_JAVA_PKG_PREFIX}-set-default ${ORACLE_JAVA_PKG_PREFIX}-unlimited-jce-policy
 		lastStatus=$?
 	done
 }
@@ -521,7 +505,6 @@ main()
 	pre_process
 	install_apt_prerequisites
 	add_repo
-	hold_packages
 	install_priority_packages
 	prepare_unattended_install
 	fetch_all
