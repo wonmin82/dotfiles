@@ -21,6 +21,7 @@ list_tasks_to_be_installed=(
 
 list_pkgs_priority=(
 "tasksel"
+"encfs"
 "mysql-server"
 "phpmyadmin"
 "postfix"
