@@ -83,6 +83,7 @@ list_pkgs_to_be_installed=(
 "libssh2-1-dev"
 "libslang2-dev"
 "libevent-dev"
+"libedit-dev"
 "manpages"
 "manpages-dev"
 "manpages-posix"
@@ -164,6 +165,7 @@ list_pkgs_to_be_installed=(
 "liblldb-7-dev"
 "python-clang-7"
 # }
+"swig"
 "splint"
 "cppcheck"
 "gettext"
