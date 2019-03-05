@@ -130,6 +130,16 @@ fi
 
 if [[ ${_SYSENV_DIST} == "ubuntu" ]]; then
 	antigen bundle sudo
+	# Workaround for issue described in following link.
+	# https://bugs.launchpad.net/ubuntu/+source/command-not-found/+bug/1766068
+	# TODO: Should be removed when the issue is resolved. {{{
+	if [[ $ZSH_VERSION == 5.<3->* || $ZSH_VERSION == <6->* ]]; then
+		function command_not_found_handler {
+			[[ -x /usr/lib/command-not-found ]] || return 1
+			/usr/lib/command-not-found -- ${1+"$1"} && :
+		}
+	fi
+	#}}}
 	antigen bundle command-not-found
 	antigen bundle debian
 	if (( $+commands[docker] )); then
