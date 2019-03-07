@@ -1891,7 +1891,7 @@ let g:indentconsistencycop_CheckAfterWriteMaxLinesForImmediateCheck = 1000
 
 " Plugin: vim-better-whitespace {{{
 nmap <leader>mb :ToggleWhitespace<cr>
-highlight ExtraWhitespace ctermbg=red guibg=red
+highlight link ExtraWhitespace SpellBad
 let g:better_whitespace_filetypes_blacklist = ['vimshell', 'unite', 'help']
 "}}}
 
@@ -2975,7 +2975,7 @@ endif
 " Plugin: vim-linux-coding-style {{{
 let g:linuxsty_patterns = [ "/usr/src/" ]
 
-highlight default link LinuxError ExtraWhiteSpace
+highlight default link LinuxError SpellBad
 
 augroup check_linuxsrc
 	autocmd!
