@@ -277,6 +277,7 @@ list_pkgs_to_be_installed=(
 "python3-pip"
 "python3-doc"
 "python3-flake8"
+"flake8"
 # need to be checked for existence when ubuntu is upgraded {
 "ruby-full"
 "ruby2.3-doc"
