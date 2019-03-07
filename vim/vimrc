@@ -2975,6 +2975,8 @@ endif
 " Plugin: vim-linux-coding-style {{{
 let g:linuxsty_patterns = [ "/usr/src/" ]
 
+highlight default link LinuxError ExtraWhiteSpace
+
 augroup check_linuxsrc
 	autocmd!
 
