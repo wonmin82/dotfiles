@@ -32,6 +32,19 @@ CPP_BASE_FLAGS = [
         '-I/usr/include/'
         ]
 
+HEADER_BASE_FLAGS = [
+        '-Wall',
+        '-Wextra',
+        '-Wno-long-long',
+        '-Wno-variadic-macros',
+        '-fexceptions',
+        '-ferror-limit=10000',
+        '-DNDEBUG',
+        '-std=c11',
+        '-I/usr/lib/',
+        '-I/usr/include/'
+        ]
+
 C_SOURCE_EXTENSIONS = [
         '.c'
         ]
@@ -191,6 +204,8 @@ def FlagsForFile(filename):
                 final_flags = C_BASE_FLAGS
             else:
                 final_flags = CPP_BASE_FLAGS
+        if IsHeaderFile(filename):
+            final_flags = HEADER_BASE_FLAGS
 
         clang_flags = FlagsForClangComplete(root)
         if clang_flags:
