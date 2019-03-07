@@ -2978,7 +2978,7 @@ let g:linuxsty_patterns = [ "/usr/src/" ]
 augroup check_linuxsrc
 	autocmd!
 
-	autocmd FileType c,cpp call s:CheckLinuxSrc()
+	autocmd BufEnter * call s:CheckLinuxSrc()
 augroup END
 
 function s:CheckLinuxSrc()
