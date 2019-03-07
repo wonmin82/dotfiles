@@ -281,6 +281,7 @@ NeoBundle 'jlanzarotta/bufexplorer'
 NeoBundle 'dbakker/vim-projectroot'
 NeoBundle 'godlygeek/tabular'
 NeoBundle 'Lokaltog/vim-easymotion'
+NeoBundle 'scrooloose/syntastic'
 NeoBundle 'vim-scripts/IndentTab', {
 			\   'depends': 'vim-scripts/ingo-library'
 			\}
@@ -1950,14 +1951,52 @@ nmap <leader>a\| :Tabularize /\|<cr>
 vmap <leader>a\| :Tabularize /\|<cr>
 "}}}
 
+" Plugin: syntastic {{{
+nmap <leader>ms :SyntasticToggleMode<cr>
+nmap <leader>sc :SyntasticCheck<cr>
+nmap <leader>sr :SyntasticReset<cr>
+
+if 0
+	let g:syntastic_error_symbol = '✘'
+	let g:syntastic_warning_symbol = '⚠'
+endif
+let g:syntastic_error_symbol = 'E>'
+let g:syntastic_warning_symbol = 'W>'
+let g:syntastic_style_error_symbol = 'S>'
+let g:syntastic_style_warning_symbol = 'S>'
+let g:syntastic_check_on_open = 1
+
+let g:syntastic_check_on_wq = 0
+let g:syntastic_aggregate_errors = 1
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 2       " use unite location list instead.
+" let g:syntastic_ignore_files = ['\m^/usr/include/', '\m\c\.h$']
+let g:syntastic_mode_map = { "mode": "active",
+			\   "active_filetypes": [],
+			\   "passive_filetypes": []
+			\}
+
+" autocmd for apply localvimrc to syntastic when loading a session.
+" it will trigger check twice.
+" TODO: find out how to remove redundancy check.
+augroup MyAutoCmd
+	autocmd SessionLoadPost *
+				\   if g:syntastic_check_on_open == 1 |
+				\       call SyntasticCheck() |
+				\   else |
+				\       call SyntasticReset() |
+				\   endif
+augroup END
+"}}}
+
 " Plugin: YouCompleteMe {{{
-let g:ycm_show_diagnostics_ui = 1 "default 1
+" do not use ycm as syntastic checker.
+let g:ycm_register_as_syntastic_checker = 0 "default 1
+let g:Show_diagnostics_ui = 1 "default 1
 
 "will put icons in Vim's gutter on lines that have a diagnostic set.
 "Turning this off will also turn off the YcmErrorLine and YcmWarningLine
 "highlighting
-let g:ycm_error_symbol = 'E>'
-let g:ycm_warning_symbol = 'W>'
 let g:ycm_enable_diagnostic_signs = 1
 let g:ycm_enable_diagnostic_highlighting = 0
 let g:ycm_always_populate_location_list = 1 "default 0
