@@ -291,6 +291,7 @@ NeoBundle 'ntpeters/vim-better-whitespace'
 NeoBundle 'rhysd/vim-clang-format', {
 			\   'depends': 'kana/vim-operator-user'
 			\}
+NeoBundle 'vivien/vim-linux-coding-style'
 if v:version >= 704 && !s:is_synology
 	NeoBundle 'SirVer/ultisnips'
 endif
@@ -2969,6 +2970,49 @@ if s:clang_format_is_available
 	" Toggle auto formatting:
 	nmap <leader>C :ClangFormatAutoToggle<cr>
 endif
+"}}}
+
+" Plugin: vim-linux-coding-style {{{
+let g:linuxsty_patterns = [ "/usr/src/" ]
+
+augroup check_linuxsrc
+	autocmd!
+
+	autocmd FileType c,cpp call s:CheckLinuxSrc()
+augroup END
+
+function s:CheckLinuxSrc()
+	let apply_style = 0
+
+	let prpath = projectroot#guess()
+	let kconfigfile = glob(prpath . '/Kconfig')
+	if glob(kconfigfile) != ''
+		let apply_style = 1
+	endif
+	if apply_style
+		execute ':LinuxCodingStyle'
+	endif
+endfunction
+
+nnoremap <silent> <leader>k :LinuxCodingStyle<cr>
+" NOTE: This will not undo LinuxKeywords() and LinuxHighlighting()
+nnoremap <silent> <leader>n :NormalCodingStyle<cr>
+
+command! NormalCodingStyle call s:NormalCodingStyle()
+
+function s:NormalCodingStyle()
+	call s:NormalFormatting()
+endfunction
+
+function s:NormalFormatting()
+    setlocal tabstop=4
+    setlocal shiftwidth=4
+    setlocal softtabstop=4
+    setlocal textwidth=80
+    setlocal noexpandtab
+
+    setlocal cindent
+endfunction
 "}}}
 
 " bracket autocompletion {{{
