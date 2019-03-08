@@ -16,8 +16,7 @@ let g:syntastic_mode_map = { "mode": "active",
 			\   "passive_filetypes": []
 			\ }
 
-" let g:syntastic_c_checkers = ['clang_check', 'clang_tidy', 'cppcheck', 'splint', 'gcc', 'make']
-let g:syntastic_c_checkers = ['clang_check', 'clang_tidy', 'cppcheck', 'gcc', 'make']
+let g:syntastic_c_checkers = ['clang_check', 'clang_tidy', 'cppcheck', 'gcc']
 let g:syntastic_c_clang_check_args = ''
 let g:syntastic_c_clang_tidy_args = ''
 let g:syntastic_c_compiler_options = '-Wall'
