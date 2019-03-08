@@ -1,11 +1,11 @@
 #! /usr/bin/env zsh
 
-cp -f -v ./zsh/zshenv ~/.zshenv
+cp -f -v ./zsh/.zshenv ~/.zshenv
 mkdir -p -v ~/.zsh
-cp -f -v ./zsh/zshrc ~/.zsh/.zshrc
+cp -f -v ./zsh/.zshrc ~/.zsh/.zshrc
 mkdir -p -v ~/.zsh/.zkbd
-cp -f -v ./zsh/zkbd/xterm-256color-pc-linux-gnu ~/.zsh/.zkbd/
-cp -f -v ./zsh/zkbd/screen-256color-pc-linux-gnu ~/.zsh/.zkbd/
+cp -f -v ./zsh/.zkbd/xterm-256color-pc-linux-gnu ~/.zsh/.zkbd/
+cp -f -v ./zsh/.zkbd/screen-256color-pc-linux-gnu ~/.zsh/.zkbd/
 ln -sf ~/.zsh/.zkbd/xterm-256color-pc-linux-gnu ~/.zsh/.zkbd/xterm-256color-unknown-linux-gnu
 ln -sf ~/.zsh/.zkbd/screen-256color-pc-linux-gnu ~/.zsh/.zkbd/screen-256color-unknown-linux-gnu
 
@@ -17,7 +17,7 @@ fi
 
 if [[ ${CURRENT_SHELL:t} != 'zsh' ]]; then
 	if [[ -a /etc/synoinfo.conf ]]; then
-		cp -f -v ./zsh/profile.synology ~/.profile
+		cp -f -v ./zsh/.profile.synology ~/.profile
 	else
 		sudo chsh -s /bin/zsh $(id -un)
 	fi
