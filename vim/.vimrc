@@ -292,6 +292,7 @@ NeoBundle 'rhysd/vim-clang-format', {
 			\   'depends': 'kana/vim-operator-user'
 			\}
 NeoBundle 'vivien/vim-linux-coding-style'
+NeoBundle 'tell-k/vim-autopep8'
 if v:version >= 704 && !s:is_synology
 	NeoBundle 'SirVer/ultisnips'
 endif
@@ -3015,6 +3016,20 @@ function s:NormalFormatting()
 
     setlocal cindent
 endfunction
+"}}}
+
+" vim-autopep8 {{{
+autocmd FileType python
+			\   nnoremap <buffer> <leader>cf :<c-u>Autopep8<cr>
+autocmd FileType python
+			\   vnoremap <buffer> <leader>cf :Autopep8<cr>
+
+" let g:autopep8_ignore = "E501,W293"
+" let g:autopep8_pep8_passes = 100
+let g:autopep8_max_line_length = 79
+let g:autopep8_indent_size = 4
+let g:autopep8_disable_show_diff = 1
+let g:autopep8_on_save = 0
 "}}}
 
 " bracket autocompletion {{{
