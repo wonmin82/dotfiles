@@ -41,6 +41,7 @@ llvm_srcdir="${build_dir}/src"
 
 common_cflags="-O2"
 common_cxxflags="-O2"
+common_ldflags=""
 common_cmake="-G \"Unix Makefiles\"
 -DCMAKE_INSTALL_PREFIX=\"${install_prefix}\"
 -DCMAKE_BUILD_TYPE=\"Release\"
@@ -48,7 +49,8 @@ common_cmake="-G \"Unix Makefiles\"
 -DLLVM_PARALLEL_LINK_JOBS=${jobs}
 -DLLVM_DEFAULT_TARGET_TRIPLE=\"${triple}\"
 -DC_INCLUDE_DIRS=\"${default_includes}\"
--DLLVM_REQUIRES_RTTI=1
+-DLLVM_ENABLE_PIC=\"on\"
+-DLLVM_ENABLE_RTTI=\"off\"
 -DLLVM_ENABLE_ASSERTIONS=\"off\"
 -DBUILD_SHARED_LIBS=\"on\""
 
@@ -58,7 +60,13 @@ stage0_cc="${stage0_host_gcc_dir}/bin/gcc"
 stage0_cxx="${stage0_host_gcc_dir}/bin/g++"
 stage0_cflags="${common_cflags}"
 stage0_cxxflags="${common_cxxflags}"
+stage0_ldflags="${common_ldflags}"
 stage0_cmake="${common_cmake}
+-DCMAKE_C_COMPILER=\"${stage0_cc}\"
+-DCMAKE_CXX_COMPILER=\"${stage0_cxx}\"
+-DCMAKE_C_FLAGS=\"${stage0_cflags}\"
+-DCMAKE_CXX_FLAGS=\"${stage0_cxxflags}\"
+-DCMAKE_SHARED_LINKER_FLAGS=\"${stage0_ldflags}\"
 -DLLVM_TARGETS_TO_BUILD=\"host\"
 -DLLVM_ENABLE_PROJECTS=\"clang\"
 -DLLVM_BUILD_TOOLS=\"off\"
@@ -71,7 +79,13 @@ stage1_cc="${install_prefix}/bin/clang"
 stage1_cxx="${install_prefix}/bin/clang++"
 stage1_cflags="${common_cflags}"
 stage1_cxxflags="${common_cxxflags}"
+stage1_ldflags="${common_ldflags}"
 stage1_cmake="${common_cmake}
+-DCMAKE_C_COMPILER=\"${stage1_cc}\"
+-DCMAKE_CXX_COMPILER=\"${stage1_cxx}\"
+-DCMAKE_C_FLAGS=\"${stage1_cflags}\"
+-DCMAKE_CXX_FLAGS=\"${stage1_cxxflags}\"
+-DCMAKE_SHARED_LINKER_FLAGS=\"${stage1_ldflags}\"
 -DLLVM_TARGETS_TO_BUILD=\"host\"
 -DLLVM_ENABLE_PROJECTS=\"clang;libcxx;libcxxabi\"
 -DLLVM_BUILD_TOOLS=\"off\"
@@ -82,9 +96,15 @@ stage1_cmake="${common_cmake}
 # stage 2
 stage2_cc="${install_prefix}/bin/clang"
 stage2_cxx="${install_prefix}/bin/clang++"
-stage2_cflags="${common_cflags} -stdlib=libc++"
-stage2_cxxflags="${common_cxxflags} -stdlib=libc++"
+stage2_cflags="${common_cflags}"
+stage2_cxxflags="${common_cxxflags}"
+stage2_ldflags="${common_ldflags} -lstdc++"
 stage2_cmake="${common_cmake}
+-DCMAKE_C_COMPILER=\"${stage2_cc}\"
+-DCMAKE_CXX_COMPILER=\"${stage2_cxx}\"
+-DCMAKE_C_FLAGS=\"${stage2_cflags}\"
+-DCMAKE_CXX_FLAGS=\"${stage2_cxxflags}\"
+-DCMAKE_SHARED_LINKER_FLAGS=\"${stage2_ldflags}\"
 -DLLVM_TARGETS_TO_BUILD=\"all\"
 -DLLVM_ENABLE_PROJECTS=\"all\"
 -DLLVM_BUILD_TOOLS=\"on\"
@@ -104,10 +124,6 @@ popd
 mkdir -p ${build_dir}/stage0
 pushd ${build_dir}/stage0
 
-CC="${stage0_cc}"               \
-CXX="${stage0_cxx}"             \
-CFLAGS="${stage0_cflags}"       \
-CXXFLAGS="${stage0_cxxflags}"   \
 eval cmake ${stage0_cmake} ${llvm_srcdir}/llvm
 make -j ${jobs}
 make -j ${jobs} install
@@ -118,10 +134,6 @@ popd
 mkdir -p ${build_dir}/stage1
 pushd ${build_dir}/stage1
 
-CC="${stage1_cc}"               \
-CXX="${stage1_cxx}"             \
-CFLAGS="${stage1_cflags}"       \
-CXXFLAGS="${stage1_cxxflags}"   \
 eval cmake ${stage1_cmake} ${llvm_srcdir}/llvm
 make -j ${jobs}
 make -j ${jobs} install
@@ -132,10 +144,6 @@ popd
 mkdir -p ${build_dir}/stage2
 pushd ${build_dir}/stage2
 
-CC="${stage2_cc}"               \
-CXX="${stage2_cxx}"             \
-CFLAGS="${stage2_cflags}"       \
-CXXFLAGS="${stage2_cxxflags}"   \
 eval cmake ${stage2_cmake} ${llvm_srcdir}/llvm
 make -j ${jobs}
 make -j ${jobs} install
