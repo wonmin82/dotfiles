@@ -278,7 +278,6 @@ list_pkgs_to_be_installed=(
 "python3-all-dev"
 "python3-pip"
 "python3-pep8"
-"python3-autopep8"
 "python3-flake8"
 "python3-doc"
 "flake8"
