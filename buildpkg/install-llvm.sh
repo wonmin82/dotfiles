@@ -89,7 +89,7 @@ stage2_cmake="${common_cmake}
 -DLLVM_ENABLE_PROJECTS=\"all\"
 -DLLVM_BUILD_TOOLS=\"on\"
 -DLLVM_BUILD_DOCS=\"on\"
--DLLVM_ENABLE_DOXYGEN=\"on\"
+-DLLVM_ENABLE_DOXYGEN=\"off\"
 -DLLVM_ENABLE_SPHINX=\"off\""
 
 mkdir -p ${llvm_srcdir}
