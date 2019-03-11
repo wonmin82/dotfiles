@@ -32,7 +32,7 @@ source ./build-env.sh
 
 llvm_tag="llvmorg-7.0.1"
 
-triple=$(gcc -v 2>&1 | grep "^Target:" | cut -d ' ' -f 2)
+triple=$(make -v 2>&1 | grep "^Built for " | sed -e "s/^Built for //")
 
 default_includes=$(add_include_path features.h /usr/include)
 default_includes=$(add_include_path sys/cdefs.h /usr/include/${triple} /usr/include)
@@ -48,6 +48,7 @@ common_cmake="-G \"Unix Makefiles\"
 -DLLVM_PARALLEL_COMPILE_JOBS=${jobs}
 -DLLVM_PARALLEL_LINK_JOBS=${jobs}
 -DLLVM_DEFAULT_TARGET_TRIPLE=\"${triple}\"
+-DLLVM_HOST_TRIPLE=\"${triple}\"
 -DC_INCLUDE_DIRS=\"${default_includes}\"
 -DLLVM_ENABLE_PIC=\"on\"
 -DLLVM_ENABLE_RTTI=\"off\"
