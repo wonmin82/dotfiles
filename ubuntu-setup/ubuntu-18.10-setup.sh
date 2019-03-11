@@ -159,6 +159,8 @@ list_pkgs_to_be_installed=(
 "libclang-7-dev"
 "libclang-common-7-dev"
 "libclang1-7"
+"lld"
+"lld-7"
 "lldb"
 "lldb-7"
 "liblldb-7"
