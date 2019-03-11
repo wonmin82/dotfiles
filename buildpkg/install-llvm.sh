@@ -23,7 +23,7 @@ function add_include_path()
         fi
     done
 
-    echo  -n ${new_includes}
+    echo -n ${new_includes}
 }
 
 set -e -x
