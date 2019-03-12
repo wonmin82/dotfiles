@@ -537,6 +537,9 @@ if [[ ${_SYSENV_DIST} == "ubuntu" ]]; then
 		retry sudo aptitude -d -y upgrade
 		sudo aptitude -y upgrade
 		clean-packages
+		if (( $+commands[snap] )); then
+			snap refresh
+		fi
 	}
 
 	function update-system()
