@@ -73,7 +73,9 @@ stage0_cmake="${common_cmake}
 -DLLVM_BUILD_TOOLS=\"off\"
 -DLLVM_BUILD_DOCS=\"off\"
 -DLLVM_ENABLE_DOXYGEN=\"off\"
--DLLVM_ENABLE_SPHINX=\"off\""
+-DLLVM_ENABLE_SPHINX=\"off\"
+-DSPHINX_OUTPUT_MAN=\"off\"
+-DSPHINX_WARNINGS_AS_ERRORS=\"off\""
 
 # stage 1
 stage1_cc="${install_prefix}/bin/clang"
@@ -92,7 +94,9 @@ stage1_cmake="${common_cmake}
 -DLLVM_BUILD_TOOLS=\"off\"
 -DLLVM_BUILD_DOCS=\"off\"
 -DLLVM_ENABLE_DOXYGEN=\"off\"
--DLLVM_ENABLE_SPHINX=\"off\""
+-DLLVM_ENABLE_SPHINX=\"off\"
+-DSPHINX_OUTPUT_MAN=\"off\"
+-DSPHINX_WARNINGS_AS_ERRORS=\"off\""
 
 # stage 2
 stage2_cc="${install_prefix}/bin/clang"
@@ -111,7 +115,9 @@ stage2_cmake="${common_cmake}
 -DLLVM_BUILD_TOOLS=\"on\"
 -DLLVM_BUILD_DOCS=\"on\"
 -DLLVM_ENABLE_DOXYGEN=\"off\"
--DLLVM_ENABLE_SPHINX=\"on\""
+-DLLVM_ENABLE_SPHINX=\"on\"
+-DSPHINX_OUTPUT_MAN=\"on\"
+-DSPHINX_WARNINGS_AS_ERRORS=\"off\""
 
 mkdir -p ${llvm_srcdir}
 pushd ${llvm_srcdir}
