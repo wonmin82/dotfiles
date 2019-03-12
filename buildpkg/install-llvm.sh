@@ -111,7 +111,7 @@ stage2_cmake="${common_cmake}
 -DLLVM_BUILD_TOOLS=\"on\"
 -DLLVM_BUILD_DOCS=\"on\"
 -DLLVM_ENABLE_DOXYGEN=\"off\"
--DLLVM_ENABLE_SPHINX=\"off\""
+-DLLVM_ENABLE_SPHINX=\"on\""
 
 mkdir -p ${llvm_srcdir}
 pushd ${llvm_srcdir}
