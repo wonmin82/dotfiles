@@ -538,7 +538,7 @@ if [[ ${_SYSENV_DIST} == "ubuntu" ]]; then
 		sudo aptitude -y upgrade
 		clean-packages
 		if (( $+commands[snap] )); then
-			snap refresh
+			sudo snap refresh
 		fi
 	}
 
