@@ -51,7 +51,7 @@ common_cmake="-G \"Unix Makefiles\"
 -DLLVM_HOST_TRIPLE=\"${triple}\"
 -DC_INCLUDE_DIRS=\"${default_includes}\"
 -DLLVM_ENABLE_PIC=\"on\"
--DLLVM_ENABLE_RTTI=\"off\"
+-DLLVM_ENABLE_RTTI=\"on\"
 -DLLVM_ENABLE_ASSERTIONS=\"off\"
 -DBUILD_SHARED_LIBS=\"on\""
 
