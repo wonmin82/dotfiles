@@ -477,6 +477,8 @@ post_process()
 	update-grub2
 	update-initramfs -k all -u
 
+	snap refresh
+
 	if [[ -f ${home}/.config/monitors.xml ]]; then
 		cp -f ${home}/.config/monitors.xml /var/lib/gdm3/.config
 	fi
