@@ -145,6 +145,8 @@ list_pkgs_to_be_installed=(
 "g++-multilib"
 "gobjc++-multilib"
 "gobjc-multilib"
+"gdb"
+"gdb-doc"
 # need to be checked for existence when ubuntu is upgraded {
 "llvm"
 "llvm-3.8"
