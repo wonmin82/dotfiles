@@ -14,7 +14,8 @@ C_BASE_FLAGS = [
     '-ferror-limit=10000',
     '-DNDEBUG',
     '-std=c11',
-    '-xc',
+    '-x',
+    'c',
     '-I/usr/lib/',
     '-I/usr/include/'
 ]
@@ -28,7 +29,8 @@ CPP_BASE_FLAGS = [
     '-ferror-limit=10000',
     '-DNDEBUG',
     '-std=c++1z',
-    '-xc++',
+    '-x'
+    'c++',
     '-I/usr/lib/',
     '-I/usr/include/'
 ]
