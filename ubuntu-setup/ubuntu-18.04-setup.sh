@@ -490,6 +490,9 @@ post_process()
 	rm -f ${home}/.bash_history
 
 	rm -r -f ${home}/.gvfs || true
+	if [[ -d ${home}/.cache/dconf ]]; then
+		chown -R -v ${user}:${user} ${home}/.cache/dconf
+	fi
 
 	rm -f /usr/bin/gnome-screensaver-command
 	ln -s /usr/bin/xscreensaver-command /usr/bin/gnome-screensaver-command
