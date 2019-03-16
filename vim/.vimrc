@@ -351,9 +351,6 @@ if neobundle#exists_not_installed_bundles()
 	endif
 	quit!
 endif
-" If there are uninstalled bundles found on startup,
-" this will conveniently prompt you to install them.
-NeoBundleCheck
 "}}}
 
 "===============================================================================
