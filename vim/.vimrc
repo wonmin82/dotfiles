@@ -1952,6 +1952,104 @@ nmap <leader>a\| :Tabularize /\|<cr>
 vmap <leader>a\| :Tabularize /\|<cr>
 "}}}
 
+" Detect clang tools {{{
+let s:clang_tools_suffixes = [
+			\   '-7',
+			\   '-7.0',
+			\   '-6',
+			\   '-6.0',
+			\   '-5',
+			\   '-5.0',
+			\   '-4',
+			\   '-4.0',
+			\   '-3.9',
+			\   '-3.8',
+			\   '-3.7',
+			\   '-3.6',
+			\   '-3.5',
+			\   '-3.4'
+			\]
+
+function! s:clang_format_detect()
+	let l:base_command = 'clang-format'
+	let l:clang_format_command = ''
+	if executable(l:base_command)
+		try
+			let l:command = exepath(l:base_command)
+		catch
+			let l:command = l:base_command
+		endtry
+		return l:command
+	endif
+
+	for clang_tools_version in s:clang_tools_suffixes
+		if executable(l:base_command . clang_tools_version)
+			try
+				let l:command = exepath(l:base_command . clang_tools_version)
+			catch
+				let l:command = l:base_command . clang_tools_version
+			endtry
+			return l:command
+		endif
+	endfor
+
+	throw l:base_command . ' could not be detected.'
+endfunction
+
+function! s:clang_tidy_detect()
+	let l:base_command = 'clang-tidy'
+	let l:clang_tidy_command = ''
+	if executable(l:base_command)
+		try
+			let l:command = exepath(l:base_command)
+		catch
+			let l:command = l:base_command
+		endtry
+		return l:command
+	endif
+
+	for clang_tools_version in s:clang_tools_suffixes
+		if executable(l:base_command . clang_tools_version)
+			try
+				let l:command = exepath(l:base_command . clang_tools_version)
+			catch
+				let l:command = l:base_command . clang_tools_version
+			endtry
+			return l:command
+		endif
+	endfor
+
+	throw l:base_command . ' could not be detected.'
+endfunction
+
+function! s:clang_check_detect()
+	let l:base_command = 'clang-check'
+	let l:clang_check_command = ''
+	if executable(l:base_command)
+		try
+			let l:command = exepath(l:base_command)
+		catch
+			let l:command = l:base_command
+		endtry
+		return l:command
+	endif
+
+	for clang_tools_version in s:clang_tools_suffixes
+		if executable(l:base_command . clang_tools_version)
+			try
+				let l:command = exepath(l:base_command . clang_tools_version)
+			catch
+				let l:command = l:base_command . clang_tools_version
+			endtry
+			return l:command
+		endif
+	endfor
+
+	throw l:base_command . ' could not be detected.'
+endfunction
+
+"}}}
+
 " Plugin: syntastic {{{
 nmap <leader>ms :SyntasticToggleMode<cr>
 nmap <leader>sc :SyntasticCheck<cr>
@@ -1972,6 +2070,24 @@ let g:syntastic_aggregate_errors = 1
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 2       " use unite location list instead.
 " let g:syntastic_ignore_files = ['\m^/usr/include/', '\m\c\.h$']
+
+try
+	let s:clang_tidy_command = s:clang_tidy_detect()
+	let g:syntastic_c_clang_tidy_exec = s:clang_tidy_command
+	let g:syntastic_cpp_clang_tidy_exec = s:clang_tidy_command
+catch
+	let g:syntastic_c_clang_tidy_exec = 'clang-tidy'
+	let g:syntastic_cpp_clang_tidy_exec = 'clang-tidy'
+endtry
+try
+	let s:clang_check_command = s:clang_check_detect()
+	let g:syntastic_c_clang_check_exec = s:clang_check_command
+	let g:syntastic_cpp_clang_check_exec = s:clang_check_command
+catch
+	let g:syntastic_c_clang_check_exec = 'clang-check'
+	let g:syntastic_cpp_clang_check_exec = 'clang-check'
+endtry
+
 let g:syntastic_mode_map = { "mode": "active",
 			\   "active_filetypes": [],
 			\   "passive_filetypes": []
@@ -2052,39 +2168,7 @@ let g:UltiSnipsListSnippets = "<c-s>"
 
 " Plugin: vim-clang-format {{{
 " NOTE: clang-format 3.4 or later is required
-" NOTE: currently, style options are ready for 3.4~3.9 only
-let s:clang_format_detecting_candidates = [
-			\   'clang-format',
-			\   'clang-format-7',
-			\   'clang-format-7.0',
-			\   'clang-format-6',
-			\   'clang-format-6.0',
-			\   'clang-format-5',
-			\   'clang-format-5.0',
-			\   'clang-format-4',
-			\   'clang-format-4.0',
-			\   'clang-format-3.9',
-			\   'clang-format-3.8',
-			\   'clang-format-3.7',
-			\   'clang-format-3.6',
-			\   'clang-format-3.5',
-			\   'clang-format-3.4'
-			\]
-
-function! s:clang_format_detect()
-	for candidate in s:clang_format_detecting_candidates
-		if executable(candidate)
-			try
-				let command = exepath(candidate)
-			catch
-				let command = candidate
-			endtry
-			return command
-		endif
-	endfor
-	throw 'clang-format could not be detected.'
-endfunction
-
+" NOTE: currently, style options are ready for 3.4~7.0 only
 function! s:has_vimproc()
 	if !exists('s:exists_vimproc')
 		try
