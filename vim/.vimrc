@@ -460,7 +460,7 @@ if exists('+wildignorecase')
 	set wildignorecase
 endif
 if exists('+fileignorecase')
-	set fileignorecase
+	set nofileignorecase
 endif
 set smartcase
 set magic
