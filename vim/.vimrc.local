@@ -8,6 +8,10 @@
 "*                                       *
 "*****************************************
 
+" Uncommenting following unlet command will cause vim treats h file as c++ code.
+" Otherwise, vim will treats h file as c code.
+"unlet! g:c_syntax_for_h
+
 " default syntastic options
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0

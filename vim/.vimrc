@@ -650,6 +650,8 @@ endif
 "}}}
 
 " Settings per filetype {{{
+let g:c_syntax_for_h = 1
+
 augroup MyAutoCmd
 	autocmd BufWinEnter *.hpp set syntax=cpp
 	" default cinoptions value
