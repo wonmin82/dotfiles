@@ -2241,7 +2241,7 @@ if s:clang_format_is_available
 					\   "AllowAllParametersOfDeclarationOnNextLine" : "true",
 					\   "AllowShortBlocksOnASingleLine" : "false",
 					\   "AllowShortCaseLabelsOnASingleLine" : "false",
-					\   "AllowShortFunctionsOnASingleLine" : "Inline",
+					\   "AllowShortFunctionsOnASingleLine" : "None",
 					\   "AllowShortIfStatementsOnASingleLine" : "false",
 					\   "AllowShortLoopsOnASingleLine" : "false",
 					\   "AlwaysBreakAfterDefinitionReturnType" : "None",
@@ -2288,8 +2288,28 @@ if s:clang_format_is_available
 					\   "DisableFormat" : "false",
 					\   "ExperimentalAutoDetectBinPacking" : "false",
 					\   "FixNamespaceComments" : "true",
-					\   "ForEachMacros" : [ "foreach", "Q_FOREACH", "BOOST_FOREACH" ],
+					\   "ForEachMacros" :
+					\   [
+					\       "foreach",
+					\       "Q_FOREACH",
+					\       "BOOST_FOREACH"
+					\   ],
 					\   "IncludeBlocks" : "Preserve",
+					\   "IncludeCategories" :
+					\   [
+					\       {
+					\           "Regex" :   '^"(llvm|llvm-c|clang|clang-c)/',
+					\           "Priority" : 2
+					\       },
+					\       {
+					\           "Regex" :   '^(<|"(gtest|gmock|isl|json)/)',
+					\           "Priority" : 3
+					\       },
+					\       {
+					\           "Regex" :   '.*',
+					\           "Priority" : 1
+					\       }
+					\   ],
 					\   "IncludeIsMainRegex": "\"(Test)\?\$\"",
 					\   "IndentCaseLabels" : "false",
 					\   "IndentPPDirectives" : "None",
@@ -2351,7 +2371,7 @@ if s:clang_format_is_available
 					\   "AllowAllParametersOfDeclarationOnNextLine" : "true",
 					\   "AllowShortBlocksOnASingleLine" : "false",
 					\   "AllowShortCaseLabelsOnASingleLine" : "false",
-					\   "AllowShortFunctionsOnASingleLine" : "Inline",
+					\   "AllowShortFunctionsOnASingleLine" : "None",
 					\   "AllowShortIfStatementsOnASingleLine" : "false",
 					\   "AllowShortLoopsOnASingleLine" : "false",
 					\   "AlwaysBreakAfterDefinitionReturnType" : "None",
@@ -2399,6 +2419,21 @@ if s:clang_format_is_available
 					\   "FixNamespaceComments" : "true",
 					\   "ForEachMacros" : [ "foreach", "Q_FOREACH", "BOOST_FOREACH" ],
 					\   "IncludeBlocks" : "Preserve",
+					\   "IncludeCategories" :
+					\   [
+					\       {
+					\           "Regex" :   '^"(llvm|llvm-c|clang|clang-c)/',
+					\           "Priority" : 2
+					\       },
+					\       {
+					\           "Regex" :   '^(<|"(gtest|gmock|isl|json)/)',
+					\           "Priority" : 3
+					\       },
+					\       {
+					\           "Regex" :   '.*',
+					\           "Priority" : 1
+					\       }
+					\   ],
 					\   "IncludeIsMainRegex": "\"(Test)\?\$\"",
 					\   "IndentCaseLabels" : "false",
 					\   "IndentPPDirectives" : "None",
@@ -2454,7 +2489,7 @@ if s:clang_format_is_available
 					\   "AllowAllParametersOfDeclarationOnNextLine" : "true",
 					\   "AllowShortBlocksOnASingleLine" : "false",
 					\   "AllowShortCaseLabelsOnASingleLine" : "false",
-					\   "AllowShortFunctionsOnASingleLine" : "Inline",
+					\   "AllowShortFunctionsOnASingleLine" : "None",
 					\   "AllowShortIfStatementsOnASingleLine" : "false",
 					\   "AllowShortLoopsOnASingleLine" : "false",
 					\   "AlwaysBreakAfterDefinitionReturnType" : "None",
@@ -2500,6 +2535,21 @@ if s:clang_format_is_available
 					\   "ExperimentalAutoDetectBinPacking" : "false",
 					\   "FixNamespaceComments" : "true",
 					\   "ForEachMacros" : [ "foreach", "Q_FOREACH", "BOOST_FOREACH" ],
+					\   "IncludeCategories" :
+					\   [
+					\       {
+					\           "Regex" :   '^"(llvm|llvm-c|clang|clang-c)/',
+					\           "Priority" : 2
+					\       },
+					\       {
+					\           "Regex" :   '^(<|"(gtest|gmock|isl|json)/)',
+					\           "Priority" : 3
+					\       },
+					\       {
+					\           "Regex" :   '.*',
+					\           "Priority" : 1
+					\       }
+					\   ],
 					\   "IncludeIsMainRegex": "\"(Test)\?\$\"",
 					\   "IndentCaseLabels" : "false",
 					\   "IndentWidth" : 4,
@@ -2554,7 +2604,7 @@ if s:clang_format_is_available
 					\   "AllowAllParametersOfDeclarationOnNextLine" : "true",
 					\   "AllowShortBlocksOnASingleLine" : "false",
 					\   "AllowShortCaseLabelsOnASingleLine" : "false",
-					\   "AllowShortFunctionsOnASingleLine" : "Inline",
+					\   "AllowShortFunctionsOnASingleLine" : "None",
 					\   "AllowShortIfStatementsOnASingleLine" : "false",
 					\   "AllowShortLoopsOnASingleLine" : "false",
 					\   "AlwaysBreakAfterDefinitionReturnType" : "None",
@@ -2593,6 +2643,21 @@ if s:clang_format_is_available
 					\   "DisableFormat" : "false",
 					\   "ExperimentalAutoDetectBinPacking" : "false",
 					\   "ForEachMacros" : [ "foreach", "Q_FOREACH", "BOOST_FOREACH" ],
+					\   "IncludeCategories" :
+					\   [
+					\       {
+					\           "Regex" :   '^"(llvm|llvm-c|clang|clang-c)/',
+					\           "Priority" : 2
+					\       },
+					\       {
+					\           "Regex" :   '^(<|"(gtest|gmock|isl|json)/)',
+					\           "Priority" : 3
+					\       },
+					\       {
+					\           "Regex" :   '.*',
+					\           "Priority" : 1
+					\       }
+					\   ],
 					\   "IncludeIsMainRegex": "\"([-_](test|unittest))\?\$\"",
 					\   "IndentCaseLabels" : "false",
 					\   "IndentWidth" : 4,
@@ -2645,7 +2710,7 @@ if s:clang_format_is_available
 					\   "AllowAllParametersOfDeclarationOnNextLine" : "true",
 					\   "AllowShortBlocksOnASingleLine" : "false",
 					\   "AllowShortCaseLabelsOnASingleLine" : "false",
-					\   "AllowShortFunctionsOnASingleLine" : "Inline",
+					\   "AllowShortFunctionsOnASingleLine" : "None",
 					\   "AllowShortIfStatementsOnASingleLine" : "false",
 					\   "AllowShortLoopsOnASingleLine" : "false",
 					\   "AlwaysBreakAfterDefinitionReturnType" : "None",
@@ -2684,6 +2749,21 @@ if s:clang_format_is_available
 					\   "DisableFormat" : "false",
 					\   "ExperimentalAutoDetectBinPacking" : "false",
 					\   "ForEachMacros" : [ "foreach", "Q_FOREACH", "BOOST_FOREACH" ],
+					\   "IncludeCategories" :
+					\   [
+					\       {
+					\           "Regex" :   '^"(llvm|llvm-c|clang|clang-c)/',
+					\           "Priority" : 2
+					\       },
+					\       {
+					\           "Regex" :   '^(<|"(gtest|gmock|isl|json)/)',
+					\           "Priority" : 3
+					\       },
+					\       {
+					\           "Regex" :   '.*',
+					\           "Priority" : 1
+					\       }
+					\   ],
 					\   "IncludeIsMainRegex": "\"([-_](test|unittest))\?\$\"",
 					\   "IndentCaseLabels" : "false",
 					\   "IndentWidth" : 4,
@@ -2735,7 +2815,7 @@ if s:clang_format_is_available
 					\   "AllowAllParametersOfDeclarationOnNextLine" : "true",
 					\   "AllowShortBlocksOnASingleLine" : "false",
 					\   "AllowShortCaseLabelsOnASingleLine" : "false",
-					\   "AllowShortFunctionsOnASingleLine" : "Inline",
+					\   "AllowShortFunctionsOnASingleLine" : "None",
 					\   "AllowShortIfStatementsOnASingleLine" : "false",
 					\   "AllowShortLoopsOnASingleLine" : "false",
 					\   "AlwaysBreakAfterDefinitionReturnType" : "None",
@@ -2772,6 +2852,21 @@ if s:clang_format_is_available
 					\   "DisableFormat" : "false",
 					\   "ExperimentalAutoDetectBinPacking" : "false",
 					\   "ForEachMacros" : [ "foreach", "Q_FOREACH", "BOOST_FOREACH" ],
+					\   "IncludeCategories" :
+					\   [
+					\       {
+					\           "Regex" :   '^"(llvm|llvm-c|clang|clang-c)/',
+					\           "Priority" : 2
+					\       },
+					\       {
+					\           "Regex" :   '^(<|"(gtest|gmock|isl|json)/)',
+					\           "Priority" : 3
+					\       },
+					\       {
+					\           "Regex" :   '.*',
+					\           "Priority" : 1
+					\       }
+					\   ],
 					\   "IndentCaseLabels" : "false",
 					\   "IndentWidth" : 4,
 					\   "IndentWrappedFunctionNames" : "false",
@@ -2819,7 +2914,7 @@ if s:clang_format_is_available
 					\   "AllowAllParametersOfDeclarationOnNextLine" : "true",
 					\   "AllowShortBlocksOnASingleLine" : "false",
 					\   "AllowShortCaseLabelsOnASingleLine" : "false",
-					\   "AllowShortFunctionsOnASingleLine" : "Inline",
+					\   "AllowShortFunctionsOnASingleLine" : "None",
 					\   "AllowShortIfStatementsOnASingleLine" : "false",
 					\   "AllowShortLoopsOnASingleLine" : "false",
 					\   "AlwaysBreakAfterDefinitionReturnType" : "false",
@@ -2887,7 +2982,7 @@ if s:clang_format_is_available
 					\   "AllowShortCaseLabelsOnASingleLine" : "false",
 					\   "AllowShortIfStatementsOnASingleLine" : "false",
 					\   "AllowShortLoopsOnASingleLine" : "false",
-					\   "AllowShortFunctionsOnASingleLine" : "Inline",
+					\   "AllowShortFunctionsOnASingleLine" : "None",
 					\   "AlwaysBreakAfterDefinitionReturnType" : "false",
 					\   "AlwaysBreakTemplateDeclarations" : "true",
 					\   "AlwaysBreakBeforeMultilineStrings" : "true",
@@ -2950,7 +3045,7 @@ if s:clang_format_is_available
 					\   "AllowShortBlocksOnASingleLine" : "false",
 					\   "AllowShortIfStatementsOnASingleLine" : "false",
 					\   "AllowShortLoopsOnASingleLine" : "false",
-					\   "AllowShortFunctionsOnASingleLine" : "Inline",
+					\   "AllowShortFunctionsOnASingleLine" : "None",
 					\   "AlwaysBreakTemplateDeclarations" : "true",
 					\   "AlwaysBreakBeforeMultilineStrings" : "true",
 					\   "BreakBeforeBinaryOperators" : "false",
