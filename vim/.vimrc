@@ -3018,7 +3018,7 @@ function s:NormalFormatting()
 endfunction
 "}}}
 
-" vim-autopep8 {{{
+" Plugin: vim-autopep8 {{{
 autocmd FileType python
 			\   nnoremap <buffer> <leader>cf :<c-u>Autopep8<cr>
 autocmd FileType python
