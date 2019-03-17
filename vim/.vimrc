@@ -680,9 +680,9 @@ function! PydocShow(word)
 endfunction
 
 function s:set_buffer_env_for_python()
-	setlocal tabstop=4 softtabstop=4 shiftwidth=4"
-	setlocal smarttab expandtab"
-	setlocal autoindent cindent smartindent"
+	setlocal tabstop=4 softtabstop=4 shiftwidth=4
+	setlocal smarttab expandtab
+	setlocal autoindent cindent smartindent
 	setlocal backspace=indent,eol,start
 	nnoremap <silent> <buffer> K :call PydocFind()<CR>
 	vnoremap <silent> <buffer> K :<C-U>if line("'>") - line("'<") == 0<bar>execute(":call PydocShow(GetVisualSelection())")<bar>endif<CR>
