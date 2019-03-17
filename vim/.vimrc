@@ -649,6 +649,24 @@ endif
 " Settings per filetype {{{
 let g:c_syntax_for_h = 1
 
+function s:set_buffer_env_for_man()
+	setlocal tabstop=8
+	setlocal nomodifiable nomodified
+	setlocal nolist nonumber nospell
+	setlocal mouse=a
+	setlocal nocursorline nocursorcolumn
+	silent! %foldopen!
+	nnoremap <buffer> q :qa!<cr>
+	nnoremap <buffer> <end> G
+	nnoremap <buffer> <home> gg
+	nmap <buffer> K <c-]>
+	nnoremap <buffer> : <nop>
+	nnoremap <buffer> <f2> <nop>
+	nnoremap <buffer> <f3> <nop>
+	nnoremap <buffer> <f4> <nop>
+	nnoremap <buffer> <f5> <nop>
+endfunction
+
 augroup MyAutoCmd
 	autocmd BufWinEnter *.hpp set syntax=cpp
 	" default cinoptions value
@@ -671,21 +689,7 @@ augroup MyAutoCmd
 	autocmd Filetype tex
 				\   execute "setlocal textwidth=72"
 	autocmd FileType man
-				\   execute "setlocal tabstop=8" |
-				\   execute "setlocal nomodifiable nomodified" |
-				\   execute "setlocal nolist nonumber nospell" |
-				\   execute "setlocal mouse=a" |
-				\   execute "setlocal nocursorline nocursorcolumn" |
-				\   execute "silent! %foldopen!" |
-				\   execute "nnoremap <buffer> q :qa!<cr>" |
-				\   execute "nnoremap <buffer> <end> G" |
-				\   execute "nnoremap <buffer> <home> gg" |
-				\   execute "nmap <buffer> K <c-]>" |
-				\   execute "nnoremap <buffer> : <nop>" |
-				\   execute "nnoremap <buffer> <f2> <nop>" |
-				\   execute "nnoremap <buffer> <f3> <nop>" |
-				\   execute "nnoremap <buffer> <f4> <nop>" |
-				\   execute "nnoremap <buffer> <f5> <nop>"
+				\   execute "call s:set_buffer_env_for_man()"
 	autocmd FileType vimshell
 				\   execute "setlocal nolist nonumber nospell"
 augroup END
