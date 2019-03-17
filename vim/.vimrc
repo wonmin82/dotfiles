@@ -649,6 +649,45 @@ endif
 " Settings per filetype {{{
 let g:c_syntax_for_h = 1
 
+function! GetVisualSelection()
+    let [line_start, column_start] = getpos("'<")[1:2]
+    let [line_end, column_end] = getpos("'>")[1:2]
+    let l:lines = getline(line_start, line_end)
+    if len(l:lines) == 0
+        return ''
+    endif
+    let l:lines[-1] = lines[-1][: column_end - 2]
+    let l:lines[0] = lines[0][column_start - 1:]
+    return join(l:lines, "\n")
+endfunction
+
+function! PydocFind()
+	let l:line = getline(".")
+	let l:pre = l:line[:col(".") - 1]
+	let l:suf = l:line[col("."):]
+	let word = matchstr(pre, "[A-Za-z0-9_.]*$") . matchstr(suf, "^[A-Za-z0-9_]*")
+	call PydocShow(word)
+endfunction
+
+function! PydocShow(word)
+    if a:word == ''
+        echo "Invalid name or symbol."
+        return 0
+    endif
+	silent execute ":!clear"
+	execute ":!pydoc " . a:word
+	redraw!
+endfunction
+
+function s:set_buffer_env_for_python()
+	setlocal tabstop=4 softtabstop=4 shiftwidth=4"
+	setlocal smarttab expandtab"
+	setlocal autoindent cindent smartindent"
+	setlocal backspace=indent,eol,start
+	nnoremap <silent> <buffer> K :call PydocFind()<CR>
+	vnoremap <silent> <buffer> K :<C-U>if line("'>") - line("'<") == 0<bar>execute(":call PydocShow(GetVisualSelection())")<bar>endif<CR>
+endfunction
+
 function s:set_buffer_env_for_man()
 	setlocal tabstop=8
 	setlocal nomodifiable nomodified
@@ -680,10 +719,7 @@ augroup MyAutoCmd
 				\   execute "setlocal cinkeys=0{,0},0),:,0#,!^F,o,O,e" |
 				\   execute "setlocal cinwords=if,else,while,do,for,switch"
 	autocmd Filetype python
-				\   execute "setlocal tabstop=4 softtabstop=4 shiftwidth=4" |
-				\   execute "setlocal smarttab expandtab" |
-				\   execute "setlocal autoindent cindent smartindent" |
-				\   execute "setlocal backspace=indent,eol,start"
+				\   execute "call s:set_buffer_env_for_python()"
 	autocmd Filetype perl
 				\   execute "setlocal kp=perldoc\\ -f"
 	autocmd Filetype tex
