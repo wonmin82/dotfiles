@@ -120,9 +120,9 @@ stage2_cmake="${common_cmake}
 -DSPHINX_WARNINGS_AS_ERRORS=\"off\""
 
 if ! command -v sphinx-build 2> /dev/null; then
-	stage0_cmake=$(sed "s/-DLLVM_ENABLE_SPHINX=\".*\"/-DLLVM_ENABLE_SPHINX=\"off\"/g" <<< ${stage2_cmake})
-	stage1_cmake=$(sed "s/-DLLVM_ENABLE_SPHINX=\".*\"/-DLLVM_ENABLE_SPHINX=\"off\"/g" <<< ${stage2_cmake})
-	stage2_cmake=$(sed "s/-DLLVM_ENABLE_SPHINX=\".*\"/-DLLVM_ENABLE_SPHINX=\"off\"/g" <<< ${stage2_cmake})
+	stage0_cmake=$(sed -e "s/-DLLVM_ENABLE_SPHINX=\"on\"/-DLLVM_ENABLE_SPHINX=\"off\"/g" <<< ${stage0_cmake})
+	stage1_cmake=$(sed -e "s/-DLLVM_ENABLE_SPHINX=\"on\"/-DLLVM_ENABLE_SPHINX=\"off\"/g" <<< ${stage1_cmake})
+	stage2_cmake=$(sed -e "s/-DLLVM_ENABLE_SPHINX=\"on\"/-DLLVM_ENABLE_SPHINX=\"off\"/g" <<< ${stage2_cmake})
 fi
 
 mkdir -p ${llvm_srcdir}
