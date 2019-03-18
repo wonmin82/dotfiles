@@ -97,6 +97,7 @@ list_pkgs_to_be_installed=(
 "stl-manual"
 "glibc-doc"
 "glibc-doc-reference"
+"cppman"
 "cppreference-doc-en-html"
 "cppreference-doc-en-qch"
 "flex"
