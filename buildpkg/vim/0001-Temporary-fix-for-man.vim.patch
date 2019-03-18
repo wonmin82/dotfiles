@@ -1,0 +1,25 @@
+From 452b10523c9e2bbf755782684d13ab64a0879644 Mon Sep 17 00:00:00 2001
+From: Wonmin Jung <wonmin82@gmail.com>
+Date: Mon, 18 Mar 2019 17:40:25 +0900
+Subject: [PATCH] Temporary fix for man.vim
+
+---
+ runtime/ftplugin/man.vim | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/runtime/ftplugin/man.vim b/runtime/ftplugin/man.vim
+index 87773ed27..8c4a1a713 100644
+--- a/runtime/ftplugin/man.vim
++++ b/runtime/ftplugin/man.vim
+@@ -199,7 +199,7 @@ func <SID>GetPage(cmdmods, ...)
+     let s:env_has_u = (v:shell_error == 0)
+   endif
+   let env_cmd = s:env_has_u ? 'env -u MANPAGER' : 'env MANPAGER=cat'
+-  let man_cmd = env_cmd . ' man ' . s:GetCmdArg(sect, page) . ' | col -b'
++  let man_cmd = env_cmd . ' man ' . s:GetCmdArg(sect, page)
+   silent exec "r !" . man_cmd
+ 
+   if unsetwidth
+-- 
+2.21.0
+
