@@ -504,9 +504,14 @@ export GREP_COLOR='1;31'
 # word under the cursor by using [section_number]K.
 # Note we use bash explicitly here to support process substitution
 # which in turn suppresses the "Vim: Reading from stdin..." warning.
-export MANPAGER='/bin/bash -c "vim -MRn -c \"set ft=man\" </dev/tty <(col -b)"'
+#export MANPAGER='/bin/bash -c "vim -MRn -c \"set ft=man\" </dev/tty <(col -b)"'
 
-# less configuration
+# MANPAGER configuration for newer version of vim.
+export MANPAGER="vim --not-a-term -M +MANPAGER -"
+# If your vim doesn't support --not-a-term option.
+#export MANPAGER="vim -M +MANPAGER -"
+
+ #less configuration
 export LESS="-FRXK"
 #}}}
 
