@@ -278,9 +278,12 @@ list_pkgs_to_be_installed=(
 # }
 "rustc"
 "cargo"
-# lua version should be matched with 'vim --version | grep lua' {
-"liblua5.3-dev"
-"lua5.3"
+# build dependency for vim {
+"lua5.2"
+"liblua5.2-dev"
+"tcl8.6"
+"tcl8.6-dev"
+"libperl-dev"
 # }
 "golang"
 "nodejs"
