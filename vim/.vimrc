@@ -740,11 +740,11 @@ augroup MyAutoCmd
 				\   execute "setlocal cinkeys=0{,0},0),:,0#,!^F,o,O,e" |
 				\   execute "setlocal cinwords=if,else,while,do,for,switch"
 	autocmd Filetype cpp
-				\   setlocal keywordprg=cppman
+				\   execute "setlocal keywordprg=cppman"
 	autocmd Filetype python
 				\   execute "call s:set_buffer_env_for_python()"
 	autocmd Filetype perl
-				\   execute "setlocal kp=perldoc\\ -f"
+				\   execute "setlocal keywordprg=perldoc\\ -f"
 	autocmd Filetype tex
 				\   execute "setlocal textwidth=72"
 	autocmd FileType man
