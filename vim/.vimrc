@@ -1580,8 +1580,9 @@ let g:session_verbose_messages = 0
 " Pop up session selection if no file is specified
 autocmd MyAutoCmd VimEnter * call s:unite_session_on_enter()
 function! s:unite_session_on_enter()
-	if !argc() && !exists("g:start_session_from_cmdline")
-				\   && !(&ft == 'man')
+	if !argc() && !exists("g:start_session_from_cmdline") &&
+				\   !(&ft == 'man' ||
+				\   (exists("b:current_syntax") && b:current_syntax == "man"))
 		Unite -buffer-name=sessions session
 	endif
 endfunction
