@@ -739,6 +739,8 @@ augroup MyAutoCmd
 				\   execute "setlocal cinoptions=:0,l1,g0,t0,(0,W4,j1,J1" |
 				\   execute "setlocal cinkeys=0{,0},0),:,0#,!^F,o,O,e" |
 				\   execute "setlocal cinwords=if,else,while,do,for,switch"
+	autocmd Filetype cpp
+				\   setlocal keywordprg=cppman
 	autocmd Filetype python
 				\   execute "call s:set_buffer_env_for_python()"
 	autocmd Filetype perl
