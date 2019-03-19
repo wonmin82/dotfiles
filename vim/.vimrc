@@ -694,10 +694,10 @@ function s:set_buffer_env_for_man()
 	setlocal nolist nonumber nospell
 	setlocal mouse=a
 	setlocal nocursorline nocursorcolumn
+	setlocal nofoldenable
 	if exists('+colorcolumn')
 		setlocal colorcolumn=
 	endif
-	silent! %foldopen!
 	nnoremap <buffer> q :qa!<cr>
 	nnoremap <buffer> <end> G
 	nnoremap <buffer> <home> gg
