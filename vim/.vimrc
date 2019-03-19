@@ -749,8 +749,11 @@ augroup MyAutoCmd
 				\   execute "setlocal textwidth=72"
 	autocmd FileType man
 				\   execute "call s:set_buffer_env_for_man()"
-	autocmd SourcePost cppman.vim
-				\   execute "call s:set_buffer_env_for_cppman()"
+	" SourcePost autocmd supported from 8.1.0729
+	if (v:version > 801 || v:version == 801 && has('patch729'))
+		autocmd SourcePost cppman.vim
+					\   execute "call s:set_buffer_env_for_cppman()"
+	endif
 	autocmd FileType vimshell
 				\   execute "setlocal nolist nonumber nospell"
 augroup END
