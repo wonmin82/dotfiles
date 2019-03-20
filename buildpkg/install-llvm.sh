@@ -32,7 +32,9 @@ source ./build-env.sh
 
 llvm_tag="llvmorg-7.0.1"
 
-triple=$(make -v 2>&1 | grep "^Built for " | sed -e "s/^Built for //")
+triple=$(make -v 2>&1 |                                                 \
+	grep -E "^This program built for |^Built for " |                    \
+	sed -e "s/This program built for //" -e "s/^Built for //")
 
 default_includes=$(add_include_path features.h /usr/include)
 default_includes=$(add_include_path sys/cdefs.h /usr/include/${triple} /usr/include)
