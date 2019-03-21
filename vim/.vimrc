@@ -1932,7 +1932,10 @@ autocmd MyAutoCmd BufEnter *
 " Plugin: NERDCommenter {{{
 " Always leave a space between the comment character and the comment
 let g:NERDSpaceDelims = 1
-let g:NERDDefaultAlign = 'left'
+let g:NERDCompactSexyComs = 0
+let g:NERDDefaultAlign = 'both'
+let g:NERDCommentEmptyLines = 1
+let g:NERDTrimTrailingWhitespace = 1
 "}}}
 
 " Plugin: netrw {{{
