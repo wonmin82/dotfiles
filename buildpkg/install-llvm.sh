@@ -39,7 +39,7 @@ triple=$(make -v 2>&1 |                                                 \
 default_includes=$(add_include_path features.h /usr/include)
 default_includes=$(add_include_path sys/cdefs.h /usr/include/${triple} /usr/include)
 
-llvm_srcdir="${build_dir}/src"
+llvm_srcdir="${build_dir}/llvm-project"
 
 common_cflags="-O2"
 common_cxxflags="-O2"
@@ -117,16 +117,29 @@ stage2_cmake="${common_cmake}
 -DSPHINX_OUTPUT_MAN=\"on\"
 -DSPHINX_WARNINGS_AS_ERRORS=\"off\""
 
-if ! command -v sphinx-build 2> /dev/null; then
-	stage2_cmake=$(sed -e "s/-DLLVM_ENABLE_SPHINX=\"on\"/-DLLVM_ENABLE_SPHINX=\"off\"/g" <<< ${stage2_cmake})
+# if ! command -v sphinx-build 2> /dev/null; then
+#     stage2_cmake=$(sed -e "s/-DLLVM_ENABLE_SPHINX=\"on\"/-DLLVM_ENABLE_SPHINX=\"off\"/g" <<< ${stage2_cmake})
+# fi
+
+if command -v python3; then
+	python_command=python3
+else
+	python_command=python
 fi
+
+mkdir -p ${build_dir}
+pushd ${build_dir}
+
+virtualenv -p ${python_command} $PWD/.venv
+source $PWD/.venv/bin/activate
+pip install --upgrade sphinx
 
 mkdir -p ${llvm_srcdir}
 pushd ${llvm_srcdir}
 git clone https://github.com/llvm/llvm-project.git \
 	--no-checkout --depth 1 --single-branch -b ${llvm_tag} \
 	$PWD
-git checkout ${llvm_tag} -b build
+git checkout refs/tags/${llvm_tag} -b build
 popd
 
 # stage 0
@@ -156,6 +169,10 @@ pushd ${build_dir}/stage2
 eval cmake ${stage2_cmake} ${llvm_srcdir}/llvm
 make -j ${jobs}
 make -j ${jobs} install
+
+popd
+
+deactivate
 
 popd
 
