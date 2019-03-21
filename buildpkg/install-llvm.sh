@@ -30,7 +30,7 @@ set -e -x
 
 source ./build-env.sh
 
-llvm_tag="llvmorg-7.0.1"
+llvm_tag="llvmorg-8.0.0"
 
 triple=$(make -v 2>&1 |                                                 \
 	grep -E "^This program built for |^Built for " |                    \
@@ -75,9 +75,7 @@ stage0_cmake="${common_cmake}
 -DLLVM_BUILD_TOOLS=\"off\"
 -DLLVM_BUILD_DOCS=\"off\"
 -DLLVM_ENABLE_DOXYGEN=\"off\"
--DLLVM_ENABLE_SPHINX=\"off\"
--DSPHINX_OUTPUT_MAN=\"off\"
--DSPHINX_WARNINGS_AS_ERRORS=\"off\""
+-DLLVM_ENABLE_SPHINX=\"off\""
 
 # stage 1
 stage1_cc="${install_prefix}/bin/clang"
@@ -96,9 +94,7 @@ stage1_cmake="${common_cmake}
 -DLLVM_BUILD_TOOLS=\"off\"
 -DLLVM_BUILD_DOCS=\"off\"
 -DLLVM_ENABLE_DOXYGEN=\"off\"
--DLLVM_ENABLE_SPHINX=\"off\"
--DSPHINX_OUTPUT_MAN=\"off\"
--DSPHINX_WARNINGS_AS_ERRORS=\"off\""
+-DLLVM_ENABLE_SPHINX=\"off\""
 
 # stage 2
 stage2_cc="${install_prefix}/bin/clang"
@@ -122,8 +118,6 @@ stage2_cmake="${common_cmake}
 -DSPHINX_WARNINGS_AS_ERRORS=\"off\""
 
 if ! command -v sphinx-build 2> /dev/null; then
-	stage0_cmake=$(sed -e "s/-DLLVM_ENABLE_SPHINX=\"on\"/-DLLVM_ENABLE_SPHINX=\"off\"/g" <<< ${stage0_cmake})
-	stage1_cmake=$(sed -e "s/-DLLVM_ENABLE_SPHINX=\"on\"/-DLLVM_ENABLE_SPHINX=\"off\"/g" <<< ${stage1_cmake})
 	stage2_cmake=$(sed -e "s/-DLLVM_ENABLE_SPHINX=\"on\"/-DLLVM_ENABLE_SPHINX=\"off\"/g" <<< ${stage2_cmake})
 fi
 
