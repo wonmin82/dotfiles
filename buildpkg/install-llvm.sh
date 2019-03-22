@@ -40,6 +40,7 @@ default_includes=$(add_include_path features.h /usr/include)
 default_includes=$(add_include_path sys/cdefs.h /usr/include/${triple} /usr/include)
 
 llvm_srcdir="${build_dir}/llvm-project"
+venv_dir="${build_dir}/.venv"
 
 common_cflags="-O2"
 common_cxxflags="-O2"
@@ -55,7 +56,8 @@ common_cmake="-G \"Unix Makefiles\"
 -DLLVM_ENABLE_PIC=\"on\"
 -DLLVM_ENABLE_RTTI=\"on\"
 -DLLVM_ENABLE_ASSERTIONS=\"off\"
--DBUILD_SHARED_LIBS=\"on\""
+-DBUILD_SHARED_LIBS=\"on\"
+-DPYTHON_EXECUTABLE:FILEPATH=\"${venv_dir}/bin/python\""
 
 # stage 0
 stage0_host_gcc_dir="$(which gcc | sed -e 's/\/bin\/gcc$//')"
@@ -130,9 +132,9 @@ fi
 mkdir -p ${build_dir}
 pushd ${build_dir}
 
-virtualenv -p ${python_command} $PWD/.venv
-source $PWD/.venv/bin/activate
-pip install --upgrade sphinx recommonmark
+virtualenv -p ${python_command} ${venv_dir}
+source ${venv_dir}/bin/activate
+pip install --upgrade sphinx recommonmark pygments pyyaml
 
 mkdir -p ${llvm_srcdir}
 pushd ${llvm_srcdir}
