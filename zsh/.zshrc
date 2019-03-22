@@ -513,6 +513,9 @@ export MANPAGER="vim --not-a-term -M +MANPAGER -"
 
 # less configuration
 export LESS="-FRXK"
+
+# pip configuration
+export PIP_REQUIRE_VIRTUALENV=true
 #}}}
 
 # Functions {{{
