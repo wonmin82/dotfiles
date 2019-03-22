@@ -515,7 +515,7 @@ export MANPAGER="vim --not-a-term -M +MANPAGER -"
 export LESS="-FRXK"
 
 # pip configuration
-export PIP_REQUIRE_VIRTUALENV=true
+export PIP_CONFIG_FILE="$HOME/.config/pip/pip.conf"
 #}}}
 
 # Functions {{{
