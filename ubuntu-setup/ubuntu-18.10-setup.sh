@@ -21,11 +21,6 @@ list_tasks_to_be_installed=(
 
 list_pkgs_priority=(
 "tasksel"
-"encfs"
-"mysql-server"
-"phpmyadmin"
-"postfix"
-"sddm"
 )
 
 list_pkgs_to_be_uninstalled=(
@@ -38,8 +33,9 @@ list_pkgs_to_be_prohibited=(
 
 list_pkgs_to_be_installed=(
 "synaptic"
-"v86d"
-"x11vnc"
+"mysql-server"
+"phpmyadmin"
+"postfix"
 "nfs-common"
 "nfs-kernel-server"
 "ecryptfs-utils"
@@ -92,8 +88,6 @@ list_pkgs_to_be_installed=(
 "glibc-doc"
 "glibc-doc-reference"
 "cppman"
-"cppreference-doc-en-html"
-"cppreference-doc-en-qch"
 "flex"
 "flex-doc"
 "bison"
@@ -278,6 +272,8 @@ list_pkgs_to_be_installed=(
 # }
 "rustc"
 "cargo"
+"perl"
+"perl-doc"
 # build dependency for vim {
 "lua5.2"
 "liblua5.2-dev"
@@ -377,6 +373,7 @@ install_priority_packages()
 
 prepare_unattended_install()
 {
+	export DEBIAN_FRONTEND="noninteractive"
 	echo "gdm3 shared/default-x-display-manager select gdm3" | debconf-set-selections
 	echo "lightdm shared/default-x-display-manager select gdm3" | debconf-set-selections
 	echo "sddm shared/default-x-display-manager select gdm3" | debconf-set-selections
