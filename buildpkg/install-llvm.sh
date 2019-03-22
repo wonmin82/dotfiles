@@ -132,7 +132,7 @@ pushd ${build_dir}
 
 virtualenv -p ${python_command} $PWD/.venv
 source $PWD/.venv/bin/activate
-pip install --upgrade sphinx
+pip install --upgrade sphinx recommonmark
 
 mkdir -p ${llvm_srcdir}
 pushd ${llvm_srcdir}
