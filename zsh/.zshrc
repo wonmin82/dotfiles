@@ -511,7 +511,7 @@ export MANPAGER="vim --not-a-term -M +MANPAGER -"
 # If your vim doesn't support --not-a-term option.
 #export MANPAGER="vim -M +MANPAGER -"
 
- #less configuration
+# less configuration
 export LESS="-FRXK"
 #}}}
 
