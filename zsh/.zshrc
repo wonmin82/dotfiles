@@ -584,6 +584,11 @@ if [[ ${_SYSENV_OS} == "macos" ]]; then
 		brew cleanup
 	}
 
+	function system-clean()
+	{
+		rm -f $HOME/.wget-hsts
+	}
+
 	function system-refresh()
 	{
 		package-refresh
@@ -592,6 +597,7 @@ if [[ ${_SYSENV_OS} == "macos" ]]; then
 		if [[ -d $HOME/.vim ]]; then
 			vim +NeoBundleUpdate +quit!
 		fi
+		system-clean
 	}
 fi
 
