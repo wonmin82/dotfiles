@@ -517,18 +517,18 @@ export LESS="-FRXK"
 
 # Functions {{{
 if [[ ${_SYSENV_DIST} == "ubuntu" ]]; then
-	function clean-old-kernels()
+	function kernel-cleanup()
 	{
 		local cur_kernel=$(uname -r|sed 's/-*[a-z]//g'|sed 's/-386//g')
 		local kernel_pkg="linux-(signed-image|image|image-unsigned|image-extra|headers|ubuntu-modules|restricted-modules|modules)"
 		local meta_pkg="${kernel_pkg}-(generic|i386|virtual|server|common|rt|xen|ec2|amd64)"
 		local latest_kernel=$(dpkg -l linux-image-\* | grep -E linux-image-\[0-9\] | awk '/^ii/{ print $2}' | grep -E \[0-9\] | sort -V | tail -1 | cut -f3,4 -d"-")
 		sudo aptitude purge -y $(dpkg -l | grep -E $kernel_pkg | grep -v -E "${cur_kernel}|${meta_pkg}|${latest_kernel}" | awk '{print $2}')
-		sudo rm -rfv $(find /lib/modules/* -maxdepth 0 | grep -v -E "${cur_kernel}|${latest_kernel}" | awk '{print $1}')
+		sudo rm -r -f -v $(find /lib/modules/* -maxdepth 0 | grep -v -E "${cur_kernel}|${latest_kernel}" | awk '{print $1}')
 		sudo update-grub2
 	}
 
-	function clean-packages()
+	function package-cleanup()
 	{
 		if [[ $(dpkg --get-selections | grep deinstall | cut -f1 | wc -l) != 0 ]]; then
 			sudo aptitude -y purge $(dpkg --get-selections | grep deinstall | cut -f1)
@@ -536,20 +536,20 @@ if [[ ${_SYSENV_DIST} == "ubuntu" ]]; then
 		sudo aptitude -y autoclean
 	}
 
-	function update-packages()
+	function package-refresh()
 	{
 		retry sudo aptitude update
 		retry sudo aptitude -d -y upgrade
 		sudo aptitude -y upgrade
-		clean-packages
+		package-cleanup
 		if (( $+commands[snap] )); then
 			sudo snap refresh
 		fi
 	}
 
-	function update-system()
+	function system-refresh()
 	{
-		update-packages
+		package-refresh
 		retry antigen selfupdate
 		retry antigen update
 		vim +NeoBundleUpdate +quit!
@@ -557,12 +557,12 @@ if [[ ${_SYSENV_DIST} == "ubuntu" ]]; then
 fi
 
 if [[ ${_SYSENV_OS} == "macos" ]]; then
-	function clean-packages()
+	function package-cleanup()
 	{
 		brew cleanup
 	}
 
-	function update-packages()
+	function package-refresh()
 	{
 		retry brew update
 		brew outdated
@@ -570,9 +570,9 @@ if [[ ${_SYSENV_OS} == "macos" ]]; then
 		brew cleanup
 	}
 
-	function update-system()
+	function system-refresh()
 	{
-		update-packages
+		package-refresh
 		antigen selfupdate
 		antigen update
 		vim +NeoBundleUpdate +quit!
@@ -580,7 +580,7 @@ if [[ ${_SYSENV_OS} == "macos" ]]; then
 fi
 
 if [[ ${_SYSENV_OS} == "cygwin" ]]; then
-	function update-system()
+	function system-refresh()
 	{
 		antigen selfupdate
 		antigen update
@@ -589,7 +589,7 @@ if [[ ${_SYSENV_OS} == "cygwin" ]]; then
 fi
 
 if [[ ${_SYSENV_DIST} == "synologydsm" ]]; then
-	function update-system()
+	function system-refresh()
 	{
 		antigen selfupdate
 		antigen update
@@ -629,7 +629,7 @@ if (( $+commands[docker] )); then
 fi
 
 if (( $+commands[btrfs] )); then
-	optimize-btrfs()
+	btrfs-optimize()
 	{
 		print "Starting btrfs defragmentation..."
 		sudo btrfs filesystem defragment -r -f / 2> /dev/null
@@ -640,7 +640,7 @@ if (( $+commands[btrfs] )); then
 fi
 
 if [[ -f /usr/bin/vmware-config-tools.pl ]]; then
-	function reconfigure-vmware-tools()
+	function vmware-tools-reconfigure()
 	{
 		sudo vmware-config-tools.pl --clobber-kernel-modules=vmblock,vmhgfs,vmmemctl,vmxnet,vmci,vsock,vmsync,pvscsi,vmxnet3,vmwsvga --default
 	}
