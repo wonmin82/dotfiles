@@ -441,7 +441,7 @@ setopt list_types
 setopt rc_quotes
 setopt interactive_comments
 setopt no_clobber
-setopt no_rm_star_silent
+setopt rm_star_silent
 
 setopt extended_glob
 setopt numeric_glob_sort
@@ -547,12 +547,23 @@ if [[ ${_SYSENV_DIST} == "ubuntu" ]]; then
 		fi
 	}
 
+	function system-clean()
+	{
+		local files=($HOME/.cache/pip/{*,.*}(N)); (($#files)) &&    \
+			rm -r -f -- ${files}
+		rm -f $HOME/.wget-hsts                                      \
+			$HOME/.xsession-errors.old
+	}
+
 	function system-refresh()
 	{
 		package-refresh
 		retry antigen selfupdate
 		retry antigen update
-		vim +NeoBundleUpdate +quit!
+		if [[ -d $HOME/.vim ]]; then
+			vim +NeoBundleUpdate +quit!
+		fi
+		system-clean
 	}
 fi
 
@@ -575,7 +586,9 @@ if [[ ${_SYSENV_OS} == "macos" ]]; then
 		package-refresh
 		antigen selfupdate
 		antigen update
-		vim +NeoBundleUpdate +quit!
+		if [[ -d $HOME/.vim ]]; then
+			vim +NeoBundleUpdate +quit!
+		fi
 	}
 fi
 
@@ -584,7 +597,9 @@ if [[ ${_SYSENV_OS} == "cygwin" ]]; then
 	{
 		antigen selfupdate
 		antigen update
-		vim +NeoBundleUpdate +quit!
+		if [[ -d $HOME/.vim ]]; then
+			vim +NeoBundleUpdate +quit!
+		fi
 	}
 fi
 
@@ -593,7 +608,9 @@ if [[ ${_SYSENV_DIST} == "synologydsm" ]]; then
 	{
 		antigen selfupdate
 		antigen update
-		vim +NeoBundleUpdate +quit!
+		if [[ -d $HOME/.vim ]]; then
+			vim +NeoBundleUpdate +quit!
+		fi
 	}
 fi
 
