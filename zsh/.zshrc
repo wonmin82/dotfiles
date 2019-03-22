@@ -552,8 +552,8 @@ if [[ ${_SYSENV_DIST} == "ubuntu" ]]; then
 
 	function system-clean()
 	{
-		local files=($HOME/.cache/pip/{*,.*}(N)); (($#files)) &&    \
-			rm -r -f -- ${files}
+		# local files=($HOME/.cache/pip/{*,.*}(N)); (($#files)) &&    \
+		#     rm -r -f -- ${files}
 		rm -f $HOME/.wget-hsts                                      \
 			$HOME/.xsession-errors.old
 	}
