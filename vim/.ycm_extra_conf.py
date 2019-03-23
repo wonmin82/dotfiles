@@ -169,7 +169,7 @@ def FlagsForClangComplete(root):
         clang_complete_flags = open(
             clang_complete_path, 'r').read().splitlines()
         return clang_complete_flags
-    except:
+    except BaseException:
         return None
 
 
@@ -182,7 +182,7 @@ def FlagsForInclude(root):
                 real_path = os.path.join(dirroot, dir_path)
                 flags = flags + ["-I" + real_path]
         return flags
-    except:
+    except BaseException:
         return None
 
 
@@ -207,7 +207,7 @@ def FlagsForCompilationDatabase(root, filename):
         return MakeRelativePathsInFlagsAbsolute(
             compilation_info.compiler_flags_,
             compilation_info.compiler_working_dir_)
-    except:
+    except BaseException:
         return None
 
 
