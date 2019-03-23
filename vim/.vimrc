@@ -2026,6 +2026,7 @@ vmap <leader>a\| :Tabularize /\|<cr>
 
 " Detect clang tools {{{
 let s:clang_tools_suffixes = [
+			\   '',
 			\   '-8',
 			\   '-8.0',
 			\   '-7',
@@ -2046,15 +2047,6 @@ let s:clang_tools_suffixes = [
 
 function! s:clang_format_detect()
 	let l:base_command = 'clang-format'
-	let l:clang_format_command = ''
-	if executable(l:base_command)
-		try
-			let l:command = exepath(l:base_command)
-		catch
-			let l:command = l:base_command
-		endtry
-		return l:command
-	endif
 
 	for clang_tools_version in s:clang_tools_suffixes
 		if executable(l:base_command . clang_tools_version)
@@ -2072,15 +2064,6 @@ endfunction
 
 function! s:clang_tidy_detect()
 	let l:base_command = 'clang-tidy'
-	let l:clang_tidy_command = ''
-	if executable(l:base_command)
-		try
-			let l:command = exepath(l:base_command)
-		catch
-			let l:command = l:base_command
-		endtry
-		return l:command
-	endif
 
 	for clang_tools_version in s:clang_tools_suffixes
 		if executable(l:base_command . clang_tools_version)
@@ -2098,15 +2081,6 @@ endfunction
 
 function! s:clang_check_detect()
 	let l:base_command = 'clang-check'
-	let l:clang_check_command = ''
-	if executable(l:base_command)
-		try
-			let l:command = exepath(l:base_command)
-		catch
-			let l:command = l:base_command
-		endtry
-		return l:command
-	endif
 
 	for clang_tools_version in s:clang_tools_suffixes
 		if executable(l:base_command . clang_tools_version)
