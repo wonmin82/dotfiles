@@ -22,7 +22,7 @@ ANTIGENDIR="$ZSHDATADIR/antigen"
 ADOTDIR="$ZSHDATADIR/antigen-repo"
 
 skip_global_compinit=1
-_ANTIGEN_COMPDUMP="$ZSHDATADIR/.zcompdump"
+ANTIGEN_COMPDUMP="$ZSHDATADIR/.zcompdump"
 
 # locale setting
 export LC_ALL="en_US.UTF-8"
