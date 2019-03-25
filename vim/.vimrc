@@ -73,6 +73,7 @@ endfunction
 "}}}
 
 " set data directories
+let $DOTVIMPATH = expand('~/.vim')
 let $DOTVIMDATAPATH = expand('~/.vim_data')
 let $PLUGINPATH = $DOTVIMDATAPATH . '/bundle'
 let $SWAPPATH = $DOTVIMDATAPATH . '/swap'
@@ -2175,7 +2176,7 @@ let g:ycm_path_to_python_interpreter = '' "default ''
 let g:ycm_server_use_vim_stdout = 0 "default 0 (logging to console)
 let g:ycm_server_log_level = 'info' "default info
 
-let g:ycm_global_ycm_extra_conf = $HOME . '.ycm_extra_conf.py'
+let g:ycm_global_ycm_extra_conf = $DOTVIMPATH . '/.ycm_extra_conf.py'
 let g:ycm_confirm_extra_conf = 0
 
 let g:ycm_goto_buffer_command = 'same-buffer' "[ 'same-buffer', 'horizontal-split', 'vertical-split', 'new-tab' ]
