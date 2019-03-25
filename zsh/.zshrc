@@ -563,7 +563,7 @@ if [[ ${_SYSENV_DIST} == "ubuntu" ]]; then
 		package-refresh
 		retry antigen selfupdate
 		retry antigen update
-		if [[ -d $HOME/.vim ]]; then
+		if [[ -d $HOME/.vim_data/bundle ]]; then
 			vim +NeoBundleUpdate +quit!
 		fi
 		system-clean
@@ -594,7 +594,7 @@ if [[ ${_SYSENV_OS} == "macos" ]]; then
 		package-refresh
 		antigen selfupdate
 		antigen update
-		if [[ -d $HOME/.vim ]]; then
+		if [[ -d $HOME/.vim_data/bundle ]]; then
 			vim +NeoBundleUpdate +quit!
 		fi
 		system-clean
@@ -606,7 +606,7 @@ if [[ ${_SYSENV_OS} == "cygwin" ]]; then
 	{
 		antigen selfupdate
 		antigen update
-		if [[ -d $HOME/.vim ]]; then
+		if [[ -d $HOME/.vim_data/bundle ]]; then
 			vim +NeoBundleUpdate +quit!
 		fi
 	}
@@ -617,7 +617,7 @@ if [[ ${_SYSENV_DIST} == "synologydsm" ]]; then
 	{
 		antigen selfupdate
 		antigen update
-		if [[ -d $HOME/.vim ]]; then
+		if [[ -d $HOME/.vim_data/bundle ]]; then
 			vim +NeoBundleUpdate +quit!
 		fi
 	}

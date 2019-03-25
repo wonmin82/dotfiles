@@ -73,20 +73,20 @@ endfunction
 "}}}
 
 " set data directories
-let $DOTVIMPATH = expand('~/.vim')
-let $PLUGINPATH = $DOTVIMPATH . '/bundle'
-let $SWAPPATH = $DOTVIMPATH . '/swap'
-let $BACKUPPATH = $DOTVIMPATH . '/backup'
-let $UNDOPATH = $DOTVIMPATH . '/undo'
-let $SESSIONPATH = $DOTVIMPATH . '/session'
-let $ULTISNIPSPATH = $DOTVIMPATH . '/UltiSnips'
-let $UNITEPATH = $DOTVIMPATH . '/cache/unite'
-let $VIMFILERPATH = $DOTVIMPATH . '/cache/vimfiler'
-let $VIMSHELLPATH = $DOTVIMPATH . '/cache/vimshell'
-let $NEOMRUPATH = $DOTVIMPATH . '/cache/neomru'
+let $DOTVIMDATAPATH = expand('~/.vim_data')
+let $PLUGINPATH = $DOTVIMDATAPATH . '/bundle'
+let $SWAPPATH = $DOTVIMDATAPATH . '/swap'
+let $BACKUPPATH = $DOTVIMDATAPATH . '/backup'
+let $UNDOPATH = $DOTVIMDATAPATH . '/undo'
+let $SESSIONPATH = $DOTVIMDATAPATH . '/session'
+let $ULTISNIPSPATH = $DOTVIMDATAPATH . '/UltiSnips'
+let $UNITEPATH = $DOTVIMDATAPATH . '/cache/unite'
+let $VIMFILERPATH = $DOTVIMDATAPATH . '/cache/vimfiler'
+let $VIMSHELLPATH = $DOTVIMDATAPATH . '/cache/vimshell'
+let $NEOMRUPATH = $DOTVIMDATAPATH . '/cache/neomru'
 
-call EnsureDirExists($DOTVIMPATH)
-set viminfo+=n$DOTVIMPATH/viminfo
+call EnsureDirExists($DOTVIMDATAPATH)
+set viminfo+=n$DOTVIMDATAPATH/viminfo
 
 call EnsureDirExists($SWAPPATH)
 set directory=$SWAPPATH//
