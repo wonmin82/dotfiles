@@ -106,9 +106,9 @@ stage1_cmake="${common_cmake}
 # stage 2
 stage2_cc="${install_prefix}/bin/clang"
 stage2_cxx="${install_prefix}/bin/clang++"
-stage2_cflags="${common_cflags} -stdlib=libc++"
+stage2_cflags="${common_cflags}"
 stage2_cxxflags="${common_cxxflags} -stdlib=libc++"
-stage2_ldflags="${common_ldflags} -stdlib=libc++"
+stage2_ldflags="${common_ldflags}"
 stage2_cmake="${common_cmake}
 -DCMAKE_C_COMPILER=\"${stage2_cc}\"
 -DCMAKE_CXX_COMPILER=\"${stage2_cxx}\"
