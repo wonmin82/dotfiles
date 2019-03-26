@@ -523,9 +523,13 @@ if [[ ${_SYSENV_DIST} == "ubuntu" ]]; then
 	function kernel-cleanup()
 	{
 		local cur_kernel=$(uname -r|sed 's/-*[a-z]//g'|sed 's/-386//g')
-		local kernel_pkg="linux-(signed-image|image|image-unsigned|image-extra|headers|ubuntu-modules|restricted-modules|modules)"
+		local kernel_pkg="linux-(image-unsigned|signed-image|image|image-extra|headers|ubuntu-modules|restricted-modules|modules)"
 		local meta_pkg="${kernel_pkg}-(generic|i386|virtual|server|common|rt|xen|ec2|amd64)"
-		local latest_kernel=$(dpkg -l linux-image-\* | grep -E linux-image-\[0-9\] | awk '/^ii/{ print $2}' | grep -E \[0-9\] | sort -V | tail -1 | cut -f3,4 -d"-")
+		local latest_kernel=$(dpkg -l linux-image-\* | \
+			grep -E "linux-image-unsigned-[0-9]|linux-signed-image-[0-9]|linux-image-[0-9]" | \
+			awk '/^ii/{ print $2}' | \
+			sed -e "s/^\(linux-image-unsigned-\|linux-signed-image-\|linux-image-\)//" | \
+			grep -E \[0-9\] | sort -V | tail -1 | cut -f1,2 -d"-")
 		sudo aptitude purge -y $(dpkg -l | grep -E $kernel_pkg | grep -v -E "${cur_kernel}|${meta_pkg}|${latest_kernel}" | awk '{print $2}')
 		sudo rm -r -f -v $(find /lib/modules/* -maxdepth 0 | grep -v -E "${cur_kernel}|${latest_kernel}" | awk '{print $1}')
 		sudo update-grub2
