@@ -1,4 +1,4 @@
-From 452b10523c9e2bbf755782684d13ab64a0879644 Mon Sep 17 00:00:00 2001
+From a56cfb284f8b7edaa335757b5cfc0972775fcf5b Mon Sep 17 00:00:00 2001
 From: Wonmin Jung <wonmin82@gmail.com>
 Date: Mon, 18 Mar 2019 17:40:25 +0900
 Subject: [PATCH] Temporary fix for man.vim
