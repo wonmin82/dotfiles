@@ -75,6 +75,7 @@ stage0_cmake="${common_cmake}
 -DCMAKE_CXX_COMPILER=\"${stage0_cxx}\"
 -DCMAKE_C_FLAGS=\"${stage0_cflags}\"
 -DCMAKE_CXX_FLAGS=\"${stage0_cxxflags}\"
+-DCMAKE_EXE_LINKER_FLAGS=\"${stage0_ldflags}\"
 -DCMAKE_SHARED_LINKER_FLAGS=\"${stage0_ldflags}\"
 -DLLVM_TARGETS_TO_BUILD=\"host\"
 -DLLVM_ENABLE_PROJECTS=\"clang\"
@@ -95,6 +96,7 @@ stage1_cmake="${common_cmake}
 -DCMAKE_CXX_COMPILER=\"${stage1_cxx}\"
 -DCMAKE_C_FLAGS=\"${stage1_cflags}\"
 -DCMAKE_CXX_FLAGS=\"${stage1_cxxflags}\"
+-DCMAKE_EXE_LINKER_FLAGS=\"${stage1_ldflags}\"
 -DCMAKE_SHARED_LINKER_FLAGS=\"${stage1_ldflags}\"
 -DLLVM_TARGETS_TO_BUILD=\"host\"
 -DLLVM_ENABLE_PROJECTS=\"clang;libcxx;libcxxabi\"
@@ -109,20 +111,22 @@ stage2_cc="${install_prefix}/bin/clang"
 stage2_cxx="${install_prefix}/bin/clang++"
 stage2_cflags="${common_cflags}"
 stage2_cxxflags="${common_cxxflags} -stdlib=libc++"
-stage2_ldflags="${common_ldflags}"
+stage2_ldflags="${common_ldflags} -stdlib=libc++ -lc++abi"
 stage2_cmake="${common_cmake}
 -DCMAKE_C_COMPILER=\"${stage2_cc}\"
 -DCMAKE_CXX_COMPILER=\"${stage2_cxx}\"
 -DCMAKE_C_FLAGS=\"${stage2_cflags}\"
 -DCMAKE_CXX_FLAGS=\"${stage2_cxxflags}\"
+-DCMAKE_EXE_LINKER_FLAGS=\"${stage2_ldflags}\"
 -DCMAKE_SHARED_LINKER_FLAGS=\"${stage2_ldflags}\"
 -DLLVM_TARGETS_TO_BUILD=\"all\"
 -DLLVM_ENABLE_PROJECTS=\"all\"
--DLLVM_BUILD_TOOLS=\"on\"
+-DLLVM_ENABLE_LIBCXX=\"on\"
 -DCLANG_DEFAULT_CXX_STDLIB=\"libc++\"
 -DLIBCXX_CXX_ABI=\"libcxxabi\"
 -DLIBCXX_CXX_ABI_INCLUDE_PATHS=\"${install_prefix}/include/c++/v1\"
 -DLIBCXX_CXX_ABI_LIBRARY_PATH=\"${install_prefix}/lib\"
+-DLLVM_BUILD_TOOLS=\"on\"
 -DLLVM_BUILD_DOCS=\"on\"
 -DLLVM_ENABLE_DOXYGEN=\"off\"
 -DLLVM_ENABLE_SPHINX=\"on\"
@@ -134,6 +138,9 @@ stage2_cmake="${common_cmake}
 # if ! command -v sphinx-build 2> /dev/null; then
 #     stage2_cmake=$(sed -e "s/-DLLVM_ENABLE_SPHINX=\"on\"/-DLLVM_ENABLE_SPHINX=\"off\"/g" <<< ${stage2_cmake})
 # fi
+
+unset LD_LIBRARY_PATH
+unset DYLD_LIBRARY_PATH
 
 if command -v python3; then
 	python_command=python3
