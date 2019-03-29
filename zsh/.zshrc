@@ -516,9 +516,9 @@ export LESS="-FRXK"
 
 # python configurations
 export PIP_CONFIG_FILE="$HOME/.config/pip/pip.conf"
-export WORKON_HOME="$HOME/.virtualenvs"
 export VIRTUALENV_PYTHON="$(command which python3)"
 export VIRTUALENVWRAPPER_PYTHON="$(command which python3)"
+export WORKON_HOME="$HOME/.virtualenvs"
 if [[ -s /usr/share/virtualenvwrapper/virtualenvwrapper.sh ]]; then
 	source /usr/share/virtualenvwrapper/virtualenvwrapper.sh
 fi
