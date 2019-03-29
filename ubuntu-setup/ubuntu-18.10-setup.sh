@@ -265,6 +265,7 @@ list_pkgs_to_be_installed=(
 "python3-flake8"
 "python3-doc"
 "virtualenv"
+"virtualenvwrapper"
 "flake8"
 # need to be checked for existence when ubuntu is upgraded {
 "ruby-full"
@@ -474,6 +475,9 @@ post_process()
 
 	# java
 	update-java-alternatives --auto
+
+	# virtualenvwrapper for python3
+	PIP_REQUIRE_VIRTUALENV= pip3 install --system virtualenvwrapper virtualenv
 
 	dbus-launch --exit-with-session gsettings set org.gnome.settings-daemon.plugins.background active true
 	dbus-launch --exit-with-session gsettings reset org.gnome.desktop.background show-desktop-icons
