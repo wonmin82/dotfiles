@@ -175,7 +175,7 @@ list_install_pkgs=(
 "exuberant-ctags"
 "cscope"
 "emacs"
-"ack-grep"
+"ack"
 "zsh"
 "zsh-doc"
 "ntp"
