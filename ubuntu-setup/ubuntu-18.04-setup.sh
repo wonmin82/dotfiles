@@ -479,6 +479,7 @@ install_recommended()
 post_process()
 {
 	user="$(id -un 1000)"
+	user_root="$(id -un 0)"
 	home="$(getent passwd 1000 | cut -d: -f6)"
 	home_root="$(getent passwd 0 | cut -d: -f6)"
 
@@ -495,14 +496,19 @@ post_process()
 		virtualenv \
 		virtualenvwrapper
 
-	dbus-launch --exit-with-session gsettings set org.gnome.settings-daemon.plugins.background active true
-	dbus-launch --exit-with-session gsettings reset org.gnome.desktop.background show-desktop-icons
+	sudo -u ${user_root} -H -i dbus-launch --exit-with-session gsettings set org.gnome.settings-daemon.plugins.background active true
+	sudo -u ${user_root} -H -i dbus-launch --exit-with-session gsettings reset org.gnome.desktop.background show-desktop-icons
 
-	dbus-launch --exit-with-session gsettings set org.gnome.desktop.wm.preferences titlebar-font "Sans Bold 10"
-	dbus-launch --exit-with-session gsettings set org.gnome.desktop.interface font-name "Sans 10"
-	dbus-launch --exit-with-session gsettings set org.gnome.desktop.interface document-font-name "Sans 10"
-	dbus-launch --exit-with-session gsettings set org.gnome.desktop.interface monospace-font-name "Monospace 12"
-	dbus-launch --exit-with-session gsettings set org.gnome.settings-daemon.plugins.xsettings hinting "full"
+	sudo -u ${user_root} -H -i dbus-launch --exit-with-session gsettings set org.gnome.desktop.wm.preferences titlebar-font "Sans Bold 10"
+	sudo -u ${user_root} -H -i dbus-launch --exit-with-session gsettings set org.gnome.desktop.interface font-name "Sans 10"
+	sudo -u ${user_root} -H -i dbus-launch --exit-with-session gsettings set org.gnome.desktop.interface document-font-name "Sans 10"
+	sudo -u ${user_root} -H -i dbus-launch --exit-with-session gsettings set org.gnome.desktop.interface monospace-font-name "Monospace 12"
+	sudo -u ${user_root} -H -i dbus-launch --exit-with-session gsettings set org.gnome.settings-daemon.plugins.xsettings hinting "full"
+
+	if [[ -d ${home}/.cache/dconf ]]; then
+		chown -R -v ${user}:${user} ${home}/.cache/dconf
+	fi
+
 	sudo -u ${user} -H -i dbus-launch --exit-with-session gsettings set org.gnome.desktop.wm.preferences titlebar-font "Sans Bold 10"
 	sudo -u ${user} -H -i dbus-launch --exit-with-session gsettings set org.gnome.desktop.interface font-name "Sans 10"
 	sudo -u ${user} -H -i dbus-launch --exit-with-session gsettings set org.gnome.desktop.interface document-font-name "Sans 10"
@@ -523,9 +529,6 @@ post_process()
 	rm -f ${home}/.bash_history
 
 	rm -r -f ${home}/.gvfs || true
-	if [[ -d ${home}/.cache/dconf ]]; then
-		chown -R -v ${user}:${user} ${home}/.cache/dconf
-	fi
 
 	rm -f /usr/bin/gnome-screensaver-command
 	ln -s /usr/bin/xscreensaver-command /usr/bin/gnome-screensaver-command
