@@ -15,7 +15,8 @@ pushd wget-${version}
 ./configure --prefix=${install_prefix}
 make -j ${jobs}
 make -j ${jobs} install
+popd
 
 popd
-popd
+
 rm -r -f ${build_dir}

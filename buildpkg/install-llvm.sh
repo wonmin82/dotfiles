@@ -157,7 +157,7 @@ pip install --upgrade sphinx recommonmark pygments pyyaml
 
 mkdir -p ${llvm_srcdir}
 pushd ${llvm_srcdir}
-git clone https://github.com/llvm/llvm-project.git \
+git clone https://github.com/llvm/llvm-project.git         \
 	--no-checkout --depth 1 --single-branch -b ${llvm_tag} \
 	$PWD
 git checkout refs/tags/${llvm_tag} -b build
