@@ -1,6 +1,6 @@
 #! /usr/bin/env bash
 
-list_tasks_to_be_installed=(
+list_install_tasks=(
 "server"
 "openssh-server"
 "dns-server"
@@ -27,16 +27,16 @@ list_pkgs_priority=(
 "tasksel"
 )
 
-list_pkgs_to_be_uninstalled=(
+list_uninstall_pkgs=(
 "gnome-screensaver"
 "qt4-default"
 )
 
-list_pkgs_to_be_prohibited=(
+list_prohibit_pkgs=(
 
 )
 
-list_pkgs_to_be_installed=(
+list_install_pkgs=(
 "synaptic"
 "v86d"
 "x11vnc"
@@ -311,10 +311,15 @@ list_pkgs_to_be_installed=(
 "docker-engine"
 )
 
-list_vm_pkgs_to_be_installed=(
+list_vm_pkgs=(
 "open-vm-tools"
 "open-vm-tools-desktop"
 )
+
+apt_update="retry aptitude update"
+apt_fetch="retry aptitude -y --with-recommends --download-only install"
+apt_install="aptitude -y --with-recommends install"
+apt_remove="aptitude -y purge"
 
 retry()
 {
@@ -345,9 +350,9 @@ pre_process()
 
 install_apt_prerequisites()
 {
-	retry aptitude update
-	retry aptitude -y --with-recommends --download-only install apt-transport-https ca-certificates
-	aptitude -y --with-recommends install apt-transport-https ca-certificates
+	eval ${apt_update}
+	eval ${apt_fetch} apt-transport-https ca-certificates
+	eval ${apt_install} apt-transport-https ca-certificates
 }
 
 add_repo()
@@ -360,25 +365,31 @@ add_repo()
 	add-apt-repository ppa:ultradvorka/ppa < /dev/null
 
 	# mono
-	retry apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
-	echo "deb http://download.mono-project.com/repo/debian wheezy main" | tee /etc/apt/sources.list.d/mono-xamarin.list
+	retry apt-key adv \
+		--keyserver hkp://keyserver.ubuntu.com:80 \
+		--recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
+	echo "deb \
+		https://download.mono-project.com/repo/ubuntu \
+		stable-xenial \
+		main" \
+		| tee /etc/apt/sources.list.d/mono-official-stable.list
 
 	# docker
-	retry apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
-	echo "deb https://apt.dockerproject.org/repo ubuntu-xenial main" | tee /etc/apt/sources.list.d/docker.list
+	curl -fsSL --retry 10 --retry-connrefused --retry-delay 3 \
+		https://download.docker.com/linux/ubuntu/gpg \
+		| apt-key add -
+	add-apt-repository --no-update \
+		"deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+		$(lsb_release -cs) \
+		stable"
 
 	retry aptitude update
 }
 
 install_priority_packages()
 {
-	aptitude_fetch_command="retry aptitude -y --download-only install"
-	aptitude_fetch_command="${aptitude_fetch_command} ${list_pkgs_priority[@]}"
-	eval $aptitude_fetch_command
-
-	aptitude_install_command="aptitude -y install"
-	aptitude_install_command="${aptitude_install_command} ${list_pkgs_priority[@]}"
-	eval $aptitude_install_command
+	eval ${apt_fetch} ${list_priority_pkgs[@]}
+	eval ${apt_install} ${list_priority_pkgs[@]}
 }
 
 prepare_unattended_install()
@@ -393,80 +404,89 @@ prepare_unattended_install()
 install_ttfs()
 {
 	mkdir -p /tmp/msttf
-	wget --no-verbose --no-hsts --show-progress --directory-prefix=/tmp/msttf http://sourceforge.net/projects/corefonts/files/the%20fonts/final/andale32.exe http://sourceforge.net/projects/corefonts/files/the%20fonts/final/arial32.exe http://sourceforge.net/projects/corefonts/files/the%20fonts/final/arialb32.exe http://sourceforge.net/projects/corefonts/files/the%20fonts/final/comic32.exe http://sourceforge.net/projects/corefonts/files/the%20fonts/final/courie32.exe http://sourceforge.net/projects/corefonts/files/the%20fonts/final/georgi32.exe http://sourceforge.net/projects/corefonts/files/the%20fonts/final/impact32.exe http://sourceforge.net/projects/corefonts/files/the%20fonts/final/times32.exe http://sourceforge.net/projects/corefonts/files/the%20fonts/final/trebuc32.exe http://sourceforge.net/projects/corefonts/files/the%20fonts/final/verdan32.exe http://sourceforge.net/projects/corefonts/files/the%20fonts/final/webdin32.exe
+	if [[ -f /tmp/ttf-mscorefonts.tar.xz ]]; then
+		tar xvJpf /tmp/ttf-mscorefonts.tar.xz -C /tmp/msttf/
+	else
+		wget --no-verbose --no-hsts --show-progress --tries=10                             \
+			--retry-connrefused --directory-prefix=/tmp/msttf                              \
+			http://sourceforge.net/projects/corefonts/files/the%20fonts/final/andale32.exe \
+			http://sourceforge.net/projects/corefonts/files/the%20fonts/final/arial32.exe  \
+			http://sourceforge.net/projects/corefonts/files/the%20fonts/final/arialb32.exe \
+			http://sourceforge.net/projects/corefonts/files/the%20fonts/final/comic32.exe  \
+			http://sourceforge.net/projects/corefonts/files/the%20fonts/final/courie32.exe \
+			http://sourceforge.net/projects/corefonts/files/the%20fonts/final/georgi32.exe \
+			http://sourceforge.net/projects/corefonts/files/the%20fonts/final/impact32.exe \
+			http://sourceforge.net/projects/corefonts/files/the%20fonts/final/times32.exe  \
+			http://sourceforge.net/projects/corefonts/files/the%20fonts/final/trebuc32.exe \
+			http://sourceforge.net/projects/corefonts/files/the%20fonts/final/verdan32.exe \
+			http://sourceforge.net/projects/corefonts/files/the%20fonts/final/webdin32.exe
+	fi
 	chown -v _apt:nogroup /tmp/msttf/*
 	chmod -v 644 /tmp/msttf/*
 	echo "ttf-mscorefonts-installer msttcorefonts/dldir string /tmp/msttf" | debconf-set-selections
 	echo "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true" | debconf-set-selections
 	aptitude -y install ttf-mscorefonts-installer
-	rm -rf /tmp/msttf
+	rm -r -f /tmp/msttf
 }
 
 install_java()
 {
 	ORACLE_JAVA_PKG_PREFIX="oracle-java8"
-	retry aptitude -y -d install ${ORACLE_JAVA_PKG_PREFIX}-installer ${ORACLE_JAVA_PKG_PREFIX}-set-default ${ORACLE_JAVA_PKG_PREFIX}-unlimited-jce-policy
+	eval ${apt_fetch} \
+		${ORACLE_JAVA_PKG_PREFIX}-installer \
+		${ORACLE_JAVA_PKG_PREFIX}-set-default \
+		${ORACLE_JAVA_PKG_PREFIX}-unlimited-jce-policy
 	lastStatus=256
 	until [[ ${lastStatus} == 0 ]]; do
-		aptitude -y purge ${ORACLE_JAVA_PKG_PREFIX}-installer ${ORACLE_JAVA_PKG_PREFIX}-set-default ${ORACLE_JAVA_PKG_PREFIX}-unlimited-jce-policy
-		echo "${ORACLE_JAVA_PKG_PREFIX}-installer shared/accepted-oracle-license-v1-1 select true" | debconf-set-selections
-		aptitude -y install ${ORACLE_JAVA_PKG_PREFIX}-installer ${ORACLE_JAVA_PKG_PREFIX}-set-default ${ORACLE_JAVA_PKG_PREFIX}-unlimited-jce-policy
+		eval ${apt_remove} \
+			${ORACLE_JAVA_PKG_PREFIX}-installer \
+			${ORACLE_JAVA_PKG_PREFIX}-set-default \
+			${ORACLE_JAVA_PKG_PREFIX}-unlimited-jce-policy
+		echo "${ORACLE_JAVA_PKG_PREFIX}-installer \
+			shared/accepted-oracle-license-v1-1 \
+			select true" | debconf-set-selections
+		eval ${apt_install} \
+			${ORACLE_JAVA_PKG_PREFIX}-installer \
+			${ORACLE_JAVA_PKG_PREFIX}-set-default \
+			${ORACLE_JAVA_PKG_PREFIX}-unlimited-jce-policy
 		lastStatus=$?
 	done
 }
 
 fetch_all()
 {
-	aptitude_fetch_command="retry aptitude -y --with-recommends --download-only install"
-	for task in "${list_tasks_to_be_installed[@]}"; do
+	for task in "${list_install_tasks[@]}"; do
 		list_pkg=($(tasksel --task-packages ${task}))
-		aptitude_fetch_command="${aptitude_fetch_command} ${list_pkg[@]}"
-		eval $aptitude_fetch_command
+		eval ${apt_fetch} ${list_pkg[@]}
 	done
 
-	aptitude_fetch_command="retry aptitude -y --with-recommends --download-only install"
-	aptitude_fetch_command="${aptitude_fetch_command} ${list_pkgs_to_be_installed[@]}"
-	eval $aptitude_fetch_command
+	eval ${apt_fetch} ${list_install_pkgs[@]}
 }
 
 install_all()
 {
-	aptitude_install_command="aptitude -y --with-recommends install"
-	for task in "${list_tasks_to_be_installed[@]}"; do
+	for task in "${list_install_tasks[@]}"; do
 		list_pkg=($(tasksel --task-packages ${task}))
-		aptitude_install_command="${aptitude_install_command} ${list_pkg[@]}"
-		eval $aptitude_install_command
+		eval ${apt_install} ${list_pkg[@]}
 	done
 
-	aptitude_remove_command="aptitude -y purge"
-	aptitude_remove_command="${aptitude_remove_command} ${list_pkgs_to_be_uninstalled[@]}"
-	eval $aptitude_remove_command
+	if [ ${#list_uninstall_pkgs[@]} -ne 0 ]; then
+		eval ${apt_remove} ${list_uninstall_pkgs[@]}
+	fi
 
-	aptitude_install_command="aptitude -y --with-recommends install"
-	aptitude_install_command="${aptitude_install_command} ${list_pkgs_to_be_installed[@]}"
-	eval $aptitude_install_command
+	eval ${apt_install} ${list_install_pkgs[@]}
 }
 
 install_vm_tools()
 {
-	aptitude_fetch_command="retry aptitude -y --with-recommends --download-only install"
-	aptitude_fetch_command="${aptitude_fetch_command} ${list_vm_pkgs_to_be_installed[@]}"
-	eval $aptitude_fetch_command
-
-	aptitude_install_command="aptitude -y --with-recommends install"
-	aptitude_install_command="${aptitude_install_command} ${list_vm_pkgs_to_be_installed[@]}"
-	eval $aptitude_install_command
+	eval ${apt_fetch} ${list_vm_pkgs[@]}
+	eval ${apt_install} ${list_vm_pkgs[@]}
 }
 
 install_recommended()
 {
-	aptitude_fetch_command="retry aptitude -y --with-recommends --download-only install"
-	aptitude_fetch_command="${aptitude_fetch_command} '~RBrecommends:~i'"
-	eval $aptitude_fetch_command
-
-	aptitude_install_command="aptitude -y --with-recommends install"
-	aptitude_install_command="${aptitude_install_command} '~RBrecommends:~i'"
-	eval $aptitude_install_command
+	eval ${apt_fetch} '~RBrecommends:~i'
+	eval ${apt_install} '~RBrecommends:~i'
 }
 
 post_process()
@@ -479,7 +499,9 @@ post_process()
 	usermod -aG docker ${user}
 
 	# virtualenvwrapper for python3
-	PIP_REQUIRE_VIRTUALENV= pip3 install --system virtualenvwrapper virtualenv
+	PIP_REQUIRE_VIRTUALENV= pip3 install --system \
+		virtualenv \
+		virtualenvwrapper
 
 	dbus-launch --exit-with-session gsettings set org.gnome.settings-daemon.plugins.background active true
 	dbus-launch --exit-with-session gsettings reset org.gnome.desktop.background show-desktop-icons

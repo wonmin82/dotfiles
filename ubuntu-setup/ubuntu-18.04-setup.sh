@@ -1,6 +1,6 @@
 #! /usr/bin/env bash
 
-list_tasks_to_be_installed=(
+list_install_tasks=(
 "server"
 "openssh-server"
 "dns-server"
@@ -20,19 +20,17 @@ list_tasks_to_be_installed=(
 "ubuntustudio-fonts"
 )
 
-list_pkgs_priority=(
+list_priority_pkgs=(
 "tasksel"
 )
 
-list_pkgs_to_be_uninstalled=(
-"gnome-screensaver"
-"qt4-default"
+list_uninstall_pkgs=(
 )
 
-list_pkgs_to_be_prohibited=(
+list_prohibit_pkgs=(
 )
 
-list_pkgs_to_be_installed=(
+list_install_pkgs=(
 "synaptic"
 "mysql-server"
 "phpmyadmin"
@@ -298,10 +296,15 @@ list_pkgs_to_be_installed=(
 "containerd.io"
 )
 
-list_vm_pkgs_to_be_installed=(
+list_vm_pkgs=(
 "open-vm-tools"
 "open-vm-tools-desktop"
 )
+
+apt_update="retry aptitude update"
+apt_fetch="retry aptitude -y --with-recommends --download-only install"
+apt_install="aptitude -y --with-recommends install"
+apt_remove="aptitude -y purge"
 
 retry()
 {
@@ -332,9 +335,9 @@ pre_process()
 
 install_apt_prerequisites()
 {
-	retry aptitude update
-	retry aptitude -y --with-recommends --download-only install apt-transport-https ca-certificates curl
-	aptitude -y --with-recommends install apt-transport-https ca-certificates curl
+	eval ${apt_update}
+	eval ${apt_fetch} apt-transport-https ca-certificates curl
+	eval ${apt_install} apt-transport-https ca-certificates curl
 }
 
 add_repo()
@@ -345,31 +348,35 @@ add_repo()
 	add-apt-repository --no-update ppa:webupd8team/java < /dev/null
 
 	# node.js v8.x
-	curl -sL --retry 10 --retry-connrefused --retry-delay 3 https://deb.nodesource.com/setup_8.x | bash -
+	curl -sL --retry 10 --retry-connrefused --retry-delay 3 \
+		https://deb.nodesource.com/setup_8.x | bash -
 
 	# mono
-	retry apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
-	echo "deb https://download.mono-project.com/repo/ubuntu stable-bionic main" | tee /etc/apt/sources.list.d/mono-official-stable.list
+	retry apt-key adv \
+		--keyserver hkp://keyserver.ubuntu.com:80 \
+		--recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
+	echo "deb \
+		https://download.mono-project.com/repo/ubuntu \
+		stable-bionic \
+		main" \
+		| tee /etc/apt/sources.list.d/mono-official-stable.list
 
 	# docker
-	curl -fsSL --retry 10 --retry-connrefused --retry-delay 3 https://download.docker.com/linux/ubuntu/gpg | apt-key add -
-	sudo add-apt-repository --no-update \
+	curl -fsSL --retry 10 --retry-connrefused --retry-delay 3 \
+		https://download.docker.com/linux/ubuntu/gpg \
+		| apt-key add -
+	add-apt-repository --no-update \
 		"deb [arch=amd64] https://download.docker.com/linux/ubuntu \
 		$(lsb_release -cs) \
 		stable"
 
-	retry aptitude update
+	eval ${apt_update}
 }
 
 install_priority_packages()
 {
-	aptitude_fetch_command="retry aptitude -y --download-only install"
-	aptitude_fetch_command="${aptitude_fetch_command} ${list_pkgs_priority[@]}"
-	eval $aptitude_fetch_command
-
-	aptitude_install_command="aptitude -y install"
-	aptitude_install_command="${aptitude_install_command} ${list_pkgs_priority[@]}"
-	eval $aptitude_install_command
+	eval ${apt_fetch} ${list_priority_pkgs[@]}
+	eval ${apt_install} ${list_priority_pkgs[@]}
 }
 
 prepare_unattended_install()
@@ -387,81 +394,86 @@ install_ttfs()
 	if [[ -f /tmp/ttf-mscorefonts.tar.xz ]]; then
 		tar xvJpf /tmp/ttf-mscorefonts.tar.xz -C /tmp/msttf/
 	else
-		wget --no-verbose --no-hsts --show-progress --tries=10 --retry-connrefused --directory-prefix=/tmp/msttf http://sourceforge.net/projects/corefonts/files/the%20fonts/final/andale32.exe http://sourceforge.net/projects/corefonts/files/the%20fonts/final/arial32.exe http://sourceforge.net/projects/corefonts/files/the%20fonts/final/arialb32.exe http://sourceforge.net/projects/corefonts/files/the%20fonts/final/comic32.exe http://sourceforge.net/projects/corefonts/files/the%20fonts/final/courie32.exe http://sourceforge.net/projects/corefonts/files/the%20fonts/final/georgi32.exe http://sourceforge.net/projects/corefonts/files/the%20fonts/final/impact32.exe http://sourceforge.net/projects/corefonts/files/the%20fonts/final/times32.exe http://sourceforge.net/projects/corefonts/files/the%20fonts/final/trebuc32.exe http://sourceforge.net/projects/corefonts/files/the%20fonts/final/verdan32.exe http://sourceforge.net/projects/corefonts/files/the%20fonts/final/webdin32.exe
+		wget --no-verbose --no-hsts --show-progress --tries=10                             \
+			--retry-connrefused --directory-prefix=/tmp/msttf                              \
+			http://sourceforge.net/projects/corefonts/files/the%20fonts/final/andale32.exe \
+			http://sourceforge.net/projects/corefonts/files/the%20fonts/final/arial32.exe  \
+			http://sourceforge.net/projects/corefonts/files/the%20fonts/final/arialb32.exe \
+			http://sourceforge.net/projects/corefonts/files/the%20fonts/final/comic32.exe  \
+			http://sourceforge.net/projects/corefonts/files/the%20fonts/final/courie32.exe \
+			http://sourceforge.net/projects/corefonts/files/the%20fonts/final/georgi32.exe \
+			http://sourceforge.net/projects/corefonts/files/the%20fonts/final/impact32.exe \
+			http://sourceforge.net/projects/corefonts/files/the%20fonts/final/times32.exe  \
+			http://sourceforge.net/projects/corefonts/files/the%20fonts/final/trebuc32.exe \
+			http://sourceforge.net/projects/corefonts/files/the%20fonts/final/verdan32.exe \
+			http://sourceforge.net/projects/corefonts/files/the%20fonts/final/webdin32.exe
 	fi
 	chown -v _apt:nogroup /tmp/msttf/*
 	chmod -v 644 /tmp/msttf/*
 	echo "ttf-mscorefonts-installer msttcorefonts/dldir string /tmp/msttf" | debconf-set-selections
 	echo "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true" | debconf-set-selections
 	aptitude -y install ttf-mscorefonts-installer
-	rm -rf /tmp/msttf
+	rm -r -f /tmp/msttf
 }
 
 install_java()
 {
 	ORACLE_JAVA_PKG_PREFIX="oracle-java8"
-	retry aptitude -y -d install ${ORACLE_JAVA_PKG_PREFIX}-installer ${ORACLE_JAVA_PKG_PREFIX}-set-default ${ORACLE_JAVA_PKG_PREFIX}-unlimited-jce-policy
+	eval ${apt_fetch} \
+		${ORACLE_JAVA_PKG_PREFIX}-installer \
+		${ORACLE_JAVA_PKG_PREFIX}-set-default \
+		${ORACLE_JAVA_PKG_PREFIX}-unlimited-jce-policy
 	lastStatus=256
 	until [[ ${lastStatus} == 0 ]]; do
-		aptitude -y purge ${ORACLE_JAVA_PKG_PREFIX}-installer ${ORACLE_JAVA_PKG_PREFIX}-set-default ${ORACLE_JAVA_PKG_PREFIX}-unlimited-jce-policy
-		echo "${ORACLE_JAVA_PKG_PREFIX}-installer shared/accepted-oracle-license-v1-1 select true" | debconf-set-selections
-		aptitude -y install ${ORACLE_JAVA_PKG_PREFIX}-installer ${ORACLE_JAVA_PKG_PREFIX}-set-default ${ORACLE_JAVA_PKG_PREFIX}-unlimited-jce-policy
+		eval ${apt_remove} \
+			${ORACLE_JAVA_PKG_PREFIX}-installer \
+			${ORACLE_JAVA_PKG_PREFIX}-set-default \
+			${ORACLE_JAVA_PKG_PREFIX}-unlimited-jce-policy
+		echo "${ORACLE_JAVA_PKG_PREFIX}-installer \
+			shared/accepted-oracle-license-v1-1 \
+			select true" | debconf-set-selections
+		eval ${apt_install} \
+			${ORACLE_JAVA_PKG_PREFIX}-installer \
+			${ORACLE_JAVA_PKG_PREFIX}-set-default \
+			${ORACLE_JAVA_PKG_PREFIX}-unlimited-jce-policy
 		lastStatus=$?
 	done
 }
 
 fetch_all()
 {
-	aptitude_fetch_command="retry aptitude -y --with-recommends --download-only install"
-	for task in "${list_tasks_to_be_installed[@]}"; do
+	for task in "${list_install_tasks[@]}"; do
 		list_pkg=($(tasksel --task-packages ${task}))
-		aptitude_fetch_command="${aptitude_fetch_command} ${list_pkg[@]}"
-		eval $aptitude_fetch_command
+		eval ${apt_fetch} ${list_pkg[@]}
 	done
 
-	aptitude_fetch_command="retry aptitude -y --with-recommends --download-only install"
-	aptitude_fetch_command="${aptitude_fetch_command} ${list_pkgs_to_be_installed[@]}"
-	eval $aptitude_fetch_command
+	eval ${apt_fetch} ${list_install_pkgs[@]}
 }
 
 install_all()
 {
-	aptitude_install_command="aptitude -y --with-recommends install"
-	for task in "${list_tasks_to_be_installed[@]}"; do
+	for task in "${list_install_tasks[@]}"; do
 		list_pkg=($(tasksel --task-packages ${task}))
-		aptitude_install_command="${aptitude_install_command} ${list_pkg[@]}"
-		eval $aptitude_install_command
+		eval ${apt_install} ${list_pkg[@]}
 	done
 
-	aptitude_remove_command="aptitude -y purge"
-	aptitude_remove_command="${aptitude_remove_command} ${list_pkgs_to_be_uninstalled[@]}"
-	eval $aptitude_remove_command
+	if [ ${#list_uninstall_pkgs[@]} -ne 0 ]; then
+		eval ${apt_remove} ${list_uninstall_pkgs[@]}
+	fi
 
-	aptitude_install_command="aptitude -y --with-recommends install"
-	aptitude_install_command="${aptitude_install_command} ${list_pkgs_to_be_installed[@]}"
-	eval $aptitude_install_command
+	eval ${apt_install} ${list_install_pkgs[@]}
 }
 
 install_vm_tools()
 {
-	aptitude_fetch_command="retry aptitude -y --with-recommends --download-only install"
-	aptitude_fetch_command="${aptitude_fetch_command} ${list_vm_pkgs_to_be_installed[@]}"
-	eval $aptitude_fetch_command
-
-	aptitude_install_command="aptitude -y --with-recommends install"
-	aptitude_install_command="${aptitude_install_command} ${list_vm_pkgs_to_be_installed[@]}"
-	eval $aptitude_install_command
+	eval ${apt_fetch} ${list_vm_pkgs[@]}
+	eval ${apt_install} ${list_vm_pkgs[@]}
 }
 
 install_recommended()
 {
-	aptitude_fetch_command="retry aptitude -y --with-recommends --download-only install"
-	aptitude_fetch_command="${aptitude_fetch_command} '~RBrecommends:~i'"
-	eval $aptitude_fetch_command
-
-	aptitude_install_command="aptitude -y --with-recommends install"
-	aptitude_install_command="${aptitude_install_command} '~RBrecommends:~i'"
-	eval $aptitude_install_command
+	eval ${apt_fetch} '~RBrecommends:~i'
+	eval ${apt_install} '~RBrecommends:~i'
 }
 
 post_process()
@@ -470,6 +482,8 @@ post_process()
 	home="$(getent passwd 1000 | cut -d: -f6)"
 	home_root="$(getent passwd 0 | cut -d: -f6)"
 
+	snap refresh
+
 	# docker
 	usermod -aG docker ${user}
 
@@ -477,16 +491,29 @@ post_process()
 	update-java-alternatives --auto
 
 	# virtualenvwrapper for python3
-	PIP_REQUIRE_VIRTUALENV= pip3 install --system virtualenvwrapper virtualenv
+	PIP_REQUIRE_VIRTUALENV= pip3 install --system \
+		virtualenv \
+		virtualenvwrapper
 
 	dbus-launch --exit-with-session gsettings set org.gnome.settings-daemon.plugins.background active true
 	dbus-launch --exit-with-session gsettings reset org.gnome.desktop.background show-desktop-icons
 
+	dbus-launch --exit-with-session gsettings set org.gnome.desktop.wm.preferences titlebar-font "Sans Bold 10"
+	dbus-launch --exit-with-session gsettings set org.gnome.desktop.interface font-name "Sans 10"
+	dbus-launch --exit-with-session gsettings set org.gnome.desktop.interface document-font-name "Sans 10"
+	dbus-launch --exit-with-session gsettings set org.gnome.desktop.interface monospace-font-name "Monospace 12"
+	dbus-launch --exit-with-session gsettings set org.gnome.settings-daemon.plugins.xsettings hinting "full"
+	sudo -u ${user} -H -i dbus-launch --exit-with-session gsettings set org.gnome.desktop.wm.preferences titlebar-font "Sans Bold 10"
+	sudo -u ${user} -H -i dbus-launch --exit-with-session gsettings set org.gnome.desktop.interface font-name "Sans 10"
+	sudo -u ${user} -H -i dbus-launch --exit-with-session gsettings set org.gnome.desktop.interface document-font-name "Sans 10"
+	sudo -u ${user} -H -i dbus-launch --exit-with-session gsettings set org.gnome.desktop.interface monospace-font-name "Monospace 12"
+	sudo -u ${user} -H -i dbus-launch --exit-with-session gsettings set org.gnome.settings-daemon.plugins.xsettings hinting "full"
+
+	sudo -u ${user} -H -i dbus-launch --exit-with-session gsettings set org.gnome.Vino require-encryption false
+
 	update-alternatives --set default.plymouth /usr/share/plymouth/themes/ubuntu-logo/ubuntu-logo.plymouth
 	update-grub2
 	update-initramfs -k all -u
-
-	snap refresh
 
 	if [[ -f ${home}/.config/monitors.xml ]]; then
 		cp -f ${home}/.config/monitors.xml /var/lib/gdm3/.config
@@ -523,7 +550,7 @@ post_process()
 cleanup_packages()
 {
 	if [[ $(dpkg --get-selections | grep deinstall | cut -f1 | wc -l) != 0 ]]; then
-		aptitude -y purge $(dpkg --get-selections | grep deinstall | cut -f1)
+		eval ${apt_remove} $(dpkg --get-selections | grep deinstall | cut -f1)
 	fi
 	aptitude -y autoclean
 }
