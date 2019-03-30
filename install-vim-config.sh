@@ -1,4 +1,4 @@
-#!/bin/bash
+#! /usr/bin/env bash
 
 mkdir -p $HOME/.vim
 cp -f -v $PWD/vim/.vimrc $HOME/.vimrc

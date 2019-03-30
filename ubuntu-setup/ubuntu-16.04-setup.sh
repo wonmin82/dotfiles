@@ -1,4 +1,4 @@
-#!/bin/bash
+#! /usr/bin/env bash
 
 list_tasks_to_be_installed=(
 "server"

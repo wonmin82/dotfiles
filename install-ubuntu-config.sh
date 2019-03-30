@@ -1,4 +1,5 @@
 #! /usr/bin/env bash
+
 cp -f -v $PWD/ubuntu/.bash_aliases $HOME/.bash_aliases
 cp -f -v $PWD/ubuntu/.inputrc $HOME/.inputrc
 cp -f -v $PWD/ubuntu/.tmux.conf $HOME/.tmux.conf

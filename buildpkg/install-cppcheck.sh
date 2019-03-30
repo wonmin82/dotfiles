@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /usr/bin/env bash
 
 set -e -x
 
@@ -20,4 +20,4 @@ cp -f -v ./cppcheck.1 ${install_prefix}/share/man/man1
 
 popd
 popd
-rm -rf ${build_dir}
+rm -r -f ${build_dir}

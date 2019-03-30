@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /usr/bin/env bash
 
 set -e -x
 
@@ -18,4 +18,4 @@ make -j ${jobs} install
 
 popd
 popd
-rm -rf ${build_dir}
+rm -r -f ${build_dir}
