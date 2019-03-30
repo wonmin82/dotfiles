@@ -498,24 +498,6 @@ post_process()
 	sudo -u ${user_root} -H -i dbus-launch --exit-with-session gsettings set org.gnome.settings-daemon.plugins.background active true
 	sudo -u ${user_root} -H -i dbus-launch --exit-with-session gsettings reset org.gnome.desktop.background show-desktop-icons
 
-	sudo -u ${user_root} -H -i dbus-launch --exit-with-session gsettings set org.gnome.desktop.wm.preferences titlebar-font "Sans Bold 10"
-	sudo -u ${user_root} -H -i dbus-launch --exit-with-session gsettings set org.gnome.desktop.interface font-name "Sans 10"
-	sudo -u ${user_root} -H -i dbus-launch --exit-with-session gsettings set org.gnome.desktop.interface document-font-name "Sans 10"
-	sudo -u ${user_root} -H -i dbus-launch --exit-with-session gsettings set org.gnome.desktop.interface monospace-font-name "Monospace 12"
-	sudo -u ${user_root} -H -i dbus-launch --exit-with-session gsettings set org.gnome.settings-daemon.plugins.xsettings hinting "full"
-
-	if [[ -d ${home}/.cache/dconf ]]; then
-		chown -R -v ${user}:${user} ${home}/.cache/dconf
-	fi
-
-	sudo -u ${user} -H -i dbus-launch --exit-with-session gsettings set org.gnome.desktop.wm.preferences titlebar-font "Sans Bold 10"
-	sudo -u ${user} -H -i dbus-launch --exit-with-session gsettings set org.gnome.desktop.interface font-name "Sans 10"
-	sudo -u ${user} -H -i dbus-launch --exit-with-session gsettings set org.gnome.desktop.interface document-font-name "Sans 10"
-	sudo -u ${user} -H -i dbus-launch --exit-with-session gsettings set org.gnome.desktop.interface monospace-font-name "Monospace 12"
-	sudo -u ${user} -H -i dbus-launch --exit-with-session gsettings set org.gnome.settings-daemon.plugins.xsettings hinting "full"
-
-	sudo -u ${user} -H -i dbus-launch --exit-with-session gsettings set org.gnome.Vino require-encryption false
-
 	update-alternatives --set default.plymouth /usr/share/plymouth/themes/ubuntu-logo/ubuntu-logo.plymouth
 	update-grub2
 	update-initramfs -k all -u
@@ -526,6 +508,10 @@ post_process()
 
 	rm -f ${home_root}/.bash_history
 	rm -f ${home}/.bash_history
+
+	if [[ -d ${home}/.cache/dconf ]]; then
+		chown -R -v ${user}:${user} ${home}/.cache/dconf
+	fi
 
 	rm -r -f ${home}/.gvfs || true
 
