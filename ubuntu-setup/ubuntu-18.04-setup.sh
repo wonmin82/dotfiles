@@ -8,7 +8,6 @@ list_install_tasks=(
 "mail-server"
 "postgresql-server"
 "samba-server"
-"tomcat-server"
 "vanilla-gnome-desktop"
 "kubuntu-desktop"
 "kubuntu-full"

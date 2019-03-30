@@ -8,7 +8,6 @@ list_install_tasks=(
 "mail-server"
 "postgresql-server"
 "samba-server"
-"tomcat-server"
 "kubuntu-desktop"
 "kubuntu-full"
 "ubuntustudio-graphics"
