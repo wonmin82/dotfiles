@@ -423,12 +423,14 @@ install_java()
 		${ORACLE_JAVA_PKG_PREFIX}-installer \
 		${ORACLE_JAVA_PKG_PREFIX}-set-default \
 		${ORACLE_JAVA_PKG_PREFIX}-unlimited-jce-policy
-	lastStatus=256
+	lastStatus=65536
 	until [[ ${lastStatus} == 0 ]]; do
-		eval ${apt_remove} \
-			${ORACLE_JAVA_PKG_PREFIX}-installer \
-			${ORACLE_JAVA_PKG_PREFIX}-set-default \
-			${ORACLE_JAVA_PKG_PREFIX}-unlimited-jce-policy
+		if (( lastStatus != 65536 )); then
+			eval ${apt_remove} \
+				${ORACLE_JAVA_PKG_PREFIX}-installer \
+				${ORACLE_JAVA_PKG_PREFIX}-set-default \
+				${ORACLE_JAVA_PKG_PREFIX}-unlimited-jce-policy
+		fi
 		echo "${ORACLE_JAVA_PKG_PREFIX}-installer \
 			shared/accepted-oracle-license-v1-1 \
 			select true" | debconf-set-selections
