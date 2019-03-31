@@ -63,6 +63,7 @@ list_install_pkgs=(
 "debconf-utils"
 "ubuntu-restricted-extras"
 "libreoffice"
+"fonts-noto"
 "ttf-mscorefonts-installer"
 "build-essential"
 "libboost-all-dev"
