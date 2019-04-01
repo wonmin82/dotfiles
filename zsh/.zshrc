@@ -530,7 +530,7 @@ if [[ ${_SYSENV_DIST} == "ubuntu" ]]; then
 	{
 		local cur_kernel=$(uname -r|sed 's/-*[a-z]//g'|sed 's/-386//g')
 		local kernel_pkg="linux-(image-unsigned|signed-image|image|image-extra|headers|ubuntu-modules|restricted-modules|modules)"
-		local meta_pkg="${kernel_pkg}-(generic|i386|virtual|server|common|rt|xen|ec2|amd64)"
+		local meta_pkg="${kernel_pkg}-(generic|lowlatency|i386|virtual|server|common|rt|xen|ec2|amd64)"
 		local latest_kernel=$(dpkg -l linux-image-\* | \
 			grep -E "linux-image-unsigned-[0-9]|linux-signed-image-[0-9]|linux-image-[0-9]" | \
 			awk '/^ii/{ print $2}' | \
