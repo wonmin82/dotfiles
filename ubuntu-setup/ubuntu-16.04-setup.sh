@@ -502,7 +502,7 @@ post_process()
 	usermod -aG docker ${user}
 
 	# virtualenvwrapper for python3
-	PIP_REQUIRE_VIRTUALENV= pip3 install --system \
+	PIP_REQUIRE_VIRTUALENV="false" pip3 install --system \
 		virtualenv \
 		virtualenvwrapper
 
