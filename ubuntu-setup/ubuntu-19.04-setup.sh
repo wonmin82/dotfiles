@@ -376,7 +376,7 @@ add_repo()
 	curl -sSL --retry 10 --retry-connrefused --retry-delay 3 \
 		https://deb.nodesource.com/gpgkey/nodesource.gpg.key \
 		| apt-key add -
-	VERSION=node_8.x
+	VERSION=node_10.x
 	# DISTRO="$(lsb_release -s -c)"
 	DISTRO="bionic"
 	echo "deb https://deb.nodesource.com/$VERSION $DISTRO main" \
@@ -387,7 +387,7 @@ add_repo()
 	# TODO: After ubuntu 19.04 release, use below installation script.
 	# node.js v8.x
 	# curl -sL --retry 10 --retry-connrefused --retry-delay 3 \
-	#     https://deb.nodesource.com/setup_8.x | bash -
+	#     https://deb.nodesource.com/setup_10.x | bash -
 
 	# mono
 	retry apt-key adv \
