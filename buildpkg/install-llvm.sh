@@ -48,8 +48,10 @@ common_cxxflags="-O2"
 common_ldflags=""
 common_cmake="-G \"Unix Makefiles\"
 -Wno-dev
--DCMAKE_INSTALL_PREFIX=\"${install_prefix}\"
 -DCMAKE_BUILD_TYPE=\"Release\"
+-DCMAKE_INSTALL_PREFIX=\"${install_prefix}\"
+-DLLVM_LIBDIR_SUFFIX=\"\"
+-DLLVM_OCAML_INSTALL_PATH=\"${install_prefix}/lib\"
 -DLLVM_PARALLEL_COMPILE_JOBS=${jobs}
 -DLLVM_PARALLEL_LINK_JOBS=${jobs}
 -DLLVM_DEFAULT_TARGET_TRIPLE=\"${triple_make}\"
@@ -81,6 +83,7 @@ stage0_cmake="${common_cmake}
 -DLLVM_ENABLE_PROJECTS=\"clang\"
 -DLLVM_BUILD_TOOLS=\"off\"
 -DLLVM_BUILD_DOCS=\"off\"
+-DLLVM_ENABLE_OCAMLDOC=\"off\"
 -DLLVM_ENABLE_DOXYGEN=\"off\"
 -DLLVM_ENABLE_SPHINX=\"off\"
 "
@@ -102,6 +105,7 @@ stage1_cmake="${common_cmake}
 -DLLVM_ENABLE_PROJECTS=\"clang;libcxx;libcxxabi\"
 -DLLVM_BUILD_TOOLS=\"off\"
 -DLLVM_BUILD_DOCS=\"off\"
+-DLLVM_ENABLE_OCAMLDOC=\"off\"
 -DLLVM_ENABLE_DOXYGEN=\"off\"
 -DLLVM_ENABLE_SPHINX=\"off\"
 "
@@ -128,6 +132,7 @@ stage2_cmake="${common_cmake}
 -DLIBCXX_CXX_ABI_LIBRARY_PATH=\"${install_prefix}/lib\"
 -DLLVM_BUILD_TOOLS=\"on\"
 -DLLVM_BUILD_DOCS=\"on\"
+-DLLVM_ENABLE_OCAMLDOC=\"off\"
 -DLLVM_ENABLE_DOXYGEN=\"off\"
 -DLLVM_ENABLE_SPHINX=\"on\"
 -DSPHINX_OUTPUT_HTML=\"off\"
@@ -140,7 +145,6 @@ stage2_cmake="${common_cmake}
 # fi
 
 unset LD_LIBRARY_PATH
-unset DYLD_LIBRARY_PATH
 
 if command -v python3; then
 	python_command=python3
