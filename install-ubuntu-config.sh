@@ -20,5 +20,5 @@ sudo cp -f -v $PWD/ubuntu/local.conf /etc/fonts/local.conf
 sudo chown -v root:root /etc/fonts/local.conf
 sudo cp -f -v $PWD/ubuntu/preferences /etc/apt/preferences
 sudo chown -v root:root /etc/apt/preferences
-sudo cp -f -v $PWD/ubuntu/local /etc/apt/apt.conf.d/local
-sudo chown -v root:root /etc/apt/apt.conf.d/local
+sudo cp -f -v $PWD/ubuntu/99dpkg-options /etc/apt/apt.conf.d/99dpkg-options
+sudo chown -v root:root /etc/apt/apt.conf.d/99dpkg-options
