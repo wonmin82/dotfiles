@@ -372,7 +372,7 @@ add_repo()
 	# oracle java
 	add-apt-repository --no-update ppa:webupd8team/java < /dev/null
 
-	# node.js v8.x manual installation
+	# node.js v10.x manual installation
 	curl -sSL --retry 10 --retry-connrefused --retry-delay 3 \
 		https://deb.nodesource.com/gpgkey/nodesource.gpg.key \
 		| apt-key add -
@@ -385,7 +385,7 @@ add_repo()
 		| tee -a /etc/apt/sources.list.d/nodesource.list
 
 	# TODO: After ubuntu 19.04 release, use below installation script.
-	# node.js v8.x
+	# node.js v10.x
 	# curl -sL --retry 10 --retry-connrefused --retry-delay 3 \
 	#     https://deb.nodesource.com/setup_10.x | bash -
 
