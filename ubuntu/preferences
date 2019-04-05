@@ -1,6 +1,10 @@
 Package: *
-Pin: origin deb.nodesource.com
+Pin: release o=Node Source
 Pin-Priority: 1001
+
+Package: nodejs npm
+Pin: release l=Ubuntu
+Pin-Priority: -99
 
 Package: runit
 Pin: release *
