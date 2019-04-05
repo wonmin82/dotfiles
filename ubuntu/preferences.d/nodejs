@@ -4,8 +4,4 @@ Pin-Priority: 1001
 
 Package: nodejs npm libnode64 libnode-dev
 Pin: release l=Ubuntu
-Pin-Priority: -99
-
-Package: runit
-Pin: release *
-Pin-Priority: -99
+Pin-Priority: 50
