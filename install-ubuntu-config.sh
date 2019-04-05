@@ -13,10 +13,10 @@ cp -f -v $PWD/ubuntu/fonts.conf $HOME/.config/fontconfig/
 
 sudo mkdir -p -v /root/.config/pip
 sudo cp -f -v $PWD/ubuntu/pip.conf /root/.config/pip/
-sudo chown -R -v root:root /root/.config/pip/pip.conf
+sudo chown -v root:root /root/.config/pip/pip.conf
 sudo mkdir -p -v /root/.config/fontconfig
 sudo cp -f -v $PWD/ubuntu/fonts.conf /root/.config/fontconfig/
-sudo chown -R -v root:root /root/.config/fontconfig/fonts.conf
+sudo chown -v root:root /root/.config/fontconfig/fonts.conf
 
 sudo mkdir -p -v /etc/fonts
 sudo cp -f -v $PWD/ubuntu/local.conf /etc/fonts/
