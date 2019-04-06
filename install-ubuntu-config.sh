@@ -1,5 +1,20 @@
 #! /usr/bin/env bash
 
+flag_system=false
+
+while [[ $# -gt 0 ]]
+do
+	case $1 in
+		-s|--system)
+			flag_system=true
+			shift
+			;;
+		*)
+			echo "Unknown option."
+			exit 1
+	esac
+done
+
 cp -f -v $PWD/ubuntu/.bash_aliases $HOME/.bash_aliases
 cp -f -v $PWD/ubuntu/.inputrc $HOME/.inputrc
 cp -f -v $PWD/ubuntu/.tmux.conf $HOME/.tmux.conf
@@ -11,6 +26,9 @@ cp -f -v $PWD/ubuntu/pip.conf $HOME/.config/pip/
 mkdir -p -v $HOME/.config/fontconfig
 cp -f -v $PWD/ubuntu/fonts.conf $HOME/.config/fontconfig/
 
+if [[ $flag_system == false ]]; then
+	exit 0
+fi
 sudo mkdir -p -v /root/.config/pip
 sudo cp -f -v $PWD/ubuntu/pip.conf /root/.config/pip/
 sudo chown -v root:root /root/.config/pip/pip.conf
