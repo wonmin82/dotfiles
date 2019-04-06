@@ -72,52 +72,6 @@ unset LD_PATH_SCRATCH
 export LD_LIBRARY_PATH
 export LD_RUN_PATH
 
-# Functions
-# #########
-function rmoldkernel () {
-	local cur_kernel=$(uname -r|sed 's/-*[a-z]//g'|sed 's/-386//g')
-	local kernel_pkg="linux-(image|image-extra|headers|ubuntu-modules|restricted-modules)"
-	local meta_pkg="${kernel_pkg}-(generic|i386|virtual|server|common|rt|xen|ec2|amd64)"
-	local latest_kernel=$(dpkg -l linux-image-* | grep -E linux-image-[0-9] | awk '/^ii/{ print $2}' | grep -E [0-9] | tail -1 | cut -f3,4 -d"-")
-	sudo aptitude purge -y $(dpkg -l | grep -E $kernel_pkg | grep -v -E "${cur_kernel}|${meta_pkg}|${latest_kernel}" | awk '{print $2}')
-	sudo rm -rfv $(find /lib/modules/* -maxdepth 0 | grep -v -E "${cur_kernel}|${latest_kernel}" | awk '{print $1}')
-	sudo update-grub2
-}
-
-function purgeremovedpkgs () {
-	sudo aptitude -y purge `dpkg --get-selections | grep deinstall | cut -f1`
-}
-
-function updatepackages () {
-	retry sudo aptitude update && retry sudo aptitude -d -y upgrade && sudo aptitude -y upgrade
-}
-
-if [ -f /usr/bin/vmware-config-tools.pl ]; then
-	function reconfigurevmwaretools () {
-		sudo vmware-config-tools.pl --clobber-kernel-modules=vmblock,vmhgfs,vmmemctl,vmxnet,vmci,vsock,vmsync,pvscsi,vmxnet3,vmwsvga --default
-	}
-fi
-
-function retry () {
-	nTrys=0
-	maxTrys=20
-	delayBtwnTrys=5
-	status=256
-	until [ $status == 0 ] ; do
-		$*
-		status=$?
-		nTrys=$(($nTrys + 1))
-		if [ $nTrys -gt $maxTrys ] ; then
-			echo "Number of re-trys exceeded. Exit code: $status"
-			exit $status
-		fi
-		if [ $status != 0 ] ; then
-			echo "Failed (exit code $status)... retry $nTrys"
-			sleep $delayBtwnTrys
-		fi
-	done
-}
-
 # Aliases
 # #######
 # Some example alias instructions
