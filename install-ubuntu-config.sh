@@ -30,5 +30,5 @@ sudo chown -v root:root                     \
 		 /etc/apt/preferences.d/runit
 
 sudo mkdir -p -v /etc/apt/apt.conf.d
-sudo cp -f -v $PWD/ubuntu/99dpkg-options /etc/apt/apt.conf.d/
+sudo cp -f -v $PWD/ubuntu/apt.conf.d/99dpkg-options /etc/apt/apt.conf.d/
 sudo chown -v root:root /etc/apt/apt.conf.d/99dpkg-options
