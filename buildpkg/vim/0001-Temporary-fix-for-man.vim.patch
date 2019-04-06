@@ -1,4 +1,4 @@
-From a56cfb284f8b7edaa335757b5cfc0972775fcf5b Mon Sep 17 00:00:00 2001
+From 741191665a334548a0a42b91750e7724abeac0c4 Mon Sep 17 00:00:00 2001
 From: Wonmin Jung <wonmin82@gmail.com>
 Date: Mon, 18 Mar 2019 17:40:25 +0900
 Subject: [PATCH] Temporary fix for man.vim
@@ -8,7 +8,7 @@ Subject: [PATCH] Temporary fix for man.vim
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/runtime/ftplugin/man.vim b/runtime/ftplugin/man.vim
-index 87773ed27..8c4a1a713 100644
+index 87773ed..8c4a1a7 100644
 --- a/runtime/ftplugin/man.vim
 +++ b/runtime/ftplugin/man.vim
 @@ -199,7 +199,7 @@ func <SID>GetPage(cmdmods, ...)
