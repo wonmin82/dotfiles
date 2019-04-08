@@ -36,8 +36,6 @@ list_install_pkgs=(
 "postfix"
 "nfs-common"
 "nfs-kernel-server"
-"ecryptfs-utils"
-"libatm1"
 "xscreensaver"
 "xscreensaver-gl"
 "xscreensaver-gl-extra"
