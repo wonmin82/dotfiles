@@ -211,6 +211,7 @@ endwhile
 " My Bundles here:
 " Refer to |:NeoBundle-examples|.
 " Note: You don't set neobundle setting in .gvimrc!
+let s:is_ycm_enabled = 1
 
 if !s:is_synology
 	NeoBundle 'Shougo/vimproc', {
@@ -300,7 +301,7 @@ endif
 NeoBundle 'honza/vim-snippets'
 
 " ensure vim version >= 7.3.584 and not in cygwin.
-if (v:version > 703 || v:version == 703 && has('patch584'))
+if s:is_ycm_enabled && (v:version > 703 || v:version == 703 && has('patch584'))
 			\   && !(s:is_win32 || s:is_win64 || s:is_cygwin || s:is_synology)
 	NeoBundle 'Valloric/YouCompleteMe', {
 				\   'build' : {
