@@ -263,6 +263,7 @@ zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 # generic, highlight matched part
 # WACKY behavior with zstyle precedence, not using this for now!
 # zstyle -e ':completion:*' list-colors '[[ -z $words[CURRENT] ]] && return 1; reply=( '\''=(#b)('\''$words[CURRENT]'\'')*=0=38;5;45'\'' )'
+
 # offer indexes before parameters in subscripts
 zstyle ':completion:*:*:-subscript-:*' tag-order indexes parameters
 
@@ -481,14 +482,6 @@ setopt share_history
 setopt bang_hist
 setopt extended_history
 
-# hh(https://github.com/dvorka/hstr.git) configuration
-# if (( $+commands[hh] )); then
-#     export HISTFILE
-#     export HH_CONFIG=hicolor        # get more colors
-#     bindkey -s "\C-r" "\eqhh\n"     # bind hh to Ctrl-r (for Vi mode check doc)
-# fi
-#}}}
-
 # Variables {{{
 ZLE_REMOVE_SUFFIX_CHARS=$' \t\n;&'
 
@@ -513,6 +506,15 @@ export MANPAGER="vim --not-a-term -M +MANPAGER -"
 
 # less configuration
 export LESS="-FRXK"
+
+# coloring in less, for manpages
+export LESS_TERMCAP_mb=$'\E[01;31m'
+export LESS_TERMCAP_md=$'\E[01;31m'
+export LESS_TERMCAP_me=$'\E[0m'
+export LESS_TERMCAP_se=$'\E[0m'
+export LESS_TERMCAP_so=$'\E[01;44;33m'
+export LESS_TERMCAP_ue=$'\E[0m'
+export LESS_TERMCAP_us=$'\E[01;32m'
 
 # python configurations
 export PIP_CONFIG_FILE="$HOME/.config/pip/pip.conf"
@@ -874,6 +876,13 @@ if [[ -z $LP_ENABLE_TITLE ]]; then
 	autoload -U add-zsh-hook
 	add-zsh-hook preexec title-preexec
 	add-zsh-hook precmd title-precmd
+fi
+#}}}
+
+# Show tmux sessions when login {{{
+if [[ -o LOGIN ]]; then
+    # (( $#commands[tmux] )) && tmux list-sessions 2>/dev/null
+    (( $#commands[tmux] )) && [[ -z "${TMUX}" ]] && tmux list-sessions 2>/dev/null
 fi
 #}}}
 
