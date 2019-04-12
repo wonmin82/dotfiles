@@ -195,7 +195,7 @@ fi
 # zsh-autosugesstions configuration {{{
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=8"
 ZSH_AUTOSUGGEST_STRATEGY="history"
-ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=""
+ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
 #}}}
 
 # Autocompletion configuration {{{
