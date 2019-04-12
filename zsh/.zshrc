@@ -536,9 +536,12 @@ if [[ ${_SYSENV_DIST} == "ubuntu" ]]; then
 			awk '/^ii/{ print $2}' | \
 			sed -e "s/^\(linux-image-unsigned-\|linux-signed-image-\|linux-image-\)//" | \
 			grep -E \[0-9\] | sort -V | tail -1 | cut -f1,2 -d"-")
-		sudo aptitude purge -y $(dpkg -l | grep -E $kernel_pkg | grep -v -E "${cur_kernel}|${meta_pkg}|${latest_kernel}" | awk '{print $2}')
-		sudo rm -r -f -v $(find /lib/modules/* -maxdepth 0 | grep -v -E "${cur_kernel}|${latest_kernel}" | awk '{print $1}')
-		sudo update-grub2
+		local kernel_pkg_remove=$(dpkg -l | grep -E $kernel_pkg | grep -v -E "${cur_kernel}|${meta_pkg}|${latest_kernel}" | awk '{print $2}')
+		if [[ ! -z ${kernel_pkg_remove} ]]; then
+			sudo aptitude purge -y ${kernel_pkg_remove}
+			sudo rm -r -f -v $(find /lib/modules/* -maxdepth 0 | grep -v -E "${cur_kernel}|${latest_kernel}" | awk '{print $1}')
+			sudo update-grub2
+		fi
 	}
 
 	function package-cleanup()
