@@ -558,7 +558,7 @@ if [[ ${_SYSENV_DIST} == "ubuntu" ]]; then
 	{
 		retry sudo aptitude update
 		retry sudo aptitude -d -y upgrade
-		sudo aptitude -y upgrade
+		sudo DEBIAN_FRONTEND="noninteractive" aptitude -y upgrade
 		package-cleanup
 		if (( $+commands[snap] )); then
 			sudo snap refresh
