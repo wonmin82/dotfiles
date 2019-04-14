@@ -642,7 +642,7 @@ if (( $+commands[docker] )); then
 	docker-clean-unused()
 	{
 		print "Starting procedure for cleaning all unused docker environment,"
-		answer=""
+		local answer=""
 		vared -p "Are you sure[y/N]? " answer
 		if [[ ${answer} != "y" && ${answer} != "Y" ]]; then
 			return 0
@@ -654,13 +654,13 @@ if (( $+commands[docker] )); then
 	docker-clean-all()
 	{
 		print "Starting procedure for removing all docker environment,"
-		answer=""
+		local answer=""
 		vared -p "Are you sure[y/N]? " answer
 		if [[ ${answer} != "y" && ${answer} != "Y" ]]; then
 			return 0
 		fi
 
-		list_container=$(docker container ls -a -q)
+		local list_container=$(docker container ls -a -q)
 		if [[ ! -z "${list_container[@]}" ]]; then
 			docker stop $(local IFS=" "; echo "${list_container[@]}")
 		fi
