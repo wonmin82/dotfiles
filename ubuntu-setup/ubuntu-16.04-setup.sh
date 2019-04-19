@@ -358,7 +358,7 @@ add_repo()
 	add-apt-repository multiverse
 
 	# oracle java
-	add-apt-repository ppa:webupd8team/java < /dev/null
+	# add-apt-repository ppa:webupd8team/java < /dev/null
 
 	add-apt-repository ppa:ultradvorka/ppa < /dev/null
 
@@ -553,7 +553,7 @@ main()
 	prepare_unattended_install
 	fetch_all
 	install_ttfs
-	install_java
+	# install_java
 	install_all
 	install_vm_tools
 	install_recommended
