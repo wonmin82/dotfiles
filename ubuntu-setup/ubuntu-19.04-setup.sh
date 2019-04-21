@@ -370,22 +370,21 @@ add_repo()
 	# oracle java
 	# add-apt-repository --no-update ppa:webupd8team/java < /dev/null
 
-	# node.js v10.x manual installation
-	curl -sSL --retry 10 --retry-connrefused --retry-delay 3 \
-		https://deb.nodesource.com/gpgkey/nodesource.gpg.key \
-		| apt-key add -
-	VERSION=node_10.x
-	# DISTRO="$(lsb_release -s -c)"
-	DISTRO="bionic"
-	echo "deb https://deb.nodesource.com/$VERSION $DISTRO main" \
-		| tee /etc/apt/sources.list.d/nodesource.list
-	echo "deb-src https://deb.nodesource.com/$VERSION $DISTRO main" \
-		| tee -a /etc/apt/sources.list.d/nodesource.list
+	# # node.js v10.x manual installation
+	# curl -sSL --retry 10 --retry-connrefused --retry-delay 3 \
+	#     https://deb.nodesource.com/gpgkey/nodesource.gpg.key \
+	#     | apt-key add -
+	# VERSION=node_10.x
+	# # DISTRO="$(lsb_release -s -c)"
+	# DISTRO="bionic"
+	# echo "deb https://deb.nodesource.com/$VERSION $DISTRO main" \
+	#     | tee /etc/apt/sources.list.d/nodesource.list
+	# echo "deb-src https://deb.nodesource.com/$VERSION $DISTRO main" \
+	#     | tee -a /etc/apt/sources.list.d/nodesource.list
 
-	# TODO: After ubuntu 19.04 release, use below installation script.
 	# node.js v10.x
-	# curl -sL --retry 10 --retry-connrefused --retry-delay 3 \
-	#     https://deb.nodesource.com/setup_10.x | bash -
+	curl -sL --retry 10 --retry-connrefused --retry-delay 3 \
+		https://deb.nodesource.com/setup_10.x | bash -
 
 	# mono
 	retry apt-key adv \
