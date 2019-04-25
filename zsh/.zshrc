@@ -144,9 +144,6 @@ if [[ ${_SYSENV_DIST} == "ubuntu" ]]; then
 	#}}}
 	antigen bundle command-not-found
 	antigen bundle debian
-	if (( $+commands[docker] )); then
-		antigen bundle docker
-	fi
 fi
 
 if [[ ${_SYSENV_OS} == "macos" ]]; then
@@ -155,6 +152,11 @@ if [[ ${_SYSENV_OS} == "macos" ]]; then
 	antigen bundle brew
 	antigen bundle brew-cask
 	antigen bundle gnu-utils
+fi
+
+if (( $+commands[docker] )); then
+	antigen bundle docker
+	antigen bundle akarzim/zsh-docker-aliases
 fi
 
 # more LS_COLORS
