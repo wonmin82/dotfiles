@@ -290,6 +290,9 @@ NeoBundle 'vim-scripts/IndentTab', {
 NeoBundle 'vim-scripts/IndentConsistencyCop'
 NeoBundle 'vim-scripts/IndentConsistencyCopAutoCmds'
 NeoBundle 'ntpeters/vim-better-whitespace'
+
+NeoBundle 'kergoth/vim-bitbake'
+
 NeoBundle 'rhysd/vim-clang-format', {
 			\   'depends': 'kana/vim-operator-user'
 			\}
