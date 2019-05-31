@@ -743,6 +743,9 @@ elif [[ ${_SYSENV_OS} == "macos" ]]; then
 	fi
 fi
 
+# glances options
+alias glances='glances --process-short-name'
+
 # use vim instead of vi
 alias vi='vim'
 
