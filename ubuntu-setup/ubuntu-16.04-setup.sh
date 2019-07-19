@@ -363,7 +363,7 @@ add_repo()
 	# add-apt-repository ppa:webupd8team/java < /dev/null
 
 	# golang
-	add-apt-repository --no-update ppa:longsleep/golang-backports
+	add-apt-repository --no-update ppa:longsleep/golang-backports < /dev/null
 
 	# mono
 	retry apt-key adv \
