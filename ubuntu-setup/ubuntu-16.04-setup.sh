@@ -357,10 +357,13 @@ add_repo()
 {
 	add-apt-repository multiverse
 
+	add-apt-repository ppa:ultradvorka/ppa < /dev/null
+
 	# oracle java
 	# add-apt-repository ppa:webupd8team/java < /dev/null
 
-	add-apt-repository ppa:ultradvorka/ppa < /dev/null
+	# golang
+	add-apt-repository --no-update ppa:longsleep/golang-backports
 
 	# mono
 	retry apt-key adv \

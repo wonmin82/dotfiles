@@ -366,6 +366,9 @@ add_repo()
 	curl -sL --retry 10 --retry-connrefused --retry-delay 3 \
 		https://deb.nodesource.com/setup_8.x | bash -
 
+	# golang
+	add-apt-repository --no-update ppa:longsleep/golang-backports
+
 	# mono
 	retry apt-key adv \
 		--keyserver hkp://keyserver.ubuntu.com:80 \
