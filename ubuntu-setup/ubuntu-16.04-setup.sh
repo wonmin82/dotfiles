@@ -519,6 +519,7 @@ post_process()
 
 	rm -f ${home_root}/.bash_history
 	rm -f ${home}/.bash_history
+	rm -r -f ${home}/.zsh_data/antigen ${home}/.zsh_data/antigen-repo
 
 	rm -r -f ${home}/.gvfs || true
 	if [[ -d ${home}/.cache/dconf ]]; then

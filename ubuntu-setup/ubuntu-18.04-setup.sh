@@ -529,6 +529,7 @@ post_process()
 
 	rm -f ${home_root}/.bash_history
 	rm -f ${home}/.bash_history
+	rm -r -f ${home}/.zsh_data/antigen ${home}/.zsh_data/antigen-repo
 
 	if [[ -d ${home}/.cache/dconf ]]; then
 		chown -R -v ${user}:${user} ${home}/.cache/dconf
