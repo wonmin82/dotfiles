@@ -95,9 +95,7 @@ __ensure_dir_exists "$HOME/.local/lib/pkgconfig"
 
 if [[ $is_go_exists == true ]]; then
 	__ensure_dir_exists "$HOME/.local/go"
-	__ensure_dir_exists "$HOME/work/go"
 	__ensure_dir_exists "$HOME/.local/go/bin"
-	__ensure_dir_exists "$HOME/work/go/bin"
 fi
 # Set some paths
 cdpath=( . )
