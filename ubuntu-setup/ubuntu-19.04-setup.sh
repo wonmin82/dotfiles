@@ -542,7 +542,6 @@ post_process()
 
 	rm -f ${home_root}/.bash_history
 	rm -f ${home}/.bash_history
-	rm -r -f ${home}/.zsh_data/antigen ${home}/.zsh_data/antigen-repo
 
 	if [[ -d ${home}/.cache/dconf ]]; then
 		chown -R -v ${user}:${user} ${home}/.cache/dconf
@@ -568,6 +567,9 @@ post_process()
 
 	sudo -u ${user} -H -i bash -c "cp -f /usr/share/applications/org.kde.klipper.desktop ${home}/.config/autostart/"
 	sudo -u ${user} -H -i bash -c "echo \"X-GNOME-Autostart-enabled=false\" >> ${home}/.config/autostart/org.kde.klipper.desktop"
+
+	rm -r -f ${home}/.zsh_data/antigen ${home}/.zsh_data/antigen-repo
+	sudo -u ${user} -H -i zsh -i -c :
 }
 
 cleanup_packages()

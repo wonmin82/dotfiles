@@ -519,7 +519,6 @@ post_process()
 
 	rm -f ${home_root}/.bash_history
 	rm -f ${home}/.bash_history
-	rm -r -f ${home}/.zsh_data/antigen ${home}/.zsh_data/antigen-repo
 
 	rm -r -f ${home}/.gvfs || true
 	if [[ -d ${home}/.cache/dconf ]]; then
@@ -541,6 +540,9 @@ post_process()
 	sudo -u ${user} -H -i bash -c "echo \"Name=XScreenSaver\" >> ${home}/.config/autostart/xscreensaver.desktop"
 	sudo -u ${user} -H -i bash -c "echo \"Comment[ko]=\" >> ${home}/.config/autostart/xscreensaver.desktop"
 	sudo -u ${user} -H -i bash -c "echo \"Comment=\" >> ${home}/.config/autostart/xscreensaver.desktop"
+
+	rm -r -f ${home}/.zsh_data/antigen ${home}/.zsh_data/antigen-repo
+	sudo -u ${user} -H -i zsh -i -c :
 }
 
 main()
