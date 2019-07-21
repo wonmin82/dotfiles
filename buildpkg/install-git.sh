@@ -4,7 +4,7 @@ set -e -x
 
 source ./build-env.sh
 
-version="2.21.0"
+version="2.22.0"
 
 mkdir ${build_dir}
 pushd ${build_dir}
