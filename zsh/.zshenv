@@ -92,6 +92,10 @@ fi
 __ensure_dir_exists "$HOME/.local/include"
 __ensure_dir_exists "$HOME/.local/lib/pkgconfig"
 
+__ensure_dir_exists "$HOME/.local/go"
+__ensure_dir_exists "$HOME/work/go"
+__ensure_dir_exists "$HOME/.local/go/bin"
+__ensure_dir_exists "$HOME/work/go/bin"
 # Set some paths
 cdpath=( . )
 typeset -U cdpath
@@ -208,6 +212,16 @@ $pkg_config_path
 typeset -U pkg_config_path
 __rationalize_path pkg_config_path
 export PKG_CONFIG_PATH
+
+typeset -T GOPATH gopath ":"
+gopath=(
+"$HOME/.local/go"
+"$HOME/work/go"
+$gopath
+)
+typeset -U gopath
+__rationalize_path gopath
+export GOPATH
 #}}}
 
 if [[ -f $HOME/.zshenv.path ]]; then
