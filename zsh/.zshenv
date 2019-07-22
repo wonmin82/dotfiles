@@ -80,7 +80,6 @@ function __rationalize_path()
 # Path configurations {{{
 # Ensure '.local' directories exist.
 [[ "${$(uname -m)/"x86_64"}" != "$(uname -m)" ]] && local is_64bit=true || local is_64bit=false
-(( $+commands[go] )) && local is_go_exists=true || local is_go_exists=false
 
 __ensure_dir_exists "$HOME/.local/bin"
 __ensure_dir_exists "$HOME/.local/share/man"
@@ -93,10 +92,9 @@ fi
 __ensure_dir_exists "$HOME/.local/include"
 __ensure_dir_exists "$HOME/.local/lib/pkgconfig"
 
-if [[ $is_go_exists == true ]]; then
-	__ensure_dir_exists "$HOME/.local/go"
-	__ensure_dir_exists "$HOME/.local/go/bin"
-fi
+__ensure_dir_exists "$HOME/.local/go"
+__ensure_dir_exists "$HOME/.local/go/bin"
+
 # Set some paths
 cdpath=( . )
 typeset -U cdpath
@@ -214,17 +212,15 @@ typeset -U pkg_config_path
 __rationalize_path pkg_config_path
 export PKG_CONFIG_PATH
 
-if [[ $is_go_exists == true ]]; then
-	typeset -T GOPATH gopath ":"
-	gopath=(
-	"$HOME/.local/go"
-	"$HOME/work/go"
-	$gopath
-	)
-	typeset -U gopath
-	__rationalize_path gopath
-	export GOPATH
-fi
+typeset -T GOPATH gopath ":"
+gopath=(
+"$HOME/.local/go"
+"$HOME/work/go"
+$gopath
+)
+typeset -U gopath
+__rationalize_path gopath
+export GOPATH
 #}}}
 
 if [[ -f $HOME/.zshenv.path ]]; then
