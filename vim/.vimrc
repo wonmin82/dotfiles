@@ -22,6 +22,7 @@ let s:is_win64 = 0
 let s:is_win32 = 0
 let s:is_cygwin = 0
 let s:is_macos = 0
+let s:is_raspbian = 0
 let s:is_synology = 0
 let s:is_linux64 = 0
 let s:is_linux32 = 0
@@ -42,6 +43,9 @@ elseif !has('win32') && (has('mac') || has('macunix') || has('gui_macvim') ||
 			\ (!isdirectory('/proc') && executable('sw_vers')))
 	" MacOS
 	let s:is_macos = 1
+elseif glob('/etc/rpi-issue') != ''
+	" Synology DSM
+	let s:is_raspbian = 1
 elseif glob('/etc/synouser.conf') != ''
 	" Synology DSM
 	let s:is_synology = 1
@@ -147,7 +151,8 @@ while ! s:is_neobundle_inited
 	catch /^Vim\%((\a\+)\)\=:E117/
 		" If NeoBundle is missing, define an installer for it
 		function! NeoBundleInstaller()
-			if s:is_cygwin || s:is_macos || s:is_synology || s:is_linux64 || s:is_linux32 || s:is_unix
+			if s:is_cygwin || s:is_macos || s:is_raspbian || s:is_synology ||
+			\  s:is_linux64 || s:is_linux32 || s:is_unix
 				let s:retry_count = s:retry_count + 1
 				if s:retry_count > s:max_retry_count
 					execute ':silent !echo "==> NeoBundle installation has been failed."'
@@ -298,14 +303,15 @@ NeoBundle 'rhysd/vim-clang-format', {
 			\}
 NeoBundle 'vivien/vim-linux-coding-style'
 NeoBundle 'tell-k/vim-autopep8'
-if v:version >= 704 && !s:is_synology
+if v:version >= 704 && !s:is_raspbian && !s:is_synology
 	NeoBundle 'SirVer/ultisnips'
 endif
 NeoBundle 'honza/vim-snippets'
 
 " ensure vim version >= 7.3.584 and not in cygwin.
 if s:is_ycm_enabled && (v:version > 703 || v:version == 703 && has('patch584'))
-			\   && !(s:is_win32 || s:is_win64 || s:is_cygwin || s:is_synology)
+			\   && !(s:is_win32 || s:is_win64 ||
+			\        s:is_cygwin || s:is_raspbian || s:is_synology)
 	NeoBundle 'Valloric/YouCompleteMe', {
 				\   'build' : {
 				\       'windows' : './install.py --clang-completer --system-libclang',

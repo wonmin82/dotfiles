@@ -51,6 +51,9 @@ function __determine_sysenv()
 					_SYSENV_PSEUDONAME=$(cat /etc/lsb-release | grep '^DISTRIB_CODENAME' | awk -F= '{ print $2 }')
 					_SYSENV_REV=$(cat /etc/lsb-release | grep '^DISTRIB_RELEASE' | awk -F= '{ print $2 }')
 				fi
+				if [[ -f /etc/rpi-issue ]]; then
+					_SYSENV_DIST="Raspbian"
+				fi
 			elif [[ -f /etc/synoinfo.conf ]]; then
 				_SYSENV_DIST="SynologyDSM"
 			fi
@@ -571,6 +574,41 @@ if [[ ${_SYSENV_DIST} == "ubuntu" ]]; then
 	{
 		# local files=($HOME/.cache/pip/{*,.*}(N)); (($#files)) &&    \
 		#     rm -r -f -- ${files}
+		rm -f $HOME/.wget-hsts                                      \
+			$HOME/.xsession-errors.old
+	}
+
+	function system-refresh()
+	{
+		package-refresh
+		retry antigen selfupdate
+		retry antigen update
+		if [[ -d $HOME/.vim_data/bundle ]]; then
+			vim +NeoBundleUpdate +quit!
+		fi
+		system-clean
+	}
+fi
+
+if [[ ${_SYSENV_DIST} == "raspbian" ]]; then
+	function package-cleanup()
+	{
+		if [[ $(dpkg --get-selections | grep deinstall | cut -f1 | wc -l) != 0 ]]; then
+			sudo aptitude -y purge $(dpkg --get-selections | grep deinstall | cut -f1)
+		fi
+		sudo aptitude -y autoclean
+	}
+
+	function package-refresh()
+	{
+		retry sudo aptitude update
+		retry sudo aptitude -d -y upgrade
+		sudo DEBIAN_FRONTEND="noninteractive" aptitude -y upgrade
+		package-cleanup
+	}
+
+	function system-clean()
+	{
 		rm -f $HOME/.wget-hsts                                      \
 			$HOME/.xsession-errors.old
 	}
