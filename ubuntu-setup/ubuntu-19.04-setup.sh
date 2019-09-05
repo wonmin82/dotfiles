@@ -243,6 +243,7 @@ list_install_pkgs=(
 "zsh"
 "zsh-doc"
 "ntp"
+"inxi"
 "htop"
 "iotop"
 "smem"

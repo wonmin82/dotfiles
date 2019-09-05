@@ -226,6 +226,7 @@ list_install_pkgs=(
 "zsh-doc"
 "zsh-lovers"
 "ntp"
+"inxi"
 "htop"
 "iotop"
 "smem"
