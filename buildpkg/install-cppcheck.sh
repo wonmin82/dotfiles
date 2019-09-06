@@ -4,7 +4,7 @@ set -e -x
 
 source ./build-env.sh
 
-tag="1.87"
+tag="1.89"
 
 mkdir ${build_dir}
 pushd ${build_dir}
