@@ -23,7 +23,7 @@ list_install_tasks=(
 "ubuntustudio-font-meta"
 )
 
-list_pkgs_priority=(
+list_priority_pkgs=(
 "tasksel"
 )
 
@@ -204,8 +204,6 @@ list_install_pkgs=(
 "perl-doc"
 "golang"
 "nodejs"
-"nodejs-legacy"
-"npm"
 "mono-complete"
 "splint"
 "cppcheck"
@@ -350,8 +348,8 @@ pre_process()
 install_apt_prerequisites()
 {
 	eval ${apt_update}
-	eval ${apt_fetch} apt-transport-https ca-certificates
-	eval ${apt_install} apt-transport-https ca-certificates
+	eval ${apt_fetch} apt-transport-https ca-certificates curl
+	eval ${apt_install} apt-transport-https ca-certificates curl
 }
 
 add_repo()
@@ -363,8 +361,12 @@ add_repo()
 	# oracle java
 	# add-apt-repository ppa:webupd8team/java < /dev/null
 
+	# node.js v10.x
+	curl -sL --retry 10 --retry-delay 3 \
+		https://deb.nodesource.com/setup_10.x | bash -
+
 	# golang
-	add-apt-repository --no-update ppa:longsleep/golang-backports < /dev/null
+	add-apt-repository ppa:longsleep/golang-backports < /dev/null
 
 	# mono
 	retry apt-key adv \
@@ -377,15 +379,15 @@ add_repo()
 		| tee /etc/apt/sources.list.d/mono-official-stable.list
 
 	# docker
-	curl -fsSL --retry 10 --retry-connrefused --retry-delay 3 \
+	curl -fsSL --retry 10 --retry-delay 3 \
 		https://download.docker.com/linux/ubuntu/gpg \
 		| apt-key add -
-	add-apt-repository --no-update \
+	add-apt-repository \
 		"deb [arch=amd64] https://download.docker.com/linux/ubuntu \
 		$(lsb_release -cs) \
 		stable"
 
-	retry aptitude update
+	eval ${apt_update}
 }
 
 install_priority_packages()
@@ -521,10 +523,11 @@ post_process()
 	rm -f ${home_root}/.bash_history
 	rm -f ${home}/.bash_history
 
-	rm -r -f ${home}/.gvfs || true
 	if [[ -d ${home}/.cache/dconf ]]; then
 		chown -R -v ${user}:${user} ${home}/.cache/dconf
 	fi
+
+	rm -r -f ${home}/.gvfs || true
 
 	rm -f /usr/bin/gnome-screensaver-command
 	ln -s /usr/bin/xscreensaver-command /usr/bin/gnome-screensaver-command
@@ -546,6 +549,14 @@ post_process()
 	sudo -u ${user} -H -i zsh -i -c :
 }
 
+cleanup_packages()
+{
+	if [[ $(dpkg --get-selections | grep deinstall | cut -f1 | wc -l) != 0 ]]; then
+		eval ${apt_remove} $(dpkg --get-selections | grep deinstall | cut -f1)
+	fi
+	aptitude -y autoclean
+}
+
 main()
 {
 	if [[ $EUID -ne 0 ]]; then
@@ -564,6 +575,7 @@ main()
 	install_all
 	install_vm_tools
 	install_recommended
+	cleanup_packages
 	post_process
 }
 
