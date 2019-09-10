@@ -366,9 +366,9 @@ add_repo()
 	# oracle java
 	# add-apt-repository --no-update ppa:webupd8team/java < /dev/null
 
-	# node.js v8.x
+	# node.js v10.x
 	curl -sL --retry 10 --retry-connrefused --retry-delay 3 \
-		https://deb.nodesource.com/setup_8.x | bash -
+		https://deb.nodesource.com/setup_10.x | bash -
 
 	# golang
 	add-apt-repository --no-update ppa:longsleep/golang-backports < /dev/null
