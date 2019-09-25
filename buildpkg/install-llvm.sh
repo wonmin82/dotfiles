@@ -157,7 +157,7 @@ pushd ${build_dir}
 
 virtualenv -p ${python_command} ${venv_dir}
 source ${venv_dir}/bin/activate
-pip install --upgrade sphinx recommonmark pygments pyyaml
+pip install --upgrade sphinx recommonmark pygments pyyaml z3-solver
 
 mkdir -p ${llvm_srcdir}
 pushd ${llvm_srcdir}
