@@ -30,7 +30,7 @@ set -e -x
 
 source ./build-env.sh
 
-llvm_tag="llvmorg-8.0.1"
+llvm_tag="llvmorg-9.0.0"
 
 triple_gcc=$(gcc -v 2>&1 | grep "^Target:" | cut -d ' ' -f 2)
 triple_make=$(make -v 2>&1 |                                            \
@@ -72,6 +72,7 @@ stage0_cxx="${stage0_host_gcc_dir}/bin/g++"
 stage0_cflags="${common_cflags}"
 stage0_cxxflags="${common_cxxflags}"
 stage0_ldflags="${common_ldflags}"
+stage0_projects="clang"
 stage0_cmake="${common_cmake}
 -DCMAKE_C_COMPILER=\"${stage0_cc}\"
 -DCMAKE_CXX_COMPILER=\"${stage0_cxx}\"
@@ -80,7 +81,7 @@ stage0_cmake="${common_cmake}
 -DCMAKE_EXE_LINKER_FLAGS=\"${stage0_ldflags}\"
 -DCMAKE_SHARED_LINKER_FLAGS=\"${stage0_ldflags}\"
 -DLLVM_TARGETS_TO_BUILD=\"host\"
--DLLVM_ENABLE_PROJECTS=\"clang\"
+-DLLVM_ENABLE_PROJECTS=\"${stage0_projects}\"
 -DLLVM_BUILD_TOOLS=\"off\"
 -DLLVM_BUILD_DOCS=\"off\"
 -DLLVM_ENABLE_OCAMLDOC=\"off\"
@@ -94,6 +95,7 @@ stage1_cxx="${install_prefix}/bin/clang++"
 stage1_cflags="${common_cflags}"
 stage1_cxxflags="${common_cxxflags}"
 stage1_ldflags="${common_ldflags}"
+stage1_projects="clang;libcxx;libcxxabi"
 stage1_cmake="${common_cmake}
 -DCMAKE_C_COMPILER=\"${stage1_cc}\"
 -DCMAKE_CXX_COMPILER=\"${stage1_cxx}\"
@@ -102,7 +104,7 @@ stage1_cmake="${common_cmake}
 -DCMAKE_EXE_LINKER_FLAGS=\"${stage1_ldflags}\"
 -DCMAKE_SHARED_LINKER_FLAGS=\"${stage1_ldflags}\"
 -DLLVM_TARGETS_TO_BUILD=\"host\"
--DLLVM_ENABLE_PROJECTS=\"clang;libcxx;libcxxabi\"
+-DLLVM_ENABLE_PROJECTS=\"${stage1_projects}\"
 -DLLVM_BUILD_TOOLS=\"off\"
 -DLLVM_BUILD_DOCS=\"off\"
 -DLLVM_ENABLE_OCAMLDOC=\"off\"
@@ -116,6 +118,9 @@ stage2_cxx="${install_prefix}/bin/clang++"
 stage2_cflags="${common_cflags}"
 stage2_cxxflags="${common_cxxflags} -stdlib=libc++"
 stage2_ldflags="${common_ldflags} -stdlib=libc++ -lc++abi"
+# stage2_projects="all"
+# build failed in llgo of llvm 9.0.0
+stage2_projects="clang;clang-tools-extra;compiler-rt;debuginfo-tests;libclc;libcxx;libcxxabi;libunwind;lld;lldb;openmp;parallel-libs;polly;pstl"
 stage2_cmake="${common_cmake}
 -DCMAKE_C_COMPILER=\"${stage2_cc}\"
 -DCMAKE_CXX_COMPILER=\"${stage2_cxx}\"
@@ -124,12 +129,13 @@ stage2_cmake="${common_cmake}
 -DCMAKE_EXE_LINKER_FLAGS=\"${stage2_ldflags}\"
 -DCMAKE_SHARED_LINKER_FLAGS=\"${stage2_ldflags}\"
 -DLLVM_TARGETS_TO_BUILD=\"all\"
--DLLVM_ENABLE_PROJECTS=\"all\"
+-DLLVM_ENABLE_PROJECTS=\"${stage2_projects}\"
 -DLLVM_ENABLE_LIBCXX=\"on\"
 -DCLANG_DEFAULT_CXX_STDLIB=\"libc++\"
 -DLIBCXX_CXX_ABI=\"libcxxabi\"
 -DLIBCXX_CXX_ABI_INCLUDE_PATHS=\"${install_prefix}/include/c++/v1\"
 -DLIBCXX_CXX_ABI_LIBRARY_PATH=\"${install_prefix}/lib\"
+-DLIBCXXABI_USE_LLVM_UNWINDER=\"on\"
 -DLLVM_BUILD_TOOLS=\"on\"
 -DLLVM_BUILD_DOCS=\"on\"
 -DLLVM_ENABLE_OCAMLDOC=\"off\"
