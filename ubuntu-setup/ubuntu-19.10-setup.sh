@@ -30,7 +30,8 @@ list_prohibit_pkgs=(
 
 list_install_pkgs=(
 "synaptic"
-"mysql-server"
+"mariadb-server"
+"mariadb-client"
 "postfix"
 "nfs-common"
 "nfs-kernel-server"
