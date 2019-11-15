@@ -98,6 +98,8 @@ ZSH_TMUX_AUTOSTART_ONCE=false
 ZSH_TMUX_AUTOCONNECT=false
 ZSH_TMUX_AUTOQUIT=false
 ZSH_TMUX_FIXTERM=true
+
+export ZSH_TMUX_CONFIG="$HOME/.tmux.conf"
 #}}}
 
 # Antigen bundle configurations {{{
