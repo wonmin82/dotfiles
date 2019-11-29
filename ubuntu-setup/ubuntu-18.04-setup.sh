@@ -67,6 +67,7 @@ list_install_pkgs=(
 "build-essential"
 "libboost-all-dev"
 "libboost-doc"
+"man-db"
 "manpages"
 "manpages-dev"
 "manpages-posix"
@@ -167,6 +168,7 @@ list_install_pkgs=(
 "python-clang-7"
 "python-lldb-7"
 # }
+"php-all-dev"
 "python-all"
 "python-dev"
 "python-all-dev"
@@ -186,9 +188,9 @@ list_install_pkgs=(
 "python3-pep8"
 "python3-flake8"
 "python3-doc"
+"flake8"
 "virtualenv"
 "virtualenvwrapper"
-"flake8"
 # need to be checked for existence when ubuntu is upgraded {
 "ruby-full"
 "ruby2.5-doc"
@@ -209,6 +211,7 @@ list_install_pkgs=(
 "splint"
 "cppcheck"
 "gettext"
+"dialog"
 "chrpath"
 "colordiff"
 "colormake"
@@ -286,6 +289,7 @@ list_install_pkgs=(
 "qt5-doc"
 "qtcreator"
 # }
+"libffi-dev"
 "libncurses5"
 "libncurses5-dev"
 "libncursesw5"
