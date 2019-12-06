@@ -3531,7 +3531,8 @@ function s:CheckLinuxSrc()
 
 	let prpath = projectroot#guess()
 	let kconfigfile = glob(prpath . '/Kconfig')
-	if glob(kconfigfile) != ''
+	let kerneldirectory = glob(prpath . '/kernel')
+	if !empty(kconfigfile) && !empty(kerneldirectory)
 		let apply_style = 1
 	endif
 	if apply_style
