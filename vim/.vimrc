@@ -303,6 +303,7 @@ NeoBundle 'rhysd/vim-clang-format', {
 			\}
 NeoBundle 'vivien/vim-linux-coding-style'
 NeoBundle 'tell-k/vim-autopep8'
+NeoBundle 'maksimr/vim-jsbeautify'
 if v:version >= 704 && !s:is_raspbian && !s:is_synology
 	NeoBundle 'SirVer/ultisnips'
 endif
@@ -3573,6 +3574,30 @@ let g:autopep8_max_line_length = 79
 let g:autopep8_indent_size = 4
 let g:autopep8_disable_show_diff = 1
 let g:autopep8_on_save = 0
+"}}}
+
+" Plugin: vim-jsbeautify {{{
+autocmd FileType javascript
+			\   noremap <buffer> <leader>cf :call JsBeautify()<cr>
+autocmd FileType json
+			\   noremap <buffer> <leader>cf :call JsonBeautify()<cr>
+autocmd FileType jsx
+			\   noremap <buffer> <leader>cf :call JsxBeautify()<cr>
+autocmd FileType html
+			\   noremap <buffer> <leader>cf :call HtmlBeautify()<cr>
+autocmd FileType css
+			\   noremap <buffer> <leader>cf :call CSSBeautify()<cr>
+
+autocmd FileType javascript
+			\   vnoremap <buffer> <leader>cf :call RangeJsBeautify()<cr>
+autocmd FileType json
+			\   vnoremap <buffer> <leader>cf :call RangeJsonBeautify()<cr>
+autocmd FileType jsx
+			\   vnoremap <buffer> <leader>cf :call RangeJsxBeautify()<cr>
+autocmd FileType html
+			\   vnoremap <buffer> <leader>cf :call RangeHtmlBeautify()<cr>
+autocmd FileType css
+			\   vnoremap <buffer> <leader>cf :call RangeCSSBeautify()<cr>
 "}}}
 
 " bracket autocompletion {{{
