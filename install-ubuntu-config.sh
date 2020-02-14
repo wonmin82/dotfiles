@@ -43,9 +43,11 @@ sudo chown -v root:root /etc/fonts/local.conf
 sudo mkdir -p -v /etc/apt/preferences.d
 sudo cp -f -v $PWD/ubuntu/preferences.d/nodejs /etc/apt/preferences.d/
 sudo cp -f -v $PWD/ubuntu/preferences.d/runit /etc/apt/preferences.d/
+sudo cp -f -v $PWD/ubuntu/preferences.d/docker /etc/apt/preferences.d/
 sudo chown -v root:root                     \
 		 /etc/apt/preferences.d/nodejs      \
-		 /etc/apt/preferences.d/runit
+		 /etc/apt/preferences.d/runit       \
+		 /etc/apt/preferences.d/docker
 
 sudo mkdir -p -v /etc/apt/apt.conf.d
 sudo cp -f -v $PWD/ubuntu/apt.conf.d/99dpkg-options /etc/apt/apt.conf.d/
