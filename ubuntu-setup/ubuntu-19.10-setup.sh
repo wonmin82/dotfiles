@@ -322,6 +322,7 @@ list_install_pkgs=(
 "docker-ce"
 "docker-ce-cli"
 "containerd.io"
+"docker-compose"
 )
 
 list_vm_pkgs=(

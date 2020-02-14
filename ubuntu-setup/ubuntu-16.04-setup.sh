@@ -317,6 +317,7 @@ list_install_pkgs=(
 "apcalc"
 "hh"
 "docker-engine"
+"docker-compose"
 )
 
 list_vm_pkgs=(
