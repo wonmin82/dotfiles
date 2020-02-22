@@ -637,7 +637,7 @@ main()
 	# install_java
 	install_all
 	install_vm_tools
-	install_recommended
+	# install_recommended
 	cleanup_packages
 	post_process
 }
