@@ -2235,7 +2235,6 @@ let g:UltiSnipsListSnippets = "<c-s>"
 let g:clang_format_configs = {}
 
 let g:clang_format_configs["v9.0"] = {
-			\   'Language' : 'Cpp',
 			\   'BasedOnStyle' : 'google',
 			\   'AccessModifierOffset' : -4,
 			\   'AlignAfterOpenBracket' : 'Align',
@@ -2376,7 +2375,6 @@ let g:clang_format_configs["v9.0"] = {
 			\}
 
 let g:clang_format_configs["v8.0"] = {
-			\   'Language' : 'Cpp',
 			\   'BasedOnStyle' : 'google',
 			\   'AccessModifierOffset' : -4,
 			\   'AlignAfterOpenBracket' : 'Align',
@@ -2511,7 +2509,6 @@ let g:clang_format_configs["v8.0"] = {
 			\}
 
 let g:clang_format_configs["v7.0"] = {
-			\   'Language' : 'Cpp',
 			\   'BasedOnStyle' : 'google',
 			\   'AccessModifierOffset' : -4,
 			\   'AlignAfterOpenBracket' : 'Align',
@@ -2641,7 +2638,6 @@ let g:clang_format_configs["v7.0"] = {
 			\}
 
 let g:clang_format_configs["v6.0"] = {
-			\   'Language' : 'Cpp',
 			\   'BasedOnStyle' : 'google',
 			\   'AccessModifierOffset' : -4,
 			\   'AlignAfterOpenBracket' : 'Align',
@@ -2759,7 +2755,6 @@ let g:clang_format_configs["v6.0"] = {
 			\}
 
 let g:clang_format_configs["v5.0"] = {
-			\   'Language' : 'Cpp',
 			\   'BasedOnStyle' : 'google',
 			\   'AccessModifierOffset' : -4,
 			\   'AlignAfterOpenBracket' : 'Align',
@@ -2874,7 +2869,6 @@ let g:clang_format_configs["v5.0"] = {
 			\}
 
 let g:clang_format_configs["v4.0"] = {
-			\   'Language' : 'Cpp',
 			\   'BasedOnStyle' : 'google',
 			\   'AccessModifierOffset' : -4,
 			\   'AlignAfterOpenBracket' : 'Align',
@@ -2980,7 +2974,6 @@ let g:clang_format_configs["v4.0"] = {
 			\}
 
 let g:clang_format_configs["v3.9"] = {
-			\   'Language' : 'Cpp',
 			\   'BasedOnStyle' : 'google',
 			\   'AccessModifierOffset' : -4,
 			\   'AlignAfterOpenBracket' : 'Align',
@@ -3085,7 +3078,6 @@ let g:clang_format_configs["v3.9"] = {
 			\}
 
 let g:clang_format_configs["v3.8"] = {
-			\   'Language' : 'Cpp',
 			\   'BasedOnStyle' : 'google',
 			\   'AccessModifierOffset' : -4,
 			\   'AlignAfterOpenBracket' : 'Align',
@@ -3185,7 +3177,6 @@ let g:clang_format_configs["v3.8"] = {
 			\}
 
 let g:clang_format_configs["v3.7"] = {
-			\   'Language' : 'Cpp',
 			\   'BasedOnStyle' : 'google',
 			\   'AccessModifierOffset' : -4,
 			\   'AlignAfterOpenBracket' : 'true',
@@ -3252,7 +3243,6 @@ let g:clang_format_configs["v3.7"] = {
 			\}
 
 let g:clang_format_configs["v3.6"] = {
-			\   'Language' : 'Cpp',
 			\   'BasedOnStyle' : 'google',
 			\   'AccessModifierOffset' : -4,
 			\   'AlignAfterOpenBracket' : 'true',
@@ -3317,7 +3307,6 @@ let g:clang_format_configs["v3.6"] = {
 			\}
 
 let g:clang_format_configs["v3.5"] = {
-			\   'Language' : 'Cpp',
 			\   'BasedOnStyle' : 'google',
 			\   'AccessModifierOffset' : -4,
 			\   'ConstructorInitializerIndentWidth' : 4,
@@ -3417,7 +3406,7 @@ let g:clang_format_configs["v3.4"] = {
 			\   'SpacesInCStyleCastParentheses' : 'false',
 			\   'SpaceAfterControlStatementKeyword' : 'true',
 			\   'SpaceBeforeAssignmentOperators' : 'true',
-			\   'ContinuationIndentWidth' : 4,
+			\   'ContinuationIndentWidth' : 4
 			\}
 "}}}
 
@@ -3510,6 +3499,13 @@ if s:clang_format_is_available
 	autocmd FileType c,cpp,objc
 				\   vnoremap <buffer> <leader>cf :ClangFormat<cr>
 	autocmd FileType c,cpp,objc
+				\   map <buffer> <leader>x <plug>(operator-clang-format)
+	" map to <Leader>cf in javascript
+	autocmd FileType java,proto,typescript
+				\   nnoremap <buffer> <leader>cf :<c-u>ClangFormat<cr>
+	autocmd FileType java,proto,typescript
+				\   vnoremap <buffer> <leader>cf :ClangFormat<cr>
+	autocmd FileType java,proto,typescript
 				\   map <buffer> <leader>x <plug>(operator-clang-format)
 	" Toggle auto formatting:
 	nmap <leader>C :ClangFormatAutoToggle<cr>
