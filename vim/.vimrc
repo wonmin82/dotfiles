@@ -3573,6 +3573,24 @@ let g:autopep8_on_save = 0
 "}}}
 
 " Plugin: vim-jsbeautify {{{
+let g:config_Beautifier = {}
+
+let g:config_Beautifier["js"] = {
+			\   'indent_style' : 'tab',
+			\}
+let g:config_Beautifier["json"] = {
+			\   'indent_style' : 'tab',
+			\}
+let g:config_Beautifier["jsx"] = {
+			\   'indent_style' : 'tab',
+			\}
+let g:config_Beautifier["css"] = {
+			\   'indent_style' : 'tab',
+			\}
+let g:config_Beautifier["html"] = {
+			\   'indent_style' : 'tab',
+			\}
+
 autocmd FileType javascript
 			\   noremap <buffer> <leader>cf :call JsBeautify()<cr>
 autocmd FileType json
