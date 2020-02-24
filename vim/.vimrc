@@ -152,7 +152,7 @@ while ! s:is_neobundle_inited
 		" If NeoBundle is missing, define an installer for it
 		function! NeoBundleInstaller()
 			if s:is_cygwin || s:is_macos || s:is_raspbian || s:is_synology ||
-			\  s:is_linux64 || s:is_linux32 || s:is_unix
+						\  s:is_linux64 || s:is_linux32 || s:is_unix
 				let s:retry_count = s:retry_count + 1
 				if s:retry_count > s:max_retry_count
 					execute ':silent !echo "==> NeoBundle installation has been failed."'
@@ -662,15 +662,15 @@ endif
 let g:c_syntax_for_h = 1
 
 function! GetVisualSelection()
-    let [line_start, column_start] = getpos("'<")[1:2]
-    let [line_end, column_end] = getpos("'>")[1:2]
-    let l:lines = getline(line_start, line_end)
-    if len(l:lines) == 0
-        return ''
-    endif
-    let l:lines[-1] = lines[-1][: column_end - 2]
-    let l:lines[0] = lines[0][column_start - 1:]
-    return join(l:lines, "\n")
+	let [line_start, column_start] = getpos("'<")[1:2]
+	let [line_end, column_end] = getpos("'>")[1:2]
+	let l:lines = getline(line_start, line_end)
+	if len(l:lines) == 0
+		return ''
+	endif
+	let l:lines[-1] = lines[-1][: column_end - 2]
+	let l:lines[0] = lines[0][column_start - 1:]
+	return join(l:lines, "\n")
 endfunction
 
 function! PydocFind()
@@ -682,10 +682,10 @@ function! PydocFind()
 endfunction
 
 function! PydocShow(word)
-    if a:word == ''
-        echo "Invalid name or symbol."
-        return 0
-    endif
+	if a:word == ''
+		echo "Invalid name or symbol."
+		return 0
+	endif
 	silent execute ":!clear"
 	execute ":!pydoc " . a:word
 	redraw!
@@ -3548,13 +3548,13 @@ function s:NormalCodingStyle()
 endfunction
 
 function s:NormalFormatting()
-    setlocal tabstop=4
-    setlocal shiftwidth=4
-    setlocal softtabstop=4
-    setlocal textwidth=80
-    setlocal noexpandtab
+	setlocal tabstop=4
+	setlocal shiftwidth=4
+	setlocal softtabstop=4
+	setlocal textwidth=80
+	setlocal noexpandtab
 
-    setlocal cindent
+	setlocal cindent
 endfunction
 "}}}
 
@@ -3658,176 +3658,6 @@ if s:bracket_autocompletion == 1
 		endif
 	endf
 endif
-"}}}
-
-" Settings which is not either completed or used. {{{
-" " Plugin: neocomplete {{{
-" "Note: This option must set it in .vimrc(_vimrc).  NOT IN .gvimrc(_gvimrc)!
-" " Disable AutoComplPop.
-" let g:acp_enableAtStartup = 0
-" " Use neocomplete.
-" let g:neocomplete#enable_at_startup = 1
-" " Use smartcase.
-" let g:neocomplete#enable_smart_case = 1
-" " Set minimum syntax keyword length.
-" let g:neocomplete#sources#syntax#min_keyword_length = 3
-" let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
-
-" " Define dictionary.
-" let g:neocomplete#sources#dictionary#dictionaries = {
-			" \ 'default' : '',
-			" \ 'vimshell' : $HOME.'/.vimshell_hist',
-			" \ 'scheme' : $HOME.'/.gosh_completions'
-			" \}
-
-" " Define keyword.
-" if !exists('g:neocomplete#keyword_patterns')
-	" let g:neocomplete#keyword_patterns = {}
-" endif
-" let g:neocomplete#keyword_patterns['default'] = '\h\w*'
-
-" " Plugin key-mappings.
-" inoremap <expr><c-g>     neocomplete#undo_completion()
-" inoremap <expr><c-l>     neocomplete#complete_common_string()
-
-" " Recommended key-mappings.
-" " <cr>: close popup and save indent.
-" inoremap <silent> <cr> <c-r>=<sid>my_cr_function()<cr>
-" function! s:my_cr_function()
-	" return neocomplete#close_popup() . "\<cr>"
-	" " For no inserting <cr> key.
-	" " return pumvisible() ? neocomplete#close_popup() : "\<cr>"
-" endfunction
-" " <tab>: completion.
-" inoremap <expr><tab>  pumvisible() ? "\<c-n>" : "\<tab>"
-" " <C-h>, <BS>: close popup and delete backword char.
-" inoremap <expr><cr>-h> neocomplete#smart_close_popup()."\<c-h>"
-" inoremap <expr><bs> neocomplete#smart_close_popup()."\<c-h>"
-" inoremap <expr><c-y> neocomplete#close_popup()
-" inoremap <expr><c-e> neocomplete#cancel_popup()
-" " Close popup by <Space>.
-" "inoremap <expr><Space> pumvisible() ? neocomplete#close_popup() : "\<Space>"
-
-" " For cursor moving in insert mode(Not recommended)
-" "inoremap <expr><Left>  neocomplete#close_popup() . "\<Left>"
-" "inoremap <expr><Right> neocomplete#close_popup() . "\<Right>"
-" "inoremap <expr><Up>    neocomplete#close_popup() . "\<Up>"
-" "inoremap <expr><Down>  neocomplete#close_popup() . "\<Down>"
-" " Or set this.
-" let g:neocomplete#enable_cursor_hold_i = 1
-" " Or set this.
-" "let g:neocomplete#enable_insert_char_pre = 1
-
-" " AutoComplPop like behavior.
-" "let g:neocomplete#enable_auto_select = 1
-
-" " Shell like behavior(not recommended).
-" "set completeopt+=longest
-" "let g:neocomplete#enable_auto_select = 1
-" "let g:neocomplete#disable_auto_complete = 1
-" "inoremap <expr><tab>  pumvisible() ? "\<Down>" : "\<C-x>\<C-u>"
-
-" " Enable omni completion.
-" autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-" autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-" autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-" autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
-" autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
-
-" " Enable heavy omni completion.
-" if !exists('g:neocomplete#sources#omni#input_patterns')
-	" let g:neocomplete#sources#omni#input_patterns = {}
-" endif
-" "let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
-" "let g:neocomplete#sources#omni#input_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
-" "let g:neocomplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
-
-" " For perlomni.vim setting.
-" " https://github.com/c9s/perlomni.vim
-" let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
-" "}}}
-
-" " Plugin: neosnippet {{{
-" let g:neosnippet#snippets_directory='~/.vim/bundle/vim-snippets/snippets'
-
-" " Plugin key-mappings.
-" imap <c-k>     <plug>(neosnippet_expand_or_jump)
-" smap <c-k>     <plug>(neosnippet_expand_or_jump)
-" xmap <c-k>     <plug>(neosnippet_expand_target)
-
-" " SuperTab like snippets behavior.
-" " imap <expr><tab> neosnippet#expandable_or_jumpable() ?
-			" " \ "\<plug>(neosnippet_expand_or_jump)"
-			" " \: pumvisible() ? "\<C-n>" : "\<tab>"
-" " smap <expr><tab> neosnippet#expandable_or_jumpable() ?
-			" " \ "\<plug>(neosnippet_expand_or_jump)"
-			" " \: "\<tab>"
-
-" " For snippet_complete marker.
-" if has('conceal')
-	" set conceallevel=2 concealcursor=i
-" endif
-" "}}}
-
-" " Plugin: SuperTab {{{
-" " TODO: it's not working now.
-" let g:SuperTabMappingForward = '<c-s-tab>'
-" let g:SuperTabMappingBackward = '<c-tab>'
-" "}}}
-
-" " Plugin: OmniCppComplete {{{
-" autocmd CursorMovedI * if pumvisible() == 0|pclose|endif
-" autocmd InsertLeave * if pumvisible() == 0|pclose|endif
-
-" let OmniCpp_GlobalScopeSearch = 1
-" let OmniCpp_NamespaceSearch = 1
-" let OmniCpp_DisplayMode = 0
-" let OmniCpp_ShowScopeInAbbr = 0
-" let OmniCpp_ShowPrototypeInAbbr = 0
-" let OmniCpp_ShowAccess = 1
-" let OmniCpp_DefaultNamespaces = []
-" let OmniCpp_MayCompleteDot = 1
-" let OmniCpp_MayCompleteArrow = 1
-" let OmniCpp_MayCompleteScope = 0
-" let OmniCpp_SelectFirstItem = 0
-" let OmniCpp_LocalSearchDecl = 0
-" "}}}
-
-" Plugin: taglist - replaced by tagbar {{{
-"nnoremap <silent> <f7> :TlistUpdate<cr>
-"nnoremap <silent> <f8> :TlistToggle<cr>
-"nnoremap <silent> <f9> :TlistSync<cr>
-
-"let Tlist_Inc_Winwidth = 0
-"let Tlist_Auto_Open = 0
-"let Tlist_Process_File_Always = 0
-"let Tlist_Enable_Fold_Column = 0
-"let Tlist_Display_Tag_Scope = 0
-"let Tlist_Sort_Type = "name"
-"let Tlist_Use_Right_Window = 1
-"let Tlist_Display_Prototype = 0
-"let Tlist_Exit_OnlyWindow = 1
-"let Tlist_File_Fold_Auto_Close = 1
-
-"if has('win32unix')
-	"let Tlist_Ctags_Cmd = '$HOME/bin/ctags.exe'   "Cygwin-specific option
-"endif
-"}}}
-
-" " Plugin: Unite Sessions {{{
-" " Save session automatically.
-" let g:unite_source_session_enable_auto_save = 1
-
-" " Pop up session selection if no file is specified
-" autocmd MyAutoCmd VimEnter * call s:unite_session_on_enter()
-" function! s:unite_session_on_enter()
-	" if !argc() && !exists("g:start_session_from_cmdline")
-				" \ && !(&ft == 'man')
-		" Unite -buffer-name=sessions session
-	" endif
-" endfunction
-" "}}}
-
 "}}}
 
 finish
