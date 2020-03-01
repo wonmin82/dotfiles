@@ -164,13 +164,6 @@ if (( $+commands[docker] )); then
 	antigen bundle akarzim/zsh-docker-aliases
 fi
 
-# more LS_COLORS
-# only available for 256 color terminals
-zmodload zsh/terminfo || return 1
-if (( $+terminfo[colors] )) && (( $terminfo[colors] == 256 )); then
-	antigen bundle trapd00r/LS_COLORS
-fi
-
 # Load the theme.
 if [[ ${_SYSENV_OS} == "cygwin" ]]; then
 	antigen theme risto
@@ -189,13 +182,26 @@ antigen apply
 
 # LS_COLORS configuration {{{
 # only available for 256 color terminals
-if (( $+terminfo[colors] )) && (( $terminfo[colors] == 256 )); then
-	# load trapd00r's LS_COLORS things
-	if (( $+commands[dircolors] )); then
-		eval $( dircolors -b $ADOTDIR/bundles/trapd00r/LS_COLORS/LS_COLORS )
-	elif (( $+commands[gdircolors] )); then
-		eval $( gdircolors -b $ADOTDIR/bundles/trapd00r/LS_COLORS/LS_COLORS )
+zmodload zsh/terminfo || return 1
+
+if (( $+terminfo[colors] )) && (( $terminfo[colors] >= 256 )); then
+	LS_COLORS_DIR="$ZSHDATADIR/LS_COLORS"
+	if [[ ! -d $LS_COLORS_DIR/.git ]]; then
+		git clone https://github.com/trapd00r/LS_COLORS.git $LS_COLORS_DIR
 	fi
+
+	if (( $+commands[dircolors] )); then
+		eval $( dircolors -b $LS_COLORS_DIR/LS_COLORS )
+	elif (( $+commands[gdircolors] )); then
+		eval $( gdircolors -b $LS_COLORS_DIR/LS_COLORS )
+	fi
+
+	function lscolors-refresh()
+	{
+		pushd $LS_COLORS_DIR
+		git pull --rebase
+		popd
+	}
 fi
 #}}}
 
@@ -585,6 +591,7 @@ if [[ ${_SYSENV_DIST} == "ubuntu" ]]; then
 		package-refresh
 		retry antigen selfupdate
 		retry antigen update
+		[[ -v LS_COLORS_DIR ]] && lscolors-refresh
 		if [[ -d $HOME/.vim_data/bundle ]]; then
 			vim +NeoBundleUpdate +quit!
 		fi
@@ -620,6 +627,7 @@ if [[ ${_SYSENV_DIST} == "raspbian" ]]; then
 		package-refresh
 		retry antigen selfupdate
 		retry antigen update
+		[[ -v LS_COLORS_DIR ]] && lscolors-refresh
 		if [[ -d $HOME/.vim_data/bundle ]]; then
 			vim +NeoBundleUpdate +quit!
 		fi
@@ -651,6 +659,7 @@ if [[ ${_SYSENV_OS} == "macos" ]]; then
 		package-refresh
 		antigen selfupdate
 		antigen update
+		[[ -v LS_COLORS_DIR ]] && lscolors-refresh
 		if [[ -d $HOME/.vim_data/bundle ]]; then
 			vim +NeoBundleUpdate +quit!
 		fi
@@ -663,6 +672,7 @@ if [[ ${_SYSENV_OS} == "cygwin" ]]; then
 	{
 		antigen selfupdate
 		antigen update
+		[[ -v LS_COLORS_DIR ]] && lscolors-refresh
 		if [[ -d $HOME/.vim_data/bundle ]]; then
 			vim +NeoBundleUpdate +quit!
 		fi
@@ -674,6 +684,7 @@ if [[ ${_SYSENV_DIST} == "synologydsm" ]]; then
 	{
 		antigen selfupdate
 		antigen update
+		[[ -v LS_COLORS_DIR ]] && lscolors-refresh
 		if [[ -d $HOME/.vim_data/bundle ]]; then
 			vim +NeoBundleUpdate +quit!
 		fi
