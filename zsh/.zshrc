@@ -573,9 +573,7 @@ if [[ ${_SYSENV_DIST} == "ubuntu" ]]; then
 		retry sudo aptitude -d -y upgrade
 		sudo DEBIAN_FRONTEND="noninteractive" aptitude -y upgrade
 		package-cleanup
-		if (( $+commands[snap] )); then
-			sudo snap refresh
-		fi
+		(( $+commands[snap] )) && sudo snap refresh
 	}
 
 	function system-clean()
@@ -592,9 +590,7 @@ if [[ ${_SYSENV_DIST} == "ubuntu" ]]; then
 		retry antigen selfupdate
 		retry antigen update
 		[[ -v LS_COLORS_DIR ]] && lscolors-refresh
-		if [[ -d $HOME/.vim_data/bundle ]]; then
-			vim +NeoBundleUpdate +quit!
-		fi
+		[[ -d $HOME/.vim_data/bundle ]] && vim +NeoBundleUpdate +quit!
 		system-clean
 	}
 fi
@@ -628,9 +624,7 @@ if [[ ${_SYSENV_DIST} == "raspbian" ]]; then
 		retry antigen selfupdate
 		retry antigen update
 		[[ -v LS_COLORS_DIR ]] && lscolors-refresh
-		if [[ -d $HOME/.vim_data/bundle ]]; then
-			vim +NeoBundleUpdate +quit!
-		fi
+		[[ -d $HOME/.vim_data/bundle ]] && vim +NeoBundleUpdate +quit!
 		system-clean
 	}
 fi
@@ -660,9 +654,7 @@ if [[ ${_SYSENV_OS} == "macos" ]]; then
 		antigen selfupdate
 		antigen update
 		[[ -v LS_COLORS_DIR ]] && lscolors-refresh
-		if [[ -d $HOME/.vim_data/bundle ]]; then
-			vim +NeoBundleUpdate +quit!
-		fi
+		[[ -d $HOME/.vim_data/bundle ]] && vim +NeoBundleUpdate +quit!
 		system-clean
 	}
 fi
@@ -673,9 +665,7 @@ if [[ ${_SYSENV_OS} == "cygwin" ]]; then
 		antigen selfupdate
 		antigen update
 		[[ -v LS_COLORS_DIR ]] && lscolors-refresh
-		if [[ -d $HOME/.vim_data/bundle ]]; then
-			vim +NeoBundleUpdate +quit!
-		fi
+		[[ -d $HOME/.vim_data/bundle ]] && vim +NeoBundleUpdate +quit!
 	}
 fi
 
@@ -685,9 +675,7 @@ if [[ ${_SYSENV_DIST} == "synologydsm" ]]; then
 		antigen selfupdate
 		antigen update
 		[[ -v LS_COLORS_DIR ]] && lscolors-refresh
-		if [[ -d $HOME/.vim_data/bundle ]]; then
-			vim +NeoBundleUpdate +quit!
-		fi
+		[[ -d $HOME/.vim_data/bundle ]] && vim +NeoBundleUpdate +quit!
 	}
 fi
 
