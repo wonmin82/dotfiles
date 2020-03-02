@@ -476,11 +476,12 @@ setopt no_list_beep
 #}}}
 
 # History options {{{
-# history file location set in .zshenv
-export HISTSIZE=10000
-export SAVEHIST=10000
+# HISTFILE is set here again because some distros set this to other value.
+HISTFILE="$ZSHDATADIR/.zsh_history"
+HISTSIZE=10000
+SAVEHIST=10000
 
-export HISTCONTROL=erasedups
+HISTCONTROL=erasedups
 
 setopt hist_ignore_all_dups
 setopt hist_save_no_dups
