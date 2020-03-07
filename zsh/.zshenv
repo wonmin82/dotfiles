@@ -110,14 +110,14 @@ $path
 )
 if (( $+commands[snap] )); then
 	path=(
-	"/snap/bin"
 	$path
-)
+	"/snap/bin"
+	)
 fi
 if [[ -a /etc/synoinfo.conf ]]; then
 	path=(
-	"/usr/local/git/bin"
 	$path
+	"/usr/local/git/bin"
 	)
 fi
 typeset -U path
