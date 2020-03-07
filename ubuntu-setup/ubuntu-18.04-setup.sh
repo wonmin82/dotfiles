@@ -556,8 +556,6 @@ post_process()
 	home="$(getent passwd 1000 | cut -d: -f6)"
 	home_root="$(getent passwd 0 | cut -d: -f6)"
 
-	snap refresh
-
 	# docker
 	usermod -aG docker ${user}
 
