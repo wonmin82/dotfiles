@@ -108,6 +108,12 @@ path=(
 "$HOME/.local/bin"
 $path
 )
+if (( $+commands[snap] )); then
+	path=(
+	"/snap/bin"
+	$path
+)
+fi
 if [[ -a /etc/synoinfo.conf ]]; then
 	path=(
 	"/usr/local/git/bin"
