@@ -330,10 +330,17 @@ list_vm_pkgs=(
 "open-vm-tools-desktop"
 )
 
+list_install_snap_pkgs=(
+"shfmt"
+)
+
 apt_update="retry aptitude update"
 apt_fetch="retry aptitude -y --with-recommends --download-only install"
 apt_install="aptitude -y --with-recommends install"
 apt_remove="aptitude -y purge"
+
+snap_refresh="snap refresh"
+snap_install="snap install"
 
 retry()
 {
@@ -549,6 +556,12 @@ install_recommended()
 	eval ${apt_install} '~RBrecommends:~i'
 }
 
+install_snap_pkgs()
+{
+	eval ${snap_refresh}
+	eval ${snap_install} ${list_install_snap_pkgs[@]}
+}
+
 post_process()
 {
 	user="$(id -un 1000)"
@@ -639,6 +652,7 @@ main()
 	install_vm_tools
 	# install_recommended
 	cleanup_packages
+	install_snap_pkgs
 	post_process
 }
 
