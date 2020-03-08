@@ -304,6 +304,7 @@ NeoBundle 'rhysd/vim-clang-format', {
 NeoBundle 'vivien/vim-linux-coding-style'
 NeoBundle 'tell-k/vim-autopep8'
 NeoBundle 'maksimr/vim-jsbeautify'
+NeoBundle 'z0mbix/vim-shfmt'
 if v:version >= 704 && !s:is_raspbian && !s:is_synology
 	NeoBundle 'SirVer/ultisnips'
 endif
@@ -3612,6 +3613,14 @@ autocmd FileType html
 			\   vnoremap <buffer> <leader>cf :call RangeHtmlBeautify()<cr>
 autocmd FileType css
 			\   vnoremap <buffer> <leader>cf :call RangeCSSBeautify()<cr>
+"}}}
+
+" Plugin: vim-shfmt {{{
+" autocmd FileType sh
+let g:shfmt_extra_args = ''
+
+autocmd FileType sh
+			\   noremap <buffer> <leader>cf :<c-u>Shfmt<cr>
 "}}}
 
 " bracket autocompletion {{{
