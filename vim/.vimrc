@@ -3616,7 +3616,6 @@ autocmd FileType css
 "}}}
 
 " Plugin: vim-shfmt {{{
-" autocmd FileType sh
 let g:shfmt_extra_args = ''
 
 autocmd FileType sh
