@@ -30,7 +30,7 @@ set -e -x
 
 source ./build-env.sh
 
-llvm_tag="llvmorg-9.0.1"
+llvm_tag="llvmorg-10.0.0"
 
 triple_gcc=$(gcc -v 2>&1 | grep "^Target:" | cut -d ' ' -f 2)
 triple_make=$(make -v 2>&1 |                                            \
@@ -119,7 +119,8 @@ stage2_cflags="${common_cflags}"
 stage2_cxxflags="${common_cxxflags} -stdlib=libc++"
 stage2_ldflags="${common_ldflags} -stdlib=libc++ -lc++abi"
 # stage2_projects="all"
-# build failed in llgo of llvm 9.0.0
+# Full list for llvm 10.0.0
+# stage2_projects="clang;clang-tools-extra;compiler-rt;debuginfo-tests;libc;libclc;libcxx;libcxxabi;libunwind;lld;lldb;llgo;mlir;openmp;parallel-libs;polly;pstl"
 stage2_projects="clang;clang-tools-extra;compiler-rt;debuginfo-tests;libclc;libcxx;libcxxabi;libunwind;lld;lldb;openmp;parallel-libs;polly;pstl"
 stage2_cmake="${common_cmake}
 -DCMAKE_C_COMPILER=\"${stage2_cc}\"
@@ -146,10 +147,6 @@ stage2_cmake="${common_cmake}
 -DSPHINX_WARNINGS_AS_ERRORS=\"off\"
 "
 
-# if ! command -v sphinx-build 2> /dev/null; then
-#     stage2_cmake=$(sed -e "s/-DLLVM_ENABLE_SPHINX=\"on\"/-DLLVM_ENABLE_SPHINX=\"off\"/g" <<< ${stage2_cmake})
-# fi
-
 unset LD_LIBRARY_PATH
 
 if command -v python3; then
@@ -161,10 +158,6 @@ fi
 mkdir -p ${build_dir}
 pushd ${build_dir}
 
-virtualenv -p ${python_command} ${venv_dir}
-source ${venv_dir}/bin/activate
-pip install --upgrade sphinx recommonmark pygments pyyaml z3-solver
-
 mkdir -p ${llvm_srcdir}
 pushd ${llvm_srcdir}
 git clone https://github.com/llvm/llvm-project.git         \
@@ -172,6 +165,15 @@ git clone https://github.com/llvm/llvm-project.git         \
 	$PWD
 git checkout refs/tags/${llvm_tag} -b build
 popd
+
+pushd ${llvm_srcdir}
+# Workaround for llvm 10.0.0 build problem
+patch -p 1 -i ${scriptpath}/llvm/0001-Move-the-definition-of-current_pos.patch
+popd
+
+virtualenv -p ${python_command} ${venv_dir}
+source ${venv_dir}/bin/activate
+pip install --upgrade sphinx recommonmark pygments pyyaml z3-solver
 
 # stage 0
 mkdir -p ${build_dir}/stage0
