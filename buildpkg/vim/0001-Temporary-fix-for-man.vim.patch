@@ -1,4 +1,4 @@
-From 8d8ecc2c398c57d03c2cd8bdec59d8db397fe6be Mon Sep 17 00:00:00 2001
+From 6a6c7059ba9a56b2ddc798870a104cdc03608f16 Mon Sep 17 00:00:00 2001
 From: Wonmin Jung <wonmin82@gmail.com>
 Date: Mon, 18 Mar 2019 17:40:25 +0900
 Subject: [PATCH] Temporary fix for man.vim
@@ -8,7 +8,7 @@ Subject: [PATCH] Temporary fix for man.vim
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/runtime/ftplugin/man.vim b/runtime/ftplugin/man.vim
-index cbace44..47e3266 100644
+index d7ce4d8..b5ff229 100644
 --- a/runtime/ftplugin/man.vim
 +++ b/runtime/ftplugin/man.vim
 @@ -205,7 +205,7 @@ func <SID>GetPage(cmdmods, ...)
@@ -21,5 +21,5 @@ index cbace44..47e3266 100644
  
    if unsetwidth
 -- 
-2.23.0
+2.24.1
 

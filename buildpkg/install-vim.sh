@@ -4,7 +4,7 @@ set -e -x
 
 source ./build-env.sh
 
-tag="v8.2.0045"
+tag="v8.2.0488"
 patch_dir="$PWD/vim"
 patch_list=(
 "0001-Temporary-fix-for-man.vim.patch"
@@ -22,6 +22,7 @@ for p in ${patch_list}; do
 	git am ${patch_dir}/$p
 done
 
+exit 0
 ./configure                        \
 	--target=x86_64-linux-gnu      \
 	--host=x86_64-linux-gnu        \
