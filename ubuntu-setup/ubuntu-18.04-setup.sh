@@ -121,7 +121,6 @@ list_install_pkgs=(
 "gdb-doc"
 # llvm package list taken from following URL
 # https://packages.ubuntu.com/source/bionic/llvm-defaults
-# https://packages.ubuntu.com/source/bionic-updates/llvm-toolchain-7
 # {
 "clang"
 "clang-format"
@@ -134,39 +133,30 @@ list_install_pkgs=(
 "llvm"
 "llvm-dev"
 "llvm-runtime"
-"clang-7"
-"clang-7-doc"
-"clang-7-examples"
-"clang-format-7"
-"clang-tidy-7"
-"clang-tools-7"
-"libc++-7-dev"
-"libc++1-7"
-"libc++abi-7-dev"
-"libc++abi1-7"
-"libclang-7-dev"
-"libclang-common-7-dev"
-"libclang1-7"
-"libfuzzer-7-dev"
-"liblld-7"
-"liblld-7-dev"
-"liblldb-7"
-"liblldb-7-dev"
-"libllvm-7-ocaml-dev"
-"libllvm7"
-"libomp-7-dev"
-"libomp-7-doc"
-"libomp5-7"
-"lld-7"
-"lldb-7"
-"llvm-7"
-"llvm-7-dev"
-"llvm-7-doc"
-"llvm-7-examples"
-"llvm-7-runtime"
-"llvm-7-tools"
-"python-clang-7"
-"python-lldb-7"
+# }
+# {
+"libllvm-10-ocaml-dev"
+"libllvm10"
+"llvm-10"
+"llvm-10-dev"
+"llvm-10-doc"
+"llvm-10-examples"
+"llvm-10-runtime"
+"clang-10"
+"clang-tools-10"
+"clang-10-doc"
+"libclang-common-10-dev"
+"libclang-10-dev"
+"libclang1-10"
+"clang-format-10"
+"python3-clang-10"
+"clangd-10"
+"libfuzzer-10-dev"
+"lldb-10"
+"lld-10"
+"libc++-10-dev"
+"libc++abi-10-dev"
+"libomp-10-dev"
 # }
 "php-all-dev"
 "python-all"
@@ -377,6 +367,16 @@ add_repo()
 
 	# oracle java
 	# add-apt-repository --no-update ppa:webupd8team/java < /dev/null
+
+	# llvm
+	wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
+	VERSION="10"
+	# DISTRO="$(lsb_release -s -c)"
+	DISTRO="bionic"
+	echo "deb http://apt.llvm.org/$DISTRO/ llvm-toolchain-$DISTRO-$VERSION main" \
+		| tee /etc/apt/sources.list.d/llvm.list
+	echo "deb-src http://apt.llvm.org/$DISTRO/ llvm-toolchain-$DISTRO-$VERSION main" \
+		| tee -a /etc/apt/sources.list.d/llvm.list
 
 	# node.js v10.x
 	if [[ ${flag_nodejs_auto_install} == true ]]; then

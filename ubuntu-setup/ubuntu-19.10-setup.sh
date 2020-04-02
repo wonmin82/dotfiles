@@ -118,7 +118,6 @@ list_install_pkgs=(
 "gdb-doc"
 # llvm package list taken from following URL
 # https://packages.ubuntu.com/source/eoan/llvm-defaults
-# https://packages.ubuntu.com/source/eoan/llvm-toolchain-9
 # {
 "clang"
 "clang-format"
@@ -142,43 +141,30 @@ list_install_pkgs=(
 "llvm-runtime"
 "python-clang"
 "python-lldb"
-"clang-9"
-"clang-9-doc"
-"clang-9-examples"
-"clang-format-9"
-"clang-tidy-9"
-"clang-tools-9"
-"clangd-9"
-"libc++-9-dev"
-"libc++1-9"
-"libc++abi-9-dev"
-"libc++abi1-9"
-"libclang-9-dev"
-"libclang-common-9-dev"
-"libclang-cpp1-9"
-"libclang-cpp9"
-"libclang1-9"
-"libfuzzer-9-dev"
-"liblld-9"
-"liblld-9-dev"
-"liblldb-9"
-"liblldb-9-dev"
-"libllvm-9-ocaml-dev"
-"libllvm9"
-"libomp-9-dev"
-"libomp-9-doc"
-"libomp5-9"
-"lld-9"
-"lldb-9"
-"llvm-9"
-"llvm-9-dev"
-"llvm-9-doc"
-"llvm-9-examples"
-"llvm-9-runtime"
-"llvm-9-tools"
-"python-clang-9"
-"python-lldb-9"
-"python3-lldb-9"
+# }
+# {
+"libllvm-10-ocaml-dev"
+"libllvm10"
+"llvm-10"
+"llvm-10-dev"
+"llvm-10-doc"
+"llvm-10-examples"
+"llvm-10-runtime"
+"clang-10"
+"clang-tools-10"
+"clang-10-doc"
+"libclang-common-10-dev"
+"libclang-10-dev"
+"libclang1-10"
+"clang-format-10"
+"python3-clang-10"
+"clangd-10"
+"libfuzzer-10-dev"
+"lldb-10"
+"lld-10"
+"libc++-10-dev"
+"libc++abi-10-dev"
+"libomp-10-dev"
 # }
 "php-all-dev"
 "python-all"
@@ -385,6 +371,16 @@ add_repo()
 
 	# oracle java
 	# add-apt-repository --no-update ppa:webupd8team/java < /dev/null
+
+	# llvm
+	wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
+	VERSION="10"
+	# DISTRO="$(lsb_release -s -c)"
+	DISTRO="eoan"
+	echo "deb http://apt.llvm.org/$DISTRO/ llvm-toolchain-$DISTRO-$VERSION main" \
+		| tee /etc/apt/sources.list.d/llvm.list
+	echo "deb-src http://apt.llvm.org/$DISTRO/ llvm-toolchain-$DISTRO-$VERSION main" \
+		| tee -a /etc/apt/sources.list.d/llvm.list
 
 	# node.js v10.x
 	if [[ ${flag_nodejs_auto_install} == true ]]; then
