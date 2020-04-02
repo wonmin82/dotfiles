@@ -2039,6 +2039,7 @@ vmap <leader>a\| :Tabularize /\|<cr>
 
 " Detect clang tools {{{
 let s:clang_tools_suffixes = [
+			\   '',
 			\   '-10',
 			\   '-10.0',
 			\   '-9',
@@ -2058,8 +2059,7 @@ let s:clang_tools_suffixes = [
 			\   '-3.7',
 			\   '-3.6',
 			\   '-3.5',
-			\   '-3.4',
-			\   '',
+			\   '-3.4'
 			\]
 
 function! s:clang_format_detect()
