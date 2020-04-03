@@ -22,7 +22,6 @@ for p in ${patch_list}; do
 	git am ${patch_dir}/$p
 done
 
-exit 0
 ./configure                        \
 	--target=x86_64-linux-gnu      \
 	--host=x86_64-linux-gnu        \
