@@ -41,6 +41,7 @@ sudo cp -f -v $PWD/ubuntu/local.conf /etc/fonts/
 sudo chown -v root:root /etc/fonts/local.conf
 
 sudo mkdir -p -v /etc/apt/preferences.d
+sudo cp -f -v $PWD/ubuntu/preferences.d/llvm-10 /etc/apt/preferences.d/
 sudo cp -f -v $PWD/ubuntu/preferences.d/nodejs /etc/apt/preferences.d/
 sudo cp -f -v $PWD/ubuntu/preferences.d/runit /etc/apt/preferences.d/
 sudo cp -f -v $PWD/ubuntu/preferences.d/docker /etc/apt/preferences.d/
