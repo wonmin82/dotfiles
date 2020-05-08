@@ -1,7 +1,6 @@
 #! /usr/bin/env bash
 
-function add_include_path()
-{
+function add_include_path() {
 	include=$1
 	shift
 	search_paths=$@
@@ -10,10 +9,10 @@ function add_include_path()
 	for p in ${search_paths}; do
 		test -d ${p} || continue
 
-		path=`find "${p}" | grep "${include}$" | awk '{print length, $0;}' | sort -n | head -1 | awk '{printf("%s", $2)}'`
+		path=$(find "${p}" | grep "${include}$" | awk '{print length, $0;}' | sort -n | head -1 | awk '{printf("%s", $2)}')
 
 		if [ -n "${path}" ]; then
-			path=`echo -n ${path} | sed "s#/${include}##g"`
+			path=$(echo -n ${path} | sed "s#/${include}##g")
 			if [ -n "${new_includes}" ] && ! $(echo "${new_includes}" | tr ":" "\n" | grep -qx "${path}"); then
 				new_includes="${new_includes}:${path}"
 			else
@@ -33,8 +32,8 @@ source ./build-env.sh
 llvm_tag="llvmorg-10.0.0"
 
 triple_gcc=$(gcc -v 2>&1 | grep "^Target:" | cut -d ' ' -f 2)
-triple_make=$(make -v 2>&1 |                                            \
-	grep -E "^This program built for |^Built for " |                    \
+triple_make=$(make -v 2>&1 |
+	grep -E "^This program built for |^Built for " |
 	sed -e "s/This program built for //" -e "s/^Built for //")
 
 default_includes=$(add_include_path features.h /usr/include)
@@ -160,7 +159,7 @@ pushd ${build_dir}
 
 mkdir -p ${llvm_srcdir}
 pushd ${llvm_srcdir}
-git clone https://github.com/llvm/llvm-project.git         \
+git clone https://github.com/llvm/llvm-project.git \
 	--no-checkout --depth 1 --single-branch -b ${llvm_tag} \
 	$PWD
 git checkout refs/tags/${llvm_tag} -b build

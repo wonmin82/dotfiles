@@ -8,7 +8,7 @@ scriptpath=$(readlink -m "$(dirname "${scriptfile}")")
 export install_prefix="$HOME/.local"
 export build_dir="${scriptpath}/build"
 
-ncpus="$(getconf _NPROCESSORS_ONLN 2> /dev/null || echo 2)"
+ncpus="$(getconf _NPROCESSORS_ONLN 2>/dev/null || echo 2)"
 jobs="$((ncpus + 1))"
 export jobs
 
