@@ -560,7 +560,7 @@ post_process() {
 	sudo -u ${user_root} -H -i dbus-launch --exit-with-session gsettings set org.gnome.settings-daemon.plugins.background active true
 	sudo -u ${user_root} -H -i dbus-launch --exit-with-session gsettings reset org.gnome.desktop.background show-desktop-icons
 
-	update-alternatives --set default.plymouth /usr/share/plymouth/themes/ubuntu-logo/ubuntu-logo.plymouth
+	update-alternatives --set default.plymouth /usr/share/plymouth/themes/bgrt/bgrt.plymouth
 	update-grub2
 	update-initramfs -k all -u
 
