@@ -300,9 +300,9 @@ list_install_pkgs=(
 	# }
 	"wine-stable"
 	"apcalc"
-	# "docker-ce"
-	# "docker-ce-cli"
-	# "containerd.io"
+	"docker-ce"
+	"docker-ce-cli"
+	"containerd.io"
 	"docker-compose"
 )
 
