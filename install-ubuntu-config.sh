@@ -2,16 +2,16 @@
 
 flag_system=false
 
-while [[ $# -gt 0 ]]
-do
+while [[ $# -gt 0 ]]; do
 	case $1 in
-		-s|--system)
-			flag_system=true
-			shift
-			;;
-		*)
-			echo "Unknown option."
-			exit 1
+	-s | --system)
+		flag_system=true
+		shift
+		;;
+	*)
+		echo "Unknown option."
+		exit 1
+		;;
 	esac
 done
 
@@ -45,10 +45,10 @@ sudo cp -f -v $PWD/ubuntu/preferences.d/llvm-10 /etc/apt/preferences.d/
 sudo cp -f -v $PWD/ubuntu/preferences.d/nodejs /etc/apt/preferences.d/
 sudo cp -f -v $PWD/ubuntu/preferences.d/runit /etc/apt/preferences.d/
 sudo cp -f -v $PWD/ubuntu/preferences.d/docker /etc/apt/preferences.d/
-sudo chown -v root:root                     \
-		 /etc/apt/preferences.d/nodejs      \
-		 /etc/apt/preferences.d/runit       \
-		 /etc/apt/preferences.d/docker
+sudo chown -v root:root \
+	/etc/apt/preferences.d/nodejs \
+	/etc/apt/preferences.d/runit \
+	/etc/apt/preferences.d/docker
 
 sudo mkdir -p -v /etc/apt/apt.conf.d
 sudo cp -f -v $PWD/ubuntu/apt.conf.d/99dpkg-options /etc/apt/apt.conf.d/
