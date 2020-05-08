@@ -11,3 +11,4 @@ set -e -x
 ./install-vim.sh
 ./install-tmux.sh
 ./install-mc.sh
+./install-shfmt.sh
