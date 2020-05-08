@@ -106,6 +106,7 @@ export FPATH
 
 path=(
 "$HOME/.local/bin"
+"$HOME/.local/go/bin"
 $path
 )
 if (( $+commands[snap] )); then
