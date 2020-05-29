@@ -30,7 +30,7 @@ export LANG="en_US.UTF-8"
 export LANGUAGE="en_US.UTF-8"
 
 # PAGER, EDITOR setting
-export PAGER="less"
+(( $+commands[less] )) && export PAGER="less" || export PAGER="more"
 export EDITOR="vim"
 
 # gcc color setting
