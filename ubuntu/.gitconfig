@@ -5,6 +5,8 @@
 	helper = cache --timeout=7200
 [push]
 	default = simple
+[pull]
+	rebase = false
 [color]
 	ui = auto
 [alias]
