@@ -792,9 +792,6 @@ alias vi='vim'
 # astyle options
 alias astyle='astyle --style=break --indent=force-tab=4 --unpad-paren --pad-header --pad-oper --unpad-paren --align-pointer=name --align-reference=name'
 
-# axel options
-alias axel='axel -a'
-
 # wget options
 alias wget='wget --retry-connrefused'
 
