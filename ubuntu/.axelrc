@@ -1,0 +1,17 @@
+reconnect_delay = 10
+max_speed = 0
+num_connections = 10
+connection_timeout = 45
+http_proxy =
+no_proxy =
+strip_cgi_parameters = 1
+default_filename = default
+save_state_interval = 10
+buffer_size = 5120
+verbose = 0
+search_timeout = 10
+search_threads = 3
+search_amount = 15
+search_top = 3
+interfaces =
+alternate_output = 1

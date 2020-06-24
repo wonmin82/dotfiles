@@ -21,6 +21,7 @@ cp -f -v $PWD/ubuntu/.tmux.conf $HOME/.tmux.conf
 cp -f -v $PWD/ubuntu/.gitconfig $HOME/.gitconfig
 cp -f -v $PWD/ubuntu/.wgetrc $HOME/.wgetrc
 cp -f -v $PWD/ubuntu/.curlrc $HOME/.curlrc
+cp -f -v $PWD/ubuntu/.axelrc $HOME/.axelrc
 mkdir -p -v $HOME/.config/pip
 cp -f -v $PWD/ubuntu/pip.conf $HOME/.config/pip/
 mkdir -p -v $HOME/.config/fontconfig
