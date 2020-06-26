@@ -90,6 +90,7 @@ list_install_pkgs=(
 	"libtool"
 	"cmake"
 	"cmake-doc"
+	"ninja-build"
 	"astyle"
 	"indent"
 	"valgrind"
