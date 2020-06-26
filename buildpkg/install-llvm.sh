@@ -45,7 +45,7 @@ venv_dir="${build_dir}/.venv"
 common_cflags="-O2"
 common_cxxflags="-O2"
 common_ldflags=""
-common_cmake="-G \"Unix Makefiles\"
+common_cmake="-G \"Ninja\"
 -Wno-dev
 -DCMAKE_BUILD_TYPE=\"Release\"
 -DCMAKE_INSTALL_PREFIX=\"${install_prefix}\"
@@ -94,7 +94,7 @@ stage1_cxx="${install_prefix}/bin/clang++"
 stage1_cflags="${common_cflags}"
 stage1_cxxflags="${common_cxxflags}"
 stage1_ldflags="${common_ldflags}"
-stage1_projects="clang;libcxx;libcxxabi"
+stage1_projects="clang;libcxx;libcxxabi;lld"
 stage1_cmake="${common_cmake}
 -DCMAKE_C_COMPILER=\"${stage1_cc}\"
 -DCMAKE_CXX_COMPILER=\"${stage1_cxx}\"
@@ -114,6 +114,7 @@ stage1_cmake="${common_cmake}
 # stage 2
 stage2_cc="${install_prefix}/bin/clang"
 stage2_cxx="${install_prefix}/bin/clang++"
+stage2_ld="${install_prefix}/bin/ld.lld"
 stage2_cflags="${common_cflags}"
 stage2_cxxflags="${common_cxxflags} -stdlib=libc++"
 stage2_ldflags="${common_ldflags} -stdlib=libc++ -lc++abi"
@@ -124,8 +125,11 @@ stage2_projects="clang;clang-tools-extra;compiler-rt;debuginfo-tests;libclc;libc
 stage2_cmake="${common_cmake}
 -DCMAKE_C_COMPILER=\"${stage2_cc}\"
 -DCMAKE_CXX_COMPILER=\"${stage2_cxx}\"
+-DCMAKE_LINKER=\"${stage2_ld}\"
 -DCMAKE_C_FLAGS=\"${stage2_cflags}\"
 -DCMAKE_CXX_FLAGS=\"${stage2_cxxflags}\"
+-DCMAKE_C_LINK_FLAGS=\"-fuse-ld=lld\" \
+-DCMAKE_CXX_LINK_FLAGS=\"-fuse-ld=lld\" \
 -DCMAKE_EXE_LINKER_FLAGS=\"${stage2_ldflags}\"
 -DCMAKE_SHARED_LINKER_FLAGS=\"${stage2_ldflags}\"
 -DLLVM_TARGETS_TO_BUILD=\"all\"
