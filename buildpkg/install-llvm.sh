@@ -128,8 +128,8 @@ stage2_cmake="${common_cmake}
 -DCMAKE_LINKER=\"${stage2_ld}\"
 -DCMAKE_C_FLAGS=\"${stage2_cflags}\"
 -DCMAKE_CXX_FLAGS=\"${stage2_cxxflags}\"
--DCMAKE_C_LINK_FLAGS=\"-fuse-ld=lld\" \
--DCMAKE_CXX_LINK_FLAGS=\"-fuse-ld=lld\" \
+-DCMAKE_C_LINK_FLAGS=\"-fuse-ld=lld\"
+-DCMAKE_CXX_LINK_FLAGS=\"-fuse-ld=lld\"
 -DCMAKE_EXE_LINKER_FLAGS=\"${stage2_ldflags}\"
 -DCMAKE_SHARED_LINKER_FLAGS=\"${stage2_ldflags}\"
 -DLLVM_TARGETS_TO_BUILD=\"all\"
