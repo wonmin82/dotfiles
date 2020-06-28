@@ -255,6 +255,7 @@ list_install_pkgs=(
 	"vsftpd"
 	"lftp"
 	"filezilla"
+	"moreutils"
 	"axel"
 	"aria2"
 	"links"
