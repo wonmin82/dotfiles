@@ -29,7 +29,7 @@ set -e -x
 
 source ./build-env.sh
 
-llvm_tag="llvmorg-10.0.0"
+llvm_tag="llvmorg-10.0.1"
 
 triple_gcc=$(gcc -v 2>&1 | grep "^Target:" | cut -d ' ' -f 2)
 triple_make=$(make -v 2>&1 |
