@@ -124,7 +124,6 @@ list_install_pkgs=(
 	"clang-format"
 	"clang-tidy"
 	"clang-tools"
-	"clangd"
 	"libc++-dev"
 	"libc++1"
 	"libc++abi-dev"
