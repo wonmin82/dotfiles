@@ -1,0 +1,3 @@
+Package: clangd
+Pin: release o=Ubuntu
+Pin-Priority: -999
