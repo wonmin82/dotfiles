@@ -213,6 +213,7 @@ def FlagsForCompilationDatabase(root, filename):
 
 def Settings(filename, **kwargs):
     root = os.path.realpath(filename)
+    final_flags = None
     compilation_db_flags = FlagsForCompilationDatabase(root, filename)
     if compilation_db_flags:
         final_flags = compilation_db_flags
