@@ -357,7 +357,7 @@ install_apt_prerequisites() {
 
 add_repo() {
 	local flag_nodejs_auto_install=true
-	local flag_golang_auto_install=false
+	local flag_golang_auto_install=true
 
 	add-apt-repository --no-update multiverse
 
@@ -405,7 +405,7 @@ add_repo() {
 		add-apt-repository --no-update \
 			"deb \
 			http://ppa.launchpad.net/longsleep/golang-backports/ubuntu \
-			bionic \
+			focal \
 			main" \
 			</dev/null
 	fi
