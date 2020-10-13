@@ -119,9 +119,9 @@ stage2_cflags="${common_cflags}"
 stage2_cxxflags="${common_cxxflags} -stdlib=libc++"
 stage2_ldflags="${common_ldflags} -stdlib=libc++ -lc++abi"
 # stage2_projects="all"
-# Full list for llvm 10.0.0
+# Full list for llvm 11.0.0
 # stage2_projects="clang;clang-tools-extra;compiler-rt;debuginfo-tests;libc;libclc;libcxx;libcxxabi;libunwind;lld;lldb;llgo;mlir;openmp;parallel-libs;polly;pstl"
-stage2_projects="clang;clang-tools-extra;compiler-rt;debuginfo-tests;libclc;libcxx;libcxxabi;libunwind;lld;lldb;openmp;parallel-libs;polly;pstl"
+stage2_projects="clang;clang-tools-extra;compiler-rt;debuginfo-tests;libc;libclc;libcxx;libcxxabi;libunwind;lld;lldb;openmp;parallel-libs;polly;pstl"
 stage2_cmake="${common_cmake}
 -DCMAKE_C_COMPILER=\"${stage2_cc}\"
 -DCMAKE_CXX_COMPILER=\"${stage2_cxx}\"
