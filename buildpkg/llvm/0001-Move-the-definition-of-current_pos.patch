@@ -1,8 +1,18 @@
+From 917e1a04890f1f11edc42735b70e1f6f47b6b741 Mon Sep 17 00:00:00 2001
+From: Wonmin Jung <wonmin82@gmail.com>
+Date: Tue, 13 Oct 2020 12:30:24 +0900
+Subject: [PATCH] Move the definition of current_pos
+
+---
+ llvm/include/llvm/Support/raw_ostream.h | 4 +---
+ llvm/lib/Support/raw_ostream.cpp        | 4 ++++
+ 2 files changed, 5 insertions(+), 3 deletions(-)
+
 diff --git a/llvm/include/llvm/Support/raw_ostream.h b/llvm/include/llvm/Support/raw_ostream.h
-index c8770c33758..6b014904f14 100644
+index 8d289f7c7..9611568af 100644
 --- a/llvm/include/llvm/Support/raw_ostream.h
 +++ b/llvm/include/llvm/Support/raw_ostream.h
-@@ -519,9 +519,7 @@ class raw_string_ostream : public raw_ostream {
+@@ -524,9 +524,7 @@ class raw_string_ostream : public raw_ostream {
    /// See raw_ostream::write_impl.
    void write_impl(const char *Ptr, size_t Size) override;
  
@@ -12,12 +22,12 @@ index c8770c33758..6b014904f14 100644
 +  uint64_t current_pos() const override;
  
  public:
-   explicit raw_string_ostream(std::string &O) : OS(O) {}
+   explicit raw_string_ostream(std::string &O) : OS(O) {
 diff --git a/llvm/lib/Support/raw_ostream.cpp b/llvm/lib/Support/raw_ostream.cpp
-index 13b0203ac95..b369479c8da 100644
+index f2d78d773..79ad9dca7 100644
 --- a/llvm/lib/Support/raw_ostream.cpp
 +++ b/llvm/lib/Support/raw_ostream.cpp
-@@ -895,6 +895,10 @@ raw_ostream &llvm::nulls() {
+@@ -891,6 +891,10 @@ raw_ostream &llvm::nulls() {
  //  raw_string_ostream
  //===----------------------------------------------------------------------===//
  
@@ -28,3 +38,6 @@ index 13b0203ac95..b369479c8da 100644
  raw_string_ostream::~raw_string_ostream() {
    flush();
  }
+-- 
+2.28.0
+
