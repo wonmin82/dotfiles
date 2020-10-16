@@ -318,6 +318,10 @@ list_install_snap_pkgs=(
 	"shfmt"
 )
 
+list_install_snap_classic_pkgs=(
+	"code"
+)
+
 apt_update="retry aptitude update"
 apt_fetch="retry aptitude -y --with-recommends --download-only install"
 apt_install="aptitude -y --with-recommends install"
@@ -325,6 +329,7 @@ apt_remove="aptitude -y purge"
 
 snap_refresh="snap refresh"
 snap_install="snap install"
+snap_install_classic="snap install --classic"
 
 retry() {
 	local nTrys=0
@@ -536,6 +541,7 @@ install_recommended() {
 install_snap_pkgs() {
 	eval ${snap_refresh}
 	eval ${snap_install} ${list_install_snap_pkgs[@]}
+	eval ${snap_install_classic} ${list_install_snap_classic_pkgs[@]}
 }
 
 post_process() {
