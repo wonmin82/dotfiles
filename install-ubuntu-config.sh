@@ -19,6 +19,7 @@ cp -f -v $PWD/ubuntu/.bash_aliases $HOME/.bash_aliases
 cp -f -v $PWD/ubuntu/.inputrc $HOME/.inputrc
 cp -f -v $PWD/ubuntu/.tmux.conf $HOME/.tmux.conf
 cp -f -v $PWD/ubuntu/.gitconfig $HOME/.gitconfig
+cp -f -v $PWD/ubuntu/.clang-format $HOME/.clang-format
 cp -f -v $PWD/ubuntu/.wgetrc $HOME/.wgetrc
 cp -f -v $PWD/ubuntu/.curlrc $HOME/.curlrc
 cp -f -v $PWD/ubuntu/.axelrc $HOME/.axelrc
