@@ -183,6 +183,7 @@ list_install_pkgs=(
 	"python3-flake8"
 	"python3-doc"
 	"flake8"
+	"black"
 	"virtualenv"
 	"virtualenvwrapper"
 	# need to be checked for existence when ubuntu is upgraded {
