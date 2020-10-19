@@ -303,7 +303,7 @@ NeoBundle 'rhysd/vim-clang-format', {
 			\   'depends': 'kana/vim-operator-user'
 			\}
 NeoBundle 'vivien/vim-linux-coding-style'
-NeoBundle 'tell-k/vim-autopep8'
+NeoBundle 'dimbleby/black.vim'
 NeoBundle 'maksimr/vim-jsbeautify'
 NeoBundle 'z0mbix/vim-shfmt'
 if v:version >= 704 && !s:is_raspbian && !s:is_synology
@@ -3882,18 +3882,16 @@ function s:NormalFormatting()
 endfunction
 "}}}
 
-" Plugin: vim-autopep8 {{{
+" Plugin: black {{{
 autocmd FileType python
-			\   nnoremap <buffer> <leader>cf :<c-u>Autopep8<cr>
+			\   nnoremap <buffer> <leader>cf :<c-u>Black<cr>
 autocmd FileType python
-			\   vnoremap <buffer> <leader>cf :Autopep8<cr>
+			\   vnoremap <buffer> <leader>cf :Black<cr>
 
-" let g:autopep8_ignore = "E501,W293"
-" let g:autopep8_pep8_passes = 100
-let g:autopep8_max_line_length = 79
-let g:autopep8_indent_size = 4
-let g:autopep8_disable_show_diff = 1
-let g:autopep8_on_save = 0
+let g:black_fast = 0
+let g:black_linelength = 79
+let g:black_skip_string_normalization = 0
+let g:black_virtualenv = $DOTVIMDATAPATH . '/black'
 "}}}
 
 " Plugin: vim-jsbeautify {{{
