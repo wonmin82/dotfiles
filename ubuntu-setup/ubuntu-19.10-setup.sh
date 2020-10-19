@@ -180,6 +180,7 @@ list_install_pkgs=(
 	"python3-all"
 	"python3-dev"
 	"python3-all-dev"
+	"python3-venv"
 	"python3-virtualenv"
 	"python3-pip"
 	"python3-sphinx"
