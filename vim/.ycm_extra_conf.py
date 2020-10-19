@@ -6,77 +6,57 @@ import ycm_core
 import re
 
 C_BASE_FLAGS = [
-    '-Wall',
-    '-Wextra',
-    '-Wno-long-long',
-    '-Wno-variadic-macros',
-    '-fexceptions',
-    '-ferror-limit=10000',
-    '-DNDEBUG',
-    '-std=c11',
-    '-x',
-    'c',
-    '-I/usr/lib/',
-    '-I/usr/include/'
+    "-Wall",
+    "-Wextra",
+    "-Wno-long-long",
+    "-Wno-variadic-macros",
+    "-fexceptions",
+    "-ferror-limit=10000",
+    "-DNDEBUG",
+    "-std=c11",
+    "-x c",
+    "-I/usr/lib/",
+    "-I/usr/include/",
 ]
 
 CPP_BASE_FLAGS = [
-    '-Wall',
-    '-Wextra',
-    '-Wno-long-long',
-    '-Wno-variadic-macros',
-    '-fexceptions',
-    '-ferror-limit=10000',
-    '-DNDEBUG',
-    '-std=c++1z',
-    '-x'
-    'c++',
-    '-I/usr/lib/',
-    '-I/usr/include/'
+    "-Wall",
+    "-Wextra",
+    "-Wno-long-long",
+    "-Wno-variadic-macros",
+    "-fexceptions",
+    "-ferror-limit=10000",
+    "-DNDEBUG",
+    "-std=c++1z",
+    "-x c++",
+    "-I/usr/lib/",
+    "-I/usr/include/",
 ]
 
 HEADER_BASE_FLAGS = [
-    '-Wall',
-    '-Wextra',
-    '-Wno-long-long',
-    '-Wno-variadic-macros',
-    '-fexceptions',
-    '-ferror-limit=10000',
-    '-DNDEBUG',
-    '-std=c11',
-    '-I/usr/lib/',
-    '-I/usr/include/'
+    "-Wall",
+    "-Wextra",
+    "-Wno-long-long",
+    "-Wno-variadic-macros",
+    "-fexceptions",
+    "-ferror-limit=10000",
+    "-DNDEBUG",
+    "-std=c11",
+    "-I/usr/lib/",
+    "-I/usr/include/",
 ]
 
-C_SOURCE_EXTENSIONS = [
-    '.c'
-]
+C_SOURCE_EXTENSIONS = [".c"]
 
-CPP_SOURCE_EXTENSIONS = [
-    '.cpp',
-    '.cxx',
-    '.cc',
-    '.m',
-    '.mm'
-]
+CPP_SOURCE_EXTENSIONS = [".cpp", ".cxx", ".cc", ".m", ".mm"]
 
-SOURCE_DIRECTORIES = [
-    'src',
-    'lib'
-]
+SOURCE_DIRECTORIES = ["src", "lib"]
 
-HEADER_EXTENSIONS = [
-    '.h',
-    '.hxx',
-    '.hpp',
-    '.hh'
-]
+HEADER_EXTENSIONS = [".h", ".hxx", ".hpp", ".hh"]
 
-HEADER_DIRECTORIES = [
-    'include'
-]
+HEADER_DIRECTORIES = ["include"]
 
-BUILD_DIRECTORY = 'build'
+BUILD_DIRECTORY = "build"
 
 
 def IsSourceFile(filename):
@@ -97,7 +77,8 @@ def GetCompilationInfoForFile(database, filename):
             replacement_file = basename + extension
             if os.path.exists(replacement_file):
                 compilation_info = database.GetCompilationInfoForFile(
-                    replacement_file)
+                    replacement_file
+                )
                 if compilation_info.compiler_flags_:
                     return compilation_info
             # If that wasn't successful, try replacing possible header
@@ -107,7 +88,8 @@ def GetCompilationInfoForFile(database, filename):
                     src_file = replacement_file.replace(header_dir, source_dir)
                     if os.path.exists(src_file):
                         compilation_info = database.GetCompilationInfoForFile(
-                            src_file)
+                            src_file
+                        )
                         if compilation_info.compiler_flags_:
                             return compilation_info
         return None
@@ -116,19 +98,20 @@ def GetCompilationInfoForFile(database, filename):
 
 def FindNearest(path, target, build_folder=None):
     candidate = os.path.join(path, target)
-    if(os.path.isfile(candidate) or os.path.isdir(candidate)):
+    if os.path.isfile(candidate) or os.path.isdir(candidate):
         logging.info("Found nearest " + target + " at " + candidate)
         return candidate
 
     parent = os.path.dirname(os.path.abspath(path))
-    if(parent == path):
+    if parent == path:
         raise RuntimeError("Could not find " + target)
 
-    if(build_folder):
+    if build_folder:
         candidate = os.path.join(parent, build_folder, target)
-        if(os.path.isfile(candidate) or os.path.isdir(candidate)):
-            logging.info("Found nearest " + target +
-                         " in build folder at " + candidate)
+        if os.path.isfile(candidate) or os.path.isdir(candidate):
+            logging.info(
+                "Found nearest " + target + " in build folder at " + candidate
+            )
             return candidate
 
     return FindNearest(parent, target, build_folder)
@@ -139,13 +122,13 @@ def MakeRelativePathsInFlagsAbsolute(flags, working_directory):
         return list(flags)
     new_flags = []
     make_next_absolute = False
-    path_flags = ['-isystem', '-I', '-iquote', '--sysroot=']
+    path_flags = ["-isystem", "-I", "-iquote", "--sysroot="]
     for flag in flags:
         new_flag = flag
 
         if make_next_absolute:
             make_next_absolute = False
-            if not flag.startswith('/'):
+            if not flag.startswith("/"):
                 new_flag = os.path.join(working_directory, flag)
 
         for path_flag in path_flags:
@@ -154,7 +137,7 @@ def MakeRelativePathsInFlagsAbsolute(flags, working_directory):
                 break
 
             if flag.startswith(path_flag):
-                path = flag[len(path_flag):]
+                path = flag[len(path_flag) :]
                 new_flag = path_flag + os.path.join(working_directory, path)
                 break
 
@@ -165,9 +148,10 @@ def MakeRelativePathsInFlagsAbsolute(flags, working_directory):
 
 def FlagsForClangComplete(root):
     try:
-        clang_complete_path = FindNearest(root, '.clang_complete')
-        clang_complete_flags = open(
-            clang_complete_path, 'r').read().splitlines()
+        clang_complete_path = FindNearest(root, ".clang_complete")
+        clang_complete_flags = (
+            open(clang_complete_path, "r").read().splitlines()
+        )
         return clang_complete_flags
     except BaseException:
         return None
@@ -175,7 +159,7 @@ def FlagsForClangComplete(root):
 
 def FlagsForInclude(root):
     try:
-        include_path = FindNearest(root, 'include')
+        include_path = FindNearest(root, "include")
         flags = []
         for dirroot, dirnames, filenames in os.walk(include_path):
             for dir_path in dirnames:
@@ -191,22 +175,28 @@ def FlagsForCompilationDatabase(root, filename):
         # Last argument of next function is the name of the build folder for
         # out of source projects
         compilation_db_path = FindNearest(
-            root, 'compile_commands.json', BUILD_DIRECTORY)
+            root, "compile_commands.json", BUILD_DIRECTORY
+        )
         compilation_db_dir = os.path.dirname(compilation_db_path)
-        logging.info("Set compilation database directory to " +
-                     compilation_db_dir)
+        logging.info(
+            "Set compilation database directory to " + compilation_db_dir
+        )
         compilation_db = ycm_core.CompilationDatabase(compilation_db_dir)
         if not compilation_db:
             logging.info("Compilation database file found but unable to load")
             return None
         compilation_info = GetCompilationInfoForFile(compilation_db, filename)
         if not compilation_info:
-            logging.info("No compilation info for " +
-                         filename + " in compilation database")
+            logging.info(
+                "No compilation info for "
+                + filename
+                + " in compilation database"
+            )
             return None
         return MakeRelativePathsInFlagsAbsolute(
             compilation_info.compiler_flags_,
-            compilation_info.compiler_working_dir_)
+            compilation_info.compiler_working_dir_,
+        )
     except BaseException:
         return None
 
@@ -233,7 +223,4 @@ def Settings(filename, **kwargs):
         include_flags = FlagsForInclude(root)
         if include_flags:
             final_flags = final_flags + include_flags
-    return {
-        'flags': final_flags,
-        'do_cache': True
-    }
+    return {"flags": final_flags, "do_cache": True}
