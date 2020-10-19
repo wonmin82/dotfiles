@@ -322,6 +322,12 @@ list_install_snap_classic_pkgs=(
 	"code"
 )
 
+list_install_python_pkgs=(
+	"virtualenv"
+	"virtualenvwrapper"
+	"black"
+)
+
 apt_update="retry aptitude update"
 apt_fetch="retry aptitude -y --with-recommends --download-only install"
 apt_install="aptitude -y --with-recommends install"
@@ -544,6 +550,11 @@ install_snap_pkgs() {
 	eval ${snap_install_classic} ${list_install_snap_classic_pkgs[@]}
 }
 
+install_python_pkgs() {
+	PIP_REQUIRE_VIRTUALENV="false" pip3 install --system \
+		${list_install_python_pkgs[@]}
+}
+
 post_process() {
 	user="$(id -un 1000)"
 	user_root="$(id -un 0)"
@@ -555,11 +566,6 @@ post_process() {
 
 	# java
 	update-java-alternatives --auto
-
-	# virtualenvwrapper for python3
-	PIP_REQUIRE_VIRTUALENV="false" pip3 install --system \
-		virtualenv \
-		virtualenvwrapper
 
 	sudo -u ${user_root} -H -i dbus-launch --exit-with-session gsettings set org.gnome.settings-daemon.plugins.background active true
 	sudo -u ${user_root} -H -i dbus-launch --exit-with-session gsettings reset org.gnome.desktop.background show-desktop-icons
@@ -630,6 +636,7 @@ main() {
 	# install_recommended
 	cleanup_packages
 	install_snap_pkgs
+	install_python_pkgs
 	post_process
 }
 

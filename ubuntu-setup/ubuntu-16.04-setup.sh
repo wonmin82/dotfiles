@@ -327,6 +327,12 @@ list_vm_pkgs=(
 	"open-vm-tools-desktop"
 )
 
+list_install_python_pkgs=(
+	"virtualenv"
+	"virtualenvwrapper"
+	"black"
+)
+
 apt_update="retry aptitude update"
 apt_fetch="retry aptitude -y --with-recommends --download-only install"
 apt_install="aptitude -y --with-recommends install"
@@ -497,6 +503,11 @@ install_recommended() {
 	eval ${apt_install} '~RBrecommends:~i'
 }
 
+install_python_pkgs() {
+	PIP_REQUIRE_VIRTUALENV="false" pip3 install --system \
+		${list_install_python_pkgs[@]}
+}
+
 post_process() {
 	user="$(id -un 1000)"
 	home="$(getent passwd 1000 | cut -d: -f6)"
@@ -504,11 +515,6 @@ post_process() {
 
 	# docker
 	usermod -aG docker ${user}
-
-	# virtualenvwrapper for python3
-	PIP_REQUIRE_VIRTUALENV="false" pip3 install --system \
-		virtualenv \
-		virtualenvwrapper
 
 	dbus-launch --exit-with-session gsettings set org.gnome.settings-daemon.plugins.background active true
 	dbus-launch --exit-with-session gsettings reset org.gnome.desktop.background show-desktop-icons
@@ -575,6 +581,7 @@ main() {
 	install_vm_tools
 	# install_recommended
 	cleanup_packages
+	install_python_pkgs
 	post_process
 }
 
