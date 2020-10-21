@@ -23,6 +23,8 @@ cp -f -v $PWD/ubuntu/.clang-format $HOME/.clang-format
 cp -f -v $PWD/ubuntu/.wgetrc $HOME/.wgetrc
 cp -f -v $PWD/ubuntu/.curlrc $HOME/.curlrc
 cp -f -v $PWD/ubuntu/.axelrc $HOME/.axelrc
+mkdir -p -v $HOME/.config
+cp -f -v $PWD/ubuntu/flake8 $HOME/.config/flake8
 mkdir -p -v $HOME/.config/pip
 cp -f -v $PWD/ubuntu/pip.conf $HOME/.config/pip/
 mkdir -p -v $HOME/.config/fontconfig
