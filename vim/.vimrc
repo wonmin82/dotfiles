@@ -303,7 +303,9 @@ NeoBundle 'rhysd/vim-clang-format', {
 			\   'depends': 'kana/vim-operator-user'
 			\}
 NeoBundle 'vivien/vim-linux-coding-style'
-NeoBundle 'dimbleby/black.vim'
+if v:version >= 700 && !s:is_raspbian && !s:is_synology
+	NeoBundle 'dimbleby/black.vim'
+endif
 NeoBundle 'maksimr/vim-jsbeautify'
 NeoBundle 'z0mbix/vim-shfmt'
 if v:version >= 704 && !s:is_raspbian && !s:is_synology
