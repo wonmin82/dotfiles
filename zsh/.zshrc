@@ -582,10 +582,10 @@ if [[ ${_SYSENV_DIST} == "ubuntu" ]]; then
 	function python-package-refresh()
 	{
 		PIP_REQUIRE_VIRTUALENV="false" \
-			pip3 list --user --outdated --format=freeze | \
+			python3 -m pip list --user --outdated --format=freeze | \
 			grep -v '^\-e' | \
 			cut -d = -f 1 | \
-			xargs -rn1 pip3 install -U --use-feature=2020-resolver
+			xargs -rn1 python3 -m pip install -U --use-feature=2020-resolver
 	}
 
 	function system-clean()

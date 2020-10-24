@@ -15,5 +15,5 @@ list_install_python_pkgs=(
 )
 
 export PIP_REQUIRE_VIRTUALENV="false"
-pip3 install --user --upgrade pip
-pip3 install --user --upgrade ${list_install_python_pkgs[@]}
+python3 -m pip install --user --upgrade pip
+python3 -m pip install --user --upgrade ${list_install_python_pkgs[@]}
