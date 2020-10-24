@@ -606,6 +606,16 @@ if [[ ${_SYSENV_DIST} == "ubuntu" ]]; then
 		[[ -d $HOME/.vim_data/bundle ]] && vim +NeoBundleUpdate +quit!
 		system-clean
 	}
+
+	function local-refresh()
+	{
+		python-package-refresh
+		retry antigen selfupdate
+		retry antigen update
+		[[ -v LS_COLORS_DIR ]] && lscolors-refresh
+		[[ -d $HOME/.vim_data/bundle ]] && vim +NeoBundleUpdate +quit!
+		system-clean
+	}
 fi
 
 if [[ ${_SYSENV_DIST} == "raspbian" ]]; then
