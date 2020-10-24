@@ -12,3 +12,4 @@ set -e -x
 ./install-tmux.sh
 ./install-mc.sh
 ./install-shfmt.sh
+./install-pythonpkgs.sh

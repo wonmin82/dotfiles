@@ -535,7 +535,9 @@ export PIP_CONFIG_FILE="$HOME/.config/pip/pip.conf"
 export VIRTUALENV_PYTHON="$(command which python3)"
 export VIRTUALENVWRAPPER_PYTHON="$(command which python3)"
 export WORKON_HOME="$HOME/.virtualenvs"
-if [[ -s /usr/share/virtualenvwrapper/virtualenvwrapper.sh ]]; then
+if [[ -s $HOME/.local/bin/virtualenvwrapper.sh ]]; then
+	source $HOME/.local/bin/virtualenvwrapper.sh
+elif [[ -s /usr/share/virtualenvwrapper/virtualenvwrapper.sh ]]; then
 	source /usr/share/virtualenvwrapper/virtualenvwrapper.sh
 fi
 #}}}
@@ -577,6 +579,15 @@ if [[ ${_SYSENV_DIST} == "ubuntu" ]]; then
 		(( $+commands[snap] )) && sudo snap refresh
 	}
 
+	function python-package-refresh()
+	{
+		PIP_REQUIRE_VIRTUALENV="false" \
+			pip3 list --user --outdated --format=freeze | \
+			grep -v '^\-e' | \
+			cut -d = -f 1 | \
+			xargs -rn1 pip3 install -U --use-feature=2020-resolver
+	}
+
 	function system-clean()
 	{
 		# local files=($HOME/.cache/pip/{*,.*}(N)); (($#files)) &&    \
@@ -588,6 +599,7 @@ if [[ ${_SYSENV_DIST} == "ubuntu" ]]; then
 	function system-refresh()
 	{
 		package-refresh
+		python-package-refresh
 		retry antigen selfupdate
 		retry antigen update
 		[[ -v LS_COLORS_DIR ]] && lscolors-refresh

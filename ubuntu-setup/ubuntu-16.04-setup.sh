@@ -176,9 +176,6 @@ list_install_pkgs=(
 	"python-virtualenv"
 	"python-pip"
 	"python-sphinx"
-	"python-pep8"
-	"python-autopep8"
-	"python-flake8"
 	"python-doc"
 	"python3-all"
 	"python3-dev"
@@ -187,8 +184,6 @@ list_install_pkgs=(
 	"python3-virtualenv"
 	"python3-pip"
 	"python3-sphinx"
-	"python3-pep8"
-	"python3-flake8"
 	"python3-doc"
 	"flake8"
 	"virtualenv"
@@ -326,12 +321,6 @@ list_install_pkgs=(
 list_vm_pkgs=(
 	"open-vm-tools"
 	"open-vm-tools-desktop"
-)
-
-list_install_python_pkgs=(
-	"virtualenv"
-	"virtualenvwrapper"
-	"black"
 )
 
 apt_update="retry aptitude update"
@@ -504,11 +493,6 @@ install_recommended() {
 	eval ${apt_install} '~RBrecommends:~i'
 }
 
-install_python_pkgs() {
-	PIP_REQUIRE_VIRTUALENV="false" pip3 install --system \
-		${list_install_python_pkgs[@]}
-}
-
 post_process() {
 	user="$(id -un 1000)"
 	home="$(getent passwd 1000 | cut -d: -f6)"
@@ -582,7 +566,6 @@ main() {
 	install_vm_tools
 	# install_recommended
 	cleanup_packages
-	install_python_pkgs
 	post_process
 }
 

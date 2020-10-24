@@ -178,12 +178,7 @@ list_install_pkgs=(
 	"python3-virtualenv"
 	"python3-pip"
 	"python3-sphinx"
-	"python3-pep8"
-	"python3-autopep8"
-	"python3-flake8"
 	"python3-doc"
-	"flake8"
-	"black"
 	"virtualenv"
 	"virtualenvwrapper"
 	# need to be checked for existence when ubuntu is upgraded {
@@ -319,11 +314,6 @@ list_install_snap_pkgs=(
 
 list_install_snap_classic_pkgs=(
 	"code"
-)
-
-list_install_python_pkgs=(
-	"virtualenv"
-	"virtualenvwrapper"
 )
 
 apt_update="retry aptitude update"
@@ -553,11 +543,6 @@ install_snap_pkgs() {
 	eval ${snap_install_classic} ${list_install_snap_classic_pkgs[@]}
 }
 
-install_python_pkgs() {
-	PIP_REQUIRE_VIRTUALENV="false" pip3 install --system \
-		${list_install_python_pkgs[@]}
-}
-
 post_process() {
 	user="$(id -un 1000)"
 	user_root="$(id -un 0)"
@@ -639,7 +624,6 @@ main() {
 	# install_recommended
 	cleanup_packages
 	install_snap_pkgs
-	install_python_pkgs
 	post_process
 }
 
