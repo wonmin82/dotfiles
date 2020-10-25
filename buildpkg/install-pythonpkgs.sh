@@ -12,8 +12,9 @@ list_install_python_pkgs=(
 	"pep8"
 	"autopep8"
 	"glances[all]"
+	"testresources"
 )
 
 export PIP_REQUIRE_VIRTUALENV="false"
-python3 -m pip install --user --upgrade pip
-python3 -m pip install --user --upgrade ${list_install_python_pkgs[@]}
+python3 -m pip install --user --upgrade --force-reinstall pip
+python3 -m pip install --user --upgrade --force-reinstall --use-feature=2020-resolver ${list_install_python_pkgs[@]}
