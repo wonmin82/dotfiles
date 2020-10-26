@@ -691,7 +691,7 @@ function! PydocShow(word)
 		return 0
 	endif
 	silent execute ":!clear"
-	execute ":!pydoc " . a:word
+	silent execute ":!pydoc3 " . a:word
 	redraw!
 endfunction
 
@@ -1981,7 +1981,12 @@ let g:indentconsistencycop_CheckAfterWriteMaxLinesForImmediateCheck = 1000
 " Plugin: vim-better-whitespace {{{
 nmap <leader>mb :ToggleWhitespace<cr>
 highlight link ExtraWhitespace SpellBad
-let g:better_whitespace_filetypes_blacklist = ['vimshell', 'unite', 'help']
+let g:better_whitespace_filetypes_blacklist = [
+			\	'vimshell',
+			\	'unite',
+			\	'help',
+			\	'man'
+			\]
 "}}}
 
 " Plugin: SrcExplorer {{{
