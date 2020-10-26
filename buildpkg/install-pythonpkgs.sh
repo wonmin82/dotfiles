@@ -5,8 +5,6 @@ set -e -x
 source ./build-env.sh
 
 list_install_python_pkgs=(
-	"virtualenv"
-	"virtualenvwrapper"
 	"black"
 	"flake8"
 	"pep8"
