@@ -4,7 +4,7 @@ set -e -x
 
 source ./build-env.sh
 
-tag="3.1b"
+tag="3.1c"
 
 mkdir -p ${build_dir}
 pushd ${build_dir}
