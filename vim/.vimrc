@@ -1144,6 +1144,13 @@ nmap <leader>mw :set wrap!<cr>
 nmap <leader>mn :set number!<cr>
 " <leader>o: only
 nnoremap <leader>o :only<cr>
+" toggle syntax highlight
+nnoremap <silent> <leader>h
+			\ :if exists("syntax_on")<BAR>
+			\    syntax off<BAR>
+			\ else<BAR>
+			\    syntax enable<BAR>
+			\ endif<CR>
 
 " Function: toggle vim's mouse control {{{
 function! ToggleMouse()
