@@ -27,6 +27,8 @@ mkdir -p -v $HOME/.config
 cp -f -v $PWD/ubuntu/flake8 $HOME/.config/flake8
 mkdir -p -v $HOME/.config/pip
 cp -f -v $PWD/ubuntu/pip.conf $HOME/.config/pip/
+mkdir -p -v $HOME/.config/python_keyring
+cp -f -v $PWD/ubuntu/keyringrc.cfg $HOME/.config/python_keyring/
 mkdir -p -v $HOME/.config/fontconfig
 cp -f -v $PWD/ubuntu/fonts.conf $HOME/.config/fontconfig/
 
