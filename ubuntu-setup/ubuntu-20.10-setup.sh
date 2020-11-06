@@ -256,7 +256,6 @@ list_install_pkgs=(
 	"derby-doc"
 	"libderby-java"
 	"libderbyclient-java"
-	"flashplugin-installer"
 	"gparted"
 	"partitionmanager"
 	"arj"
