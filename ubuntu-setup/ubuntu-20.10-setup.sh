@@ -246,6 +246,7 @@ list_install_pkgs=(
 	"lftp"
 	"filezilla"
 	"moreutils"
+	"parallel"
 	"axel"
 	"aria2"
 	"links"
