@@ -28,6 +28,7 @@ list_prohibit_pkgs=(
 )
 
 list_install_pkgs=(
+	"sudo"
 	"synaptic"
 	"mariadb-server"
 	"mariadb-client"
@@ -230,6 +231,7 @@ list_install_pkgs=(
 	"subversion"
 	"subversion-tools"
 	"libapache2-mod-svn"
+	"curl"
 	"git-all"
 	"git-core"
 	"git-cvs"
@@ -267,7 +269,6 @@ list_install_pkgs=(
 	"unace-nonfree"
 	"unrar"
 	"unalz"
-	"curl"
 	"unixodbc"
 	"gperf"
 	# need to be checked for existence when ubuntu is upgraded {

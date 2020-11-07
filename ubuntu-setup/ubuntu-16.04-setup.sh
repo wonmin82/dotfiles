@@ -37,6 +37,7 @@ list_prohibit_pkgs=(
 )
 
 list_install_pkgs=(
+	"sudo"
 	"synaptic"
 	"v86d"
 	"x11vnc"
@@ -234,6 +235,7 @@ list_install_pkgs=(
 	"subversion"
 	"subversion-tools"
 	"libapache2-svn"
+	"curl"
 	"git-all"
 	"git-arch"
 	"git-core"
@@ -280,7 +282,6 @@ list_install_pkgs=(
 	"unrar"
 	"unalz"
 	"xserver-xorg-input-vmmouse"
-	"curl"
 	"unixodbc"
 	"gperf"
 	# need to be checked for existence when ubuntu is upgraded {
