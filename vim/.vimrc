@@ -322,7 +322,7 @@ if s:is_ycm_enabled && (v:version > 703 || v:version == 703 && has('patch584'))
 				\       'windows' : './install.py --clang-completer --system-libclang',
 				\       'cygwin' : './install.py --clang-completer --system-libclang',
 				\       'mac' : './install.py --all --system-libclang',
-				\       'unix' : './install.py --all --system-libclang',
+				\       'unix' : 'env CC=clang CXX=clang++ ./install.py --all --system-libclang',
 				\   }
 				\}
 endif
