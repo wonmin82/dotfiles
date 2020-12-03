@@ -11,5 +11,7 @@
 	ui = auto
 [alias]
 	tags = !"git tag | xargs -I@ git log --format=format:\"%ai @%n\" -1 @ | sort"
-[url "https://github.com/"]
+[url "ssh://git@github.com/"]
 	insteadOf = git://github.com/
+	insteadOf = http://github.com/
+	insteadOf = https://github.com/
