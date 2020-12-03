@@ -587,7 +587,7 @@ if [[ ${_SYSENV_DIST} == "ubuntu" ]]; then
 				grep -v '^\-e' | \
 				cut -d = -f 1 | \
 				xargs -rn1 \
-				python3 -m pip install --user -U --use-feature=2020-resolver
+				python3 -m pip install --user -U
 		)
 	}
 
