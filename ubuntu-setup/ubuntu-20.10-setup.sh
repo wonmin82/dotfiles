@@ -118,7 +118,7 @@ list_install_pkgs=(
 	"gdb"
 	"gdb-doc"
 	# llvm package list taken from following URL
-	# https://packages.ubuntu.com/source/focal/llvm-defaults
+	# https://packages.ubuntu.com/source/groovy/llvm-defaults
 	# {
 	"clang"
 	"clang-format"
