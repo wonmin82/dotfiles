@@ -431,13 +431,8 @@ add_repo() {
 		apt-key add -
 	add-apt-repository --yes --no-update \
 		"deb [arch=amd64] https://download.docker.com/linux/ubuntu \
-		focal \
+		$(lsb_release -cs) \
 		stable"
-	# TODO: After ubuntu 20.10 release, use below repository source.
-	# add-apt-repository --yes --no-update \
-	#     "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
-	#     $(lsb_release -cs) \
-	#     stable"
 
 	eval ${apt_update}
 }
