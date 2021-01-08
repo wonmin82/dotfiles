@@ -304,7 +304,7 @@ NeoBundle 'rhysd/vim-clang-format', {
 			\}
 NeoBundle 'vivien/vim-linux-coding-style'
 if v:version >= 700 && !s:is_raspbian && !s:is_synology
-	NeoBundle 'wonmin82/black.vim'
+	NeoBundle 'psf/black'
 endif
 NeoBundle 'maksimr/vim-jsbeautify'
 NeoBundle 'z0mbix/vim-shfmt'
