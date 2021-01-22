@@ -1,4 +1,4 @@
-From 51314b38b8cdc2881b2e593769811baf4f065e89 Mon Sep 17 00:00:00 2001
+From c802ba94b51d5515049172921c0fa956074cc253 Mon Sep 17 00:00:00 2001
 From: Wonmin Jung <wonmin82@gmail.com>
 Date: Mon, 18 Mar 2019 17:40:25 +0900
 Subject: [PATCH] Temporary fix for man.vim
@@ -21,5 +21,5 @@ index e62637a..26d767c 100644
  
    if unsetwidth
 -- 
-2.29.2
+2.30.0
 
