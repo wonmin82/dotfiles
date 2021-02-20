@@ -29,7 +29,7 @@ set -e -x
 
 source ./build-env.sh
 
-llvm_tag="llvmorg-11.0.1"
+llvm_tag="llvmorg-11.1.0"
 
 triple_gcc=$(gcc -v 2>&1 | grep "^Target:" | cut -d ' ' -f 2)
 triple_make=$(make -v 2>&1 |
@@ -171,7 +171,7 @@ popd
 
 pushd ${llvm_srcdir}
 # Workaround for llvm 10~11 build problem
-git am ${scriptpath}/llvm/0001-Move-the-definition-of-current_pos.patch
+git am ${scriptpath}/patches/llvm/0001-Move-the-definition-of-current_pos.patch
 popd
 
 virtualenv -p ${python_command} ${venv_dir}

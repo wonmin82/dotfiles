@@ -4,8 +4,8 @@ set -e -x
 
 source ./build-env.sh
 
-tag="v8.2.2389"
-patch_dir="$PWD/vim"
+tag="v8.2.2532"
+patch_dir="$PWD/patches/vim"
 patch_list=(
 	"0001-Temporary-fix-for-man.vim.patch"
 )
