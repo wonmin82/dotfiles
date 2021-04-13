@@ -315,6 +315,7 @@ list_vm_pkgs=(
 )
 
 list_install_snap_pkgs=(
+	"notepad-plus-plus"
 	"shfmt"
 )
 
