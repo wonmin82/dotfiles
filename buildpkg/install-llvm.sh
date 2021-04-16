@@ -29,7 +29,7 @@ set -e -x
 
 source ./build-env.sh
 
-llvm_tag="llvmorg-11.1.0"
+llvm_tag="llvmorg-12.0.0"
 
 triple_gcc=$(gcc -v 2>&1 | grep "^Target:" | cut -d ' ' -f 2)
 triple_make=$(make -v 2>&1 |
@@ -176,7 +176,7 @@ popd
 
 virtualenv -p ${python_command} ${venv_dir}
 source ${venv_dir}/bin/activate
-pip install --upgrade sphinx recommonmark pygments pyyaml z3-solver
+pip install --upgrade sphinx sphinx-automodapi recommonmark pygments pyyaml z3-solver
 
 # stage 0
 mkdir -p ${build_dir}/stage0
