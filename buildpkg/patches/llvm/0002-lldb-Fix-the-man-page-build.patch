@@ -1,0 +1,104 @@
+From 75f97cdafe52cbfd4ba39c3b8c334ab0ca0106a2 Mon Sep 17 00:00:00 2001
+From: Raphael Isemann <teemperor@gmail.com>
+Date: Thu, 11 Mar 2021 19:51:22 +0100
+Subject: [PATCH] [lldb] Fix the man page build
+
+In D94489 we changed the way we build the docs and now have some additional
+dependencies to generate the Python API docs. As the same sphinx project is
+generating the man pages for LLDB it should have in theory the same setup code
+that sets up the mocked LLDB module.
+
+However, as we don't have that setup code the man page generation just fails as
+there is no mocked LLDB module and the Python API generation errors out.
+
+The man page anyway doesn't cover the Python API so I don't think there is any
+point of going through the whole process (and requiring the sphinx plugins) just
+to generate the (eventually unused) Python docs.
+
+This patch just skips the relevant Python API generation when we are building
+the man page.
+
+Reviewed By: JDevlieghere
+
+Differential Revision: https://reviews.llvm.org/D98441
+---
+ lldb/docs/conf.py | 42 ++++++++++++++++++++++++++++--------------
+ 1 file changed, 28 insertions(+), 14 deletions(-)
+
+diff --git a/lldb/docs/conf.py b/lldb/docs/conf.py
+index d55aad2bcff7..b614f43f55c0 100644
+--- a/lldb/docs/conf.py
++++ b/lldb/docs/conf.py
+@@ -15,16 +15,21 @@ from __future__ import print_function
+ import sys, os, re
+ from datetime import date
+ 
+-# If extensions (or modules to document with autodoc) are in another directory,
+-# add these directories to sys.path here. If the directory is relative to the
+-# documentation root, use os.path.abspath to make it absolute, like shown here.
+-
+-# Add the current directory that contains the mock _lldb native module which
+-# is imported by the `lldb` module.
+-sys.path.insert(0, os.path.abspath("."))
+-# Add the build directory that contains the `lldb` module. LLDB_SWIG_MODULE is
+-# set by CMake.
+-sys.path.insert(0, os.getenv("LLDB_SWIG_MODULE"))
++building_man_page = tags.has('builder-man')
++
++# For the website we need to setup the path to the generated LLDB module that
++# we can generate documentation for its API.
++if not building_man_page:
++    # If extensions (or modules to document with autodoc) are in another directory,
++    # add these directories to sys.path here. If the directory is relative to the
++    # documentation root, use os.path.abspath to make it absolute, like shown here.
++
++    # Add the current directory that contains the mock _lldb native module which
++    # is imported by the `lldb` module.
++    sys.path.insert(0, os.path.abspath("."))
++    # Add the build directory that contains the `lldb` module. LLDB_SWIG_MODULE is
++    # set by CMake.
++    sys.path.insert(0, os.getenv("LLDB_SWIG_MODULE"))
+ 
+ # Put the generated Python API documentation in the 'python_api' folder. This
+ # also defines the URL these files will have in the generated website.
+@@ -37,8 +42,12 @@ automodapi_toctreedirnm = 'python_api'
+ 
+ # Add any Sphinx extension module names here, as strings. They can be extensions
+ # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
+-extensions = ['sphinx.ext.todo', 'sphinx.ext.mathjax', 'sphinx.ext.intersphinx',
+-              'sphinx_automodapi.automodapi']
++extensions = ['sphinx.ext.todo', 'sphinx.ext.mathjax', 'sphinx.ext.intersphinx']
++
++# Unless we only generate the basic manpage we need the plugin for generating
++# the Python API documentation.
++if not building_man_page:
++    extensions.append('sphinx_automodapi.automodapi')
+ 
+ # Add any paths that contain templates here, relative to this directory.
+ templates_path = ['_templates']
+@@ -52,7 +61,7 @@ try:
+   import recommonmark
+ except ImportError:
+   # manpages do not use any .md sources
+-  if not tags.has('builder-man'):
++  if not building_man_page:
+     raise
+ else:
+   import sphinx
+@@ -97,7 +106,12 @@ copyright = u'2007-%d, The LLDB Team' % date.today().year
+ # List of patterns, relative to source directory, that match files and
+ # directories to ignore when looking for source files.
+ exclude_patterns = ['_build', 'analyzer']
+-
++# Ignore the generated Python documentation that is only used on the website.
++# Without this we will get a lot of warnings about doc pages that aren't
++# included by any doctree (as the manpage ignores those pages but they are
++# potentially still around from a previous website generation).
++if building_man_page:
++    exclude_patterns.append(automodapi_toctreedirnm)
+ # Use the recommended 'any' rule so that referencing SB API classes is possible
+ # by just writing `SBData`.
+ default_role = 'any'
+-- 
+2.31.1
+

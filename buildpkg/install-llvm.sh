@@ -170,8 +170,10 @@ git checkout refs/tags/${llvm_tag} -b build
 popd
 
 pushd ${llvm_srcdir}
-# Workaround for llvm 10~11 build problem
+# Workaround for llvm 10~12 build problem
 git am ${scriptpath}/patches/llvm/0001-Move-the-definition-of-current_pos.patch
+# Workaround for llvm 12 build problem
+git am ${scriptpath}/patches/llvm/0002-lldb-Fix-the-man-page-build.patch
 popd
 
 virtualenv -p ${python_command} ${venv_dir}
