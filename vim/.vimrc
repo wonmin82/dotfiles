@@ -2055,6 +2055,7 @@ vmap <leader>a\| :Tabularize /\|<cr>
 " Detect clang tools {{{
 let s:clang_tools_suffixes = [
 			\   '',
+			\   '-12',
 			\   '-11',
 			\   '-10',
 			\   '-9',
@@ -2243,9 +2244,194 @@ let g:UltiSnipsListSnippets = "<c-s>"
 
 " Plugin: vim-clang-format {{{
 " NOTE: clang-format 3.4 or later is required
-" NOTE: currently, style options are ready for 3.4~11.0 only
+" NOTE: currently, style options are ready for 3.4~12.0 only
 " clang-format style options {{{
 let g:clang_format_configs = {}
+
+let g:clang_format_configs["v12.0"] = {
+			\   'BasedOnStyle': 'GNU',
+			\   'AccessModifierOffset': -4,
+			\   'AlignAfterOpenBracket': 'Align',
+			\   'AlignConsecutiveMacros': 'None',
+			\   'AlignConsecutiveAssignments': 'None',
+			\   'AlignConsecutiveBitFields': 'None',
+			\   'AlignConsecutiveDeclarations': 'None',
+			\   'AlignEscapedNewlines': 'Left',
+			\   'AlignOperands': 'Align',
+			\   'AlignTrailingComments': 'true',
+			\   'AllowAllArgumentsOnNextLine': 'true',
+			\   'AllowAllConstructorInitializersOnNextLine': 'true',
+			\   'AllowAllParametersOfDeclarationOnNextLine': 'true',
+			\   'AllowShortEnumsOnASingleLine': 'false',
+			\   'AllowShortBlocksOnASingleLine': 'Empty',
+			\   'AllowShortCaseLabelsOnASingleLine': 'false',
+			\   'AllowShortFunctionsOnASingleLine': 'None',
+			\   'AllowShortLambdasOnASingleLine': 'None',
+			\   'AllowShortIfStatementsOnASingleLine': 'Never',
+			\   'AllowShortLoopsOnASingleLine': 'false',
+			\   'AlwaysBreakAfterDefinitionReturnType': 'None',
+			\   'AlwaysBreakAfterReturnType': 'None',
+			\   'AlwaysBreakBeforeMultilineStrings': 'true',
+			\   'AlwaysBreakTemplateDeclarations': 'MultiLine',
+			\   'AttributeMacros':
+			\   [
+			\       '__capability'
+			\   ],
+			\   'BinPackArguments': 'true',
+			\   'BinPackParameters': 'true',
+			\   'BraceWrapping':
+			\   {
+			\       'AfterCaseLabel': 'true',
+			\       'AfterClass': 'true',
+			\       'AfterControlStatement': 'Always',
+			\       'AfterEnum': 'true',
+			\       'AfterFunction': 'true',
+			\       'AfterNamespace': 'true',
+			\       'AfterObjCDeclaration': 'true',
+			\       'AfterStruct': 'true',
+			\       'AfterUnion': 'true',
+			\       'AfterExternBlock': 'true',
+			\       'BeforeCatch': 'true',
+			\       'BeforeElse': 'true',
+			\       'BeforeLambdaBody': 'true',
+			\       'BeforeWhile': 'false',
+			\       'IndentBraces': 'false',
+			\       'SplitEmptyFunction': 'true',
+			\       'SplitEmptyRecord': 'true',
+			\       'SplitEmptyNamespace': 'true'
+			\   },
+			\   'BreakBeforeBinaryOperators': 'None',
+			\   'BreakBeforeConceptDeclarations': 'true',
+			\   'BreakBeforeBraces': 'Allman',
+			\   'BreakBeforeInheritanceComma': 'false',
+			\   'BreakInheritanceList': 'BeforeColon',
+			\   'BreakBeforeTernaryOperators': 'true',
+			\   'BreakConstructorInitializersBeforeComma': 'false',
+			\   'BreakConstructorInitializers': 'BeforeColon',
+			\   'BreakAfterJavaFieldAnnotations': 'false',
+			\   'BreakStringLiterals': 'true',
+			\   'ColumnLimit': 80,
+			\   'CommentPragmas': '^ IWYU pragma:',
+			\   'CompactNamespaces': 'false',
+			\   'ConstructorInitializerAllOnOneLineOrOnePerLine': 'true',
+			\   'ConstructorInitializerIndentWidth': 4,
+			\   'ContinuationIndentWidth': 4,
+			\   'Cpp11BracedListStyle': 'true',
+			\   'DeriveLineEnding': 'true',
+			\   'DerivePointerAlignment': 'false',
+			\   'DisableFormat': 'false',
+			\   'EmptyLineBeforeAccessModifier': 'Always',
+			\   'ExperimentalAutoDetectBinPacking': 'false',
+			\   'FixNamespaceComments': 'true',
+			\   'ForEachMacros':
+			\   [
+			\       'foreach',
+			\       'Q_FOREACH',
+			\       'BOOST_FOREACH'
+			\   ],
+			\   'StatementAttributeLikeMacros':
+			\   [
+			\       'Q_EMIT'
+			\   ],
+			\   'IncludeBlocks': 'Regroup',
+			\   'IncludeCategories':
+			\   [
+			\       {
+			\           'Regex': '^"(llvm|llvm-c|clang|clang-c)/',
+			\           'Priority': 2,
+			\           'SortPriority': 0,
+			\           'CaseSensitive': 'false'
+			\       },
+			\       {
+			\           'Regex': '^(<|"(gtest|gmock|isl|json)/)',
+			\           'Priority': 3,
+			\           'SortPriority': 0,
+			\           'CaseSensitive': 'false'
+			\       },
+			\       {
+			\           'Regex': '.*',
+			\           'Priority': 1,
+			\           'SortPriority': 0,
+			\           'CaseSensitive': 'false'
+			\       }
+			\   ],
+			\   'IncludeIsMainRegex': '(Test)?$',
+			\   'IncludeIsMainSourceRegex': '',
+			\   'IndentCaseLabels': 'false',
+			\   'IndentCaseBlocks': 'false',
+			\   'IndentGotoLabels': 'true',
+			\   'IndentPPDirectives': 'None',
+			\   'IndentExternBlock': 'AfterExternBlock',
+			\   'IndentRequires': 'true',
+			\   'IndentWidth': 4,
+			\   'IndentWrappedFunctionNames': 'false',
+			\   'InsertTrailingCommas': 'None',
+			\   'JavaScriptQuotes': 'Leave',
+			\   'JavaScriptWrapImports': 'true',
+			\   'KeepEmptyLinesAtTheStartOfBlocks': 'false',
+			\   'MacroBlockBegin': '',
+			\   'MacroBlockEnd': '',
+			\   'MaxEmptyLinesToKeep': 1,
+			\   'NamespaceIndentation': 'All',
+			\   'ObjCBinPackProtocolList': 'Auto',
+			\   'ObjCBlockIndentWidth': 4,
+			\   'ObjCBreakBeforeNestedBlockParam': 'true',
+			\   'ObjCSpaceAfterProperty': 'false',
+			\   'ObjCSpaceBeforeProtocolList': 'false',
+			\   'PenaltyBreakAssignment': 2,
+			\   'PenaltyBreakBeforeFirstCallParameter': 19,
+			\   'PenaltyBreakComment': 300,
+			\   'PenaltyBreakFirstLessLess': 120,
+			\   'PenaltyBreakString': 1000,
+			\   'PenaltyBreakTemplateDeclaration': 10,
+			\   'PenaltyExcessCharacter': 1000000,
+			\   'PenaltyReturnTypeOnItsOwnLine': 60,
+			\   'PenaltyIndentedWhitespace': 0,
+			\   'PointerAlignment': 'Right',
+			\   'ReflowComments': 'true',
+			\   'SortIncludes': 'true',
+			\   'SortJavaStaticImport': 'Before',
+			\   'SortUsingDeclarations': 'true',
+			\   'SpaceAfterCStyleCast': 'false',
+			\   'SpaceAfterLogicalNot': 'false',
+			\   'SpaceAfterTemplateKeyword': 'true',
+			\   'SpaceBeforeAssignmentOperators': 'true',
+			\   'SpaceBeforeCaseColon': 'false',
+			\   'SpaceBeforeCpp11BracedList': 'false',
+			\   'SpaceBeforeCtorInitializerColon': 'true',
+			\   'SpaceBeforeInheritanceColon': 'true',
+			\   'SpaceBeforeParens': 'ControlStatements',
+			\   'SpaceAroundPointerQualifiers': 'Both',
+			\   'SpaceBeforeRangeBasedForLoopColon': 'true',
+			\   'SpaceInEmptyBlock': 'false',
+			\   'SpaceInEmptyParentheses': 'false',
+			\   'SpacesBeforeTrailingComments': 2,
+			\   'SpacesInAngles': 'false',
+			\   'SpacesInConditionalStatement': 'false',
+			\   'SpacesInContainerLiterals': 'true',
+			\   'SpacesInCStyleCastParentheses': 'false',
+			\   'SpacesInParentheses': 'false',
+			\   'SpacesInSquareBrackets': 'false',
+			\   'SpaceBeforeSquareBrackets': 'false',
+			\   'BitFieldColonSpacing': 'Both',
+			\   'Standard': 'Auto',
+			\   'StatementMacros':
+			\   [
+			\       'Q_UNUSED',
+			\       'QT_REQUIRE_VERSION'
+			\   ],
+			\   'TabWidth': 4,
+			\   'UseCRLF': 'false',
+			\   'UseTab': 'Always',
+			\   'WhitespaceSensitiveMacros':
+			\   [
+			\       'STRINGIZE',
+			\       'PP_STRINGIZE',
+			\       'BOOST_PP_STRINGIZE',
+			\       'NS_SWIFT_NAME',
+			\       'CF_SWIFT_NAME'
+			\   ]
+			\}
 
 let g:clang_format_configs["v11.0"] = {
 			\   'BasedOnStyle': 'GNU',
@@ -2266,7 +2452,7 @@ let g:clang_format_configs["v11.0"] = {
 			\   'AllowShortCaseLabelsOnASingleLine': 'false',
 			\   'AllowShortFunctionsOnASingleLine': 'None',
 			\   'AllowShortLambdasOnASingleLine': 'None',
-			\   'AllowShortIfStatementsOnASingleLine': 'false',
+			\   'AllowShortIfStatementsOnASingleLine': 'Never',
 			\   'AllowShortLoopsOnASingleLine': 'false',
 			\   'AlwaysBreakAfterDefinitionReturnType': 'None',
 			\   'AlwaysBreakAfterReturnType': 'None',
@@ -2289,8 +2475,8 @@ let g:clang_format_configs["v11.0"] = {
 			\       'BeforeCatch': 'true',
 			\       'BeforeElse': 'true',
 			\       'BeforeLambdaBody': 'true',
-			\       'BeforeWhile': 'true',
-			\       'IndentBraces': 'true',
+			\       'BeforeWhile': 'false',
+			\       'IndentBraces': 'false',
 			\       'SplitEmptyFunction': 'true',
 			\       'SplitEmptyRecord': 'true',
 			\       'SplitEmptyNamespace': 'true'
@@ -2450,7 +2636,7 @@ let g:clang_format_configs["v10.0"] = {
 			\       'AfterExternBlock': 'true',
 			\       'BeforeCatch': 'true',
 			\       'BeforeElse': 'true',
-			\       'IndentBraces': 'true',
+			\       'IndentBraces': 'false',
 			\       'SplitEmptyFunction': 'true',
 			\       'SplitEmptyRecord': 'true',
 			\       'SplitEmptyNamespace': 'true'
@@ -2600,7 +2786,7 @@ let g:clang_format_configs["v9.0"] = {
 			\       'AfterExternBlock': 'true',
 			\       'BeforeCatch': 'true',
 			\       'BeforeElse': 'true',
-			\       'IndentBraces': 'true',
+			\       'IndentBraces': 'false',
 			\       'SplitEmptyFunction': 'true',
 			\       'SplitEmptyRecord': 'true',
 			\       'SplitEmptyNamespace': 'true'
@@ -2735,7 +2921,7 @@ let g:clang_format_configs["v8.0"] = {
 			\       'AfterExternBlock': 'true',
 			\       'BeforeCatch': 'true',
 			\       'BeforeElse': 'true',
-			\       'IndentBraces': 'true',
+			\       'IndentBraces': 'false',
 			\       'SplitEmptyFunction': 'true',
 			\       'SplitEmptyRecord': 'true',
 			\       'SplitEmptyNamespace': 'true'
@@ -2869,7 +3055,7 @@ let g:clang_format_configs["v7.0"] = {
 			\       'AfterExternBlock': 'true',
 			\       'BeforeCatch': 'true',
 			\       'BeforeElse': 'true',
-			\       'IndentBraces': 'true',
+			\       'IndentBraces': 'false',
 			\       'SplitEmptyFunction': 'true',
 			\       'SplitEmptyRecord': 'true',
 			\       'SplitEmptyNamespace': 'true'
@@ -2998,7 +3184,7 @@ let g:clang_format_configs["v6.0"] = {
 			\       'AfterExternBlock': 'true',
 			\       'BeforeCatch': 'true',
 			\       'BeforeElse': 'true',
-			\       'IndentBraces': 'true',
+			\       'IndentBraces': 'false',
 			\       'SplitEmptyFunction': 'true',
 			\       'SplitEmptyRecord': 'true',
 			\       'SplitEmptyNamespace': 'true'
@@ -3114,7 +3300,7 @@ let g:clang_format_configs["v5.0"] = {
 			\       'AfterUnion': 'true',
 			\       'BeforeCatch': 'true',
 			\       'BeforeElse': 'true',
-			\       'IndentBraces': 'true',
+			\       'IndentBraces': 'false',
 			\       'SplitEmptyFunction': 'true',
 			\       'SplitEmptyRecord': 'true',
 			\       'SplitEmptyNamespace': 'true'
@@ -3228,7 +3414,7 @@ let g:clang_format_configs["v4.0"] = {
 			\       'AfterUnion': 'true',
 			\       'BeforeCatch': 'true',
 			\       'BeforeElse': 'true',
-			\       'IndentBraces': 'true'
+			\       'IndentBraces': 'false'
 			\   },
 			\   'BreakBeforeBinaryOperators': 'None',
 			\   'BreakBeforeBraces': 'Allman',
@@ -3333,7 +3519,7 @@ let g:clang_format_configs["v3.9"] = {
 			\       'AfterUnion': 'true',
 			\       'BeforeCatch': 'true',
 			\       'BeforeElse': 'true',
-			\       'IndentBraces': 'true'
+			\       'IndentBraces': 'false'
 			\   },
 			\   'BreakBeforeBinaryOperators': 'None',
 			\   'BreakBeforeBraces': 'Allman',
@@ -3437,7 +3623,7 @@ let g:clang_format_configs["v3.8"] = {
 			\       'AfterUnion': 'true',
 			\       'BeforeCatch': 'true',
 			\       'BeforeElse': 'true',
-			\       'IndentBraces': 'true'
+			\       'IndentBraces': 'false'
 			\   },
 			\   'BreakBeforeBinaryOperators': 'None',
 			\   'BreakBeforeBraces': 'Allman',
@@ -3794,7 +3980,9 @@ endtry
 
 if s:clang_format_is_available
 	let v = s:clang_format_get_version()
-	if v[0] >= 11
+	if v[0] >= 12
+		let g:clang_format#style_options = g:clang_format_configs["v12.0"]
+	elseif v[0] == 11
 		let g:clang_format#style_options = g:clang_format_configs["v11.0"]
 	elseif v[0] == 10
 		let g:clang_format#style_options = g:clang_format_configs["v10.0"]
