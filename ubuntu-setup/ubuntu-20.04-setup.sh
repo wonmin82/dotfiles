@@ -562,6 +562,7 @@ post_process() {
 
 	if [[ -f ${home}/.config/monitors.xml ]]; then
 		cp -f ${home}/.config/monitors.xml /var/lib/gdm3/.config
+		chown -v gdm:gdm /var/lib/gdm3/.config/monitors.xml
 	fi
 
 	rm -f ${home_root}/.bash_history
