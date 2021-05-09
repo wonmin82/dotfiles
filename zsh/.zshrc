@@ -495,6 +495,7 @@ setopt hist_verify
 setopt share_history
 setopt bang_hist
 setopt extended_history
+#}}}
 
 # Variables {{{
 ZLE_REMOVE_SUFFIX_CHARS=$' \t\n;&'
