@@ -300,6 +300,7 @@ list_install_pkgs=(
 	# }
 	"wine-stable"
 	"apcalc"
+	"hstr"
 	"docker-ce"
 	"docker-ce-cli"
 	"containerd.io"
@@ -435,6 +436,8 @@ add_repo() {
 		"deb [arch=amd64] https://download.docker.com/linux/ubuntu \
 		$(lsb_release -cs) \
 		stable"
+
+	add-apt-repository --no-update ppa:ultradvorka/ppa </dev/null
 
 	eval ${apt_update}
 }

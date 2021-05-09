@@ -315,7 +315,7 @@ list_install_pkgs=(
 	# }
 	"wine"
 	"apcalc"
-	"hh"
+	"hstr"
 	"docker-engine"
 	"docker-compose"
 )
@@ -364,8 +364,6 @@ install_apt_prerequisites() {
 add_repo() {
 	add-apt-repository multiverse
 
-	add-apt-repository ppa:ultradvorka/ppa </dev/null
-
 	# oracle java
 	# add-apt-repository ppa:webupd8team/java </dev/null
 
@@ -394,6 +392,8 @@ add_repo() {
 		"deb [arch=amd64] https://download.docker.com/linux/ubuntu \
 		$(lsb_release -cs) \
 		stable"
+
+	add-apt-repository ppa:ultradvorka/ppa </dev/null
 
 	eval ${apt_update}
 }
