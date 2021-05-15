@@ -618,7 +618,8 @@ if [[ ${_SYSENV_DIST} == "ubuntu" ]]; then
 		retry antigen selfupdate
 		retry antigen update
 		[[ -v LS_COLORS_DIR ]] && lscolors-refresh
-		[[ -d $HOME/.vim_data/bundle ]] && vim +NeoBundleUpdate +quit!
+		[[ -d $HOME/.vim_data/bundle ]] && \
+			vim "+call DeinUpdate()" "+qall"
 		system-clean
 	}
 
@@ -628,7 +629,8 @@ if [[ ${_SYSENV_DIST} == "ubuntu" ]]; then
 		retry antigen selfupdate
 		retry antigen update
 		[[ -v LS_COLORS_DIR ]] && lscolors-refresh
-		[[ -d $HOME/.vim_data/bundle ]] && vim +NeoBundleUpdate +quit!
+		[[ -d $HOME/.vim_data/bundle ]] && \
+			vim "+call DeinUpdate()" "+qall"
 		system-clean
 	}
 fi
@@ -662,7 +664,8 @@ if [[ ${_SYSENV_DIST} == "raspbian" ]]; then
 		retry antigen selfupdate
 		retry antigen update
 		[[ -v LS_COLORS_DIR ]] && lscolors-refresh
-		[[ -d $HOME/.vim_data/bundle ]] && vim +NeoBundleUpdate +quit!
+		[[ -d $HOME/.vim_data/bundle ]] && \
+			vim "+call DeinUpdate()" "+qall"
 		system-clean
 	}
 fi
@@ -692,7 +695,8 @@ if [[ ${_SYSENV_OS} == "macos" ]]; then
 		antigen selfupdate
 		antigen update
 		[[ -v LS_COLORS_DIR ]] && lscolors-refresh
-		[[ -d $HOME/.vim_data/bundle ]] && vim +NeoBundleUpdate +quit!
+		[[ -d $HOME/.vim_data/bundle ]] && \
+			vim "+call DeinUpdate()" "+qall"
 		system-clean
 	}
 fi
@@ -703,7 +707,8 @@ if [[ ${_SYSENV_OS} == "cygwin" ]]; then
 		antigen selfupdate
 		antigen update
 		[[ -v LS_COLORS_DIR ]] && lscolors-refresh
-		[[ -d $HOME/.vim_data/bundle ]] && vim +NeoBundleUpdate +quit!
+		[[ -d $HOME/.vim_data/bundle ]] && \
+			vim "+call DeinUpdate()" "+qall"
 	}
 fi
 
@@ -713,7 +718,8 @@ if [[ ${_SYSENV_DIST} == "synologydsm" ]]; then
 		antigen selfupdate
 		antigen update
 		[[ -v LS_COLORS_DIR ]] && lscolors-refresh
-		[[ -d $HOME/.vim_data/bundle ]] && vim +NeoBundleUpdate +quit!
+		[[ -d $HOME/.vim_data/bundle ]] && \
+			vim "+call DeinUpdate()" "+qall"
 	}
 fi
 

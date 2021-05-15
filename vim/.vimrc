@@ -122,128 +122,145 @@ let g:neomru#file_mru_path = $NEOMRUPATH . '/file'
 let g:neomru#directory_mru_path = $NEOMRUPATH . '/directory'
 "}}}
 
-" Plugin: NeoBundle {{{
-let g:neobundle#types#git#default_protocol = 'https'
+" Plugin: dein.vim {{{
+let g:dein#install_max_processes = 4        " default is 8
+let g:dein#types#git#default_protocol = 'https'
+let g:dein#types#git#clone_depth = 0
 " YouCompleteMe install process tooks time.
-let g:neobundle#install_process_timeout = 1200
+let g:dein#install_process_timeout = 1200
 
 if has('vim_starting')
 	" following line has moved to very first of vimrc
 	" set nocompatible               " Be iMproved
 
 	" Required:
-	set runtimepath+=$PLUGINPATH/neobundle.vim/
+	set runtimepath+=$PLUGINPATH/dein.vim/
 endif
 
-" Begin NeoBundle {{{
+" Begin dein.vim {{{
 let s:max_retry_count = 5
 let s:retry_count = 0
-let s:is_neobundle_inited = 0
-while ! s:is_neobundle_inited
+let s:is_dein_inited = 0
+while ! s:is_dein_inited
 	try
 		" Required:
-		call neobundle#begin(expand($PLUGINPATH))
+		call dein#begin(expand($PLUGINPATH))
 
-		" Let NeoBundle manage NeoBundle
+		" Let dein.vim manage dein.vim
 		" Required:
-		NeoBundleFetch 'Shougo/neobundle.vim'
-		let s:is_neobundle_inited = 1
+		if v:version >= 800
+			call dein#add('Shougo/dein.vim')
+		else
+			call dein#add($PLUGINPATH . '/dein.vim')
+		endif
+		let s:is_dein_inited = 1
 	catch /^Vim\%((\a\+)\)\=:E117/
-		" If NeoBundle is missing, define an installer for it
-		function! NeoBundleInstaller()
+		" If dein is missing, define an installer for it
+		function! s:deinInstaller()
 			if s:is_cygwin || s:is_macos || s:is_raspbian || s:is_synology ||
 						\  s:is_linux64 || s:is_linux32 || s:is_unix
 				let s:retry_count = s:retry_count + 1
 				if s:retry_count > s:max_retry_count
-					execute ':silent !echo "==> NeoBundle installation has been failed."'
+					execute ':silent !echo "==> dein.vim installation has been failed."'
 					quit!
 				endif
 
-				execute ':silent !echo "==> Starting NeoBundle installation... (retry count: ' . s:retry_count . '/' . s:max_retry_count . ')"'
-				let destination = expand($PLUGINPATH . '/neobundle.vim')
+				execute ':silent !echo "==> Starting dein.vim installation... (retry count: ' . s:retry_count . '/' . s:max_retry_count . ')"'
+				let destination = expand($PLUGINPATH . '/dein.vim')
 				if ! isdirectory(destination)
 					call mkdir(destination, "p")
 				endif
-				let install_command = printf('git clone %s://github.com/Shougo/neobundle.vim.git %s',
+				let install_command = printf('git clone %s://github.com/Shougo/dein.vim.git %s',
 							\ (exists('$http_proxy') ? 'https' : 'git'),
 							\ destination)
 				execute ':silent !echo "==> Executing command: ' . install_command . '"'
 				execute ':silent !' . install_command
-				let neobundle_plugin = expand($PLUGINPATH . '/neobundle.vim/autoload/neobundle.vim')
+				let dein_plugin = expand($PLUGINPATH . '/dein.vim/autoload/dein.vim')
+				if v:version < 800
+					let $dein_vim_path = destination
+					chdir $dein_vim_path
+					let checkout_command = 'git checkout -b 1.5 1.5'
+					execute ':silent !echo "==> Executing command: ' . checkout_command . '"'
+					execute ':silent !' . checkout_command
+					chdir -
+				endif
 				try
-					execute ':source ' . neobundle_plugin
-					execute ':silent !echo "==> NeoBundle has been installed."'
+					execute ':source ' . dein_plugin
+					execute ':silent !echo "==> dein.vim has been installed."'
 				catch
-					execute ':silent !echo "==> Failed to load NeoBundle."'
+					execute ':silent !echo "==> Failed to load dein.vim."'
 				endtry
 			elseif s:is_win32 || s:is_win64
-				" TODO: need to be checked if it is working or not.
+				" TODO: Make it could be work for Windows.
 				let s:retry_count = s:retry_count + 1
 				if s:retry_count > s:max_retry_count
-					execute ':silent !echo "==> NeoBundle installation has been failed."'
+					execute ':silent !echo "==> dein.vim installation has been failed."'
 					quit!
 				endif
 
-				execute ':silent !echo "==> Starting NeoBundle installation... (retry count: ' . s:retry_count . '/' . s:max_retry_count . ')"'
-				let destination = expand($PLUGINPATH . '/neobundle.vim')
+				execute ':silent !echo "==> Starting dein.vim installation... (retry count: ' . s:retry_count . '/' . s:max_retry_count . ')"'
+				let destination = expand($PLUGINPATH . '/dein.vim')
 				if ! isdirectory(destination)
 					call mkdir(destination, "p")
 				endif
-				let install_command = printf('git clone %s://github.com/Shougo/neobundle.vim.git %s',
+				let install_command = printf('git clone %s://github.com/Shougo/dein.vim.git %s',
 							\ (exists('$http_proxy') ? 'https' : 'git'),
 							\ destination)
 				execute ':silent !echo "==> Executing command: ' . install_command . '"'
 				execute ':silent !' . install_command
-				execute ':silent !echo "==> NeoBundle has been installed."'
-				let neobundle_plugin = expand($PLUGINPATH . '/neobundle.vim/autoload/neobundle.vim')
+				let dein_plugin = expand($PLUGINPATH . '/dein.vim/autoload/dein.vim')
+				if v:version < 800
+					let $checkout_dir = destination
+					chdir $checkout_dir
+					let checkout_command = 'git checkout -b 1.5 1.5'
+					execute ':silent !echo "==> Executing command: ' . checkout_command . '"'
+					execute ':silent !' . checkout_command
+					chdir -
+				endif
 				try
-					execute ':source ' . neobundle_plugin
-					execute ':silent !echo "==> NeoBundle has been installed."'
+					execute ':source ' . dein_plugin
+					execute ':silent !echo "==> dein.vim has been installed."'
 				catch
-					execute ':silent !echo "==> Failed to load NeoBundle."'
+					execute ':silent !echo "==> Failed to load dein.vim."'
 				endtry
 			endif
 		endfunction
 
-		call NeoBundleInstaller()
+		call s:deinInstaller()
 	catch
-		execute ':silent !echo "==> NeoBundle initialization has been failed."'
+		execute ':silent !echo "==> dein.vim initialization has been failed."'
 		quit!
 	endtry
 endwhile
 "}}}
 
 " My Bundles here:
-" Refer to |:NeoBundle-examples|.
-" Note: You don't set neobundle setting in .gvimrc!
+" Note: You don't set dein.vim setting in .gvimrc!
 let s:is_ycm_enabled = 1
 
 if !s:is_synology
-	NeoBundle 'Shougo/vimproc', {
-				\   'build': {
-				\       'windows': 'make -f make_mingw32.mak',
-				\       'cygwin': 'make -f make_cygwin.mak',
-				\       'mac': 'make -f make_mac.mak',
-				\       'unix': 'make -f make_unix.mak',
-				\}}
+	call dein#add('Shougo/vimproc.vim', {
+				\ 'build' : 'make'
+				\})
 endif
 
 " Fuzzy search
-NeoBundle 'Shougo/unite.vim'
-NeoBundle 'Shougo/unite-outline'
-NeoBundle 'Shougo/unite-help'
-NeoBundle 'Shougo/neomru.vim'
-NeoBundle 'tsukkee/unite-tag'
-NeoBundle 'osyo-manga/unite-quickfix'
-NeoBundle 'thinca/vim-unite-history'
-NeoBundle 'mileszs/ack.vim'
+call dein#add('Shougo/unite.vim')
+call dein#add('Shougo/unite-outline')
+call dein#add('Shougo/unite-help')
+call dein#add('Shougo/neomru.vim')
+call dein#add('tsukkee/unite-tag')
+call dein#add('osyo-manga/unite-quickfix')
+call dein#add('thinca/vim-unite-history')
+call dein#add('mileszs/ack.vim')
 
 " File browsing
-NeoBundle 'scrooloose/nerdtree'
-NeoBundle 'Shougo/vimfiler'
+call dein#add('scrooloose/nerdtree')
+call dein#add('Shougo/vimfiler')
 
 " Session
-NeoBundle 'xolox/vim-session', {
+call dein#add('xolox/vim-misc')
+call dein#add('xolox/vim-session', {
 			\   'lazy': 0,
 			\   'depends': 'xolox/vim-misc',
 			\   'augroup': 'PluginSession',
@@ -260,84 +277,81 @@ NeoBundle 'xolox/vim-session', {
 			\   ],
 			\       'functions': [ 'xolox#session#complete_names',
 			\                      'xolox#session#complete_names_with_suggestions' ]
-			\}}
+			\}})
 
 " Shell
-NeoBundle 'thinca/vim-quickrun'
-NeoBundle 'Shougo/vimshell'
-NeoBundle 'tpope/vim-dispatch'
+call dein#add('thinca/vim-quickrun')
+call dein#add('Shougo/vimshell')
+call dein#add('tpope/vim-dispatch')
 
 " Git
-NeoBundle 'tpope/vim-fugitive'
+call dein#add('tpope/vim-fugitive')
 
 " Tags
-NeoBundle 'majutsushi/tagbar'
+call dein#add('majutsushi/tagbar')
 
 " Status line
-NeoBundle 'vim-airline/vim-airline'
-NeoBundle 'vim-airline/vim-airline-themes'
-NeoBundle 'bling/vim-bufferline'
+call dein#add('vim-airline/vim-airline')
+call dein#add('vim-airline/vim-airline-themes')
+call dein#add('bling/vim-bufferline')
 
-NeoBundle 'embear/vim-localvimrc'
-NeoBundle 'scrooloose/nerdcommenter'
+call dein#add('embear/vim-localvimrc')
+call dein#add('scrooloose/nerdcommenter')
 if v:version > 703 || v:version == 703 && has('patch465')
-	NeoBundle 'eiginn/netrw'
+	call dein#add('eiginn/netrw')
 endif
-NeoBundle 'wesleyche/SrcExpl'
-NeoBundle 'jlanzarotta/bufexplorer'
-NeoBundle 'dbakker/vim-projectroot'
-NeoBundle 'godlygeek/tabular'
-NeoBundle 'Lokaltog/vim-easymotion'
-NeoBundle 'scrooloose/syntastic'
-NeoBundle 'vim-scripts/IndentTab', {
+call dein#add('wesleyche/SrcExpl')
+call dein#add('jlanzarotta/bufexplorer')
+call dein#add('dbakker/vim-projectroot')
+call dein#add('godlygeek/tabular')
+call dein#add('Lokaltog/vim-easymotion')
+call dein#add('scrooloose/syntastic')
+call dein#add('vim-scripts/ingo-library')
+call dein#add('vim-scripts/IndentTab', {
 			\   'depends': 'vim-scripts/ingo-library'
-			\}
-NeoBundle 'vim-scripts/IndentConsistencyCop'
-NeoBundle 'vim-scripts/IndentConsistencyCopAutoCmds'
-NeoBundle 'ntpeters/vim-better-whitespace'
+			\})
+call dein#add('vim-scripts/IndentConsistencyCop')
+call dein#add('vim-scripts/IndentConsistencyCopAutoCmds')
+call dein#add('ntpeters/vim-better-whitespace')
 
-NeoBundle 'kergoth/vim-bitbake'
-NeoBundle 'peterhoeg/vim-qml'
+call dein#add('kergoth/vim-bitbake')
+call dein#add('peterhoeg/vim-qml')
 
-NeoBundle 'rhysd/vim-clang-format', {
+call dein#add('kana/vim-operator-user')
+call dein#add('rhysd/vim-clang-format', {
 			\   'depends': 'kana/vim-operator-user'
-			\}
-NeoBundle 'vivien/vim-linux-coding-style'
+			\})
+call dein#add('vivien/vim-linux-coding-style')
 if v:version >= 700 && !s:is_raspbian && !s:is_synology
-	NeoBundle 'psf/black'
+	call dein#add('psf/black')
 endif
-NeoBundle 'maksimr/vim-jsbeautify'
-NeoBundle 'z0mbix/vim-shfmt'
+call dein#add('maksimr/vim-jsbeautify')
+call dein#add('z0mbix/vim-shfmt')
 if v:version >= 704 && !s:is_raspbian && !s:is_synology
-	NeoBundle 'SirVer/ultisnips'
+	call dein#add('SirVer/ultisnips')
 endif
-NeoBundle 'honza/vim-snippets'
+call dein#add('honza/vim-snippets')
 
 " ensure vim version >= 7.3.584 and not in cygwin.
 if s:is_ycm_enabled && (v:version > 703 || v:version == 703 && has('patch584'))
-			\   && !(s:is_win32 || s:is_win64 ||
-			\        s:is_cygwin || s:is_raspbian || s:is_synology)
-	NeoBundle 'Valloric/YouCompleteMe', {
-				\   'build' : {
-				\       'windows' : './install.py --clang-completer --system-libclang',
-				\       'cygwin' : './install.py --clang-completer --system-libclang',
-				\       'mac' : './install.py --all --system-libclang',
-				\       'unix' : 'env CC=clang CXX=clang++ ./install.py --all --system-libclang',
-				\   }
-				\}
+	if s:is_linux32 || s:is_linux64 || s:is_macos
+		call dein#add('Valloric/YouCompleteMe', {
+					\   'build' : 'env CC=clang CXX=clang++ ./install.py --all --system-libclang'
+					\})
+	endif
 endif
 
-NeoBundle 'tomasr/molokai'
-NeoBundle 'altercation/vim-colors-solarized'
-NeoBundle 'nanotech/jellybeans.vim'
-NeoBundle 'noahfrederick/vim-noctu'
+call dein#add('tomasr/molokai')
+call dein#add('altercation/vim-colors-solarized')
+call dein#add('nanotech/jellybeans.vim')
+call dein#add('noahfrederick/vim-noctu')
 
-call neobundle#end()
+call dein#end()
 
 " Required:
 filetype plugin indent on
 
-if neobundle#exists_not_installed_bundles()
+if dein#check_install()
 	" Prevent vim-session's confirmation.
 	let g:session_autosave = 'no'
 
@@ -349,23 +363,31 @@ if neobundle#exists_not_installed_bundles()
 	set nomore
 	set noshowcmd
 	set noruler
-	set cmdheight=5
+	set cmdheight=10
 
-	NeoBundleInstall
+	let s:bundle_max_retry_count = 5
+	let s:bundle_retry_count = 0
+	while 1
+		let s:bundle_retry_count = s:bundle_retry_count + 1
 
-	let &more = more_save
-	let &showcmd = showcmd_save
-	let &ruler = ruler_save
-	let &cmdheight = cmdheight_save
+		if s:bundle_retry_count > s:max_retry_count
+			execute ':silent !echo "==> Maximum retry count exceeded. Check the network and try run vim again."'
+			quit!
+		endif
+		call dein#install()
 
-	if neobundle#exists_not_installed_bundles()
-		execute ':silent !echo ""'
-		execute ':silent !echo "==> Failed to install some bundles, try run vim again."'
-	else
-		execute ':silent !echo ""'
-		execute ':silent !echo "==> Bundles have been installed. Restart vim to continue."'
-	endif
-	quit!
+		let &more = more_save
+		let &showcmd = showcmd_save
+		let &ruler = ruler_save
+		let &cmdheight = cmdheight_save
+
+		if ! dein#check_install()
+			execute ':silent !echo ""'
+			execute ':silent !echo "==> Bundles have been installed. Restart vim to continue."'
+			quit!
+		endif
+		execute ':silent !echo "==> Failed to install some bundles, try again..."'
+	endwhile
 endif
 "}}}
 
@@ -1169,6 +1191,29 @@ endfunc
 "
 " toggle mouse mode
 nmap <leader>mm :call ToggleMouse()<cr>
+
+" Function: Helper function for dein.vim {{{
+function! DeinUpdate()
+	let g:session_autosave = 'no'
+
+	let more_save = &more
+	let showcmd_save = &showcmd
+	let ruler_save = &ruler
+	let cmdheight_save = &cmdheight
+
+	set nomore
+	set noshowcmd
+	set noruler
+	set cmdheight=10
+
+	call dein#update()
+
+	let &more = more_save
+	let &showcmd = showcmd_save
+	let &ruler = ruler_save
+	let &cmdheight = cmdheight_save
+endfunc
+"}}}
 
 " Function: toggle copy mode {{{
 let s:is_copy_mode = 0
