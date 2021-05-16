@@ -300,6 +300,7 @@ list_install_pkgs=(
 	"wine-stable"
 	"apcalc"
 	"hstr"
+	"code"
 	"docker-ce"
 	"docker-ce-cli"
 	"containerd.io"
@@ -316,10 +317,6 @@ list_install_snap_pkgs=(
 	"shfmt"
 )
 
-list_install_snap_classic_pkgs=(
-	"code"
-)
-
 apt_update="retry aptitude update"
 apt_fetch="retry aptitude -y --with-recommends --download-only install"
 apt_install="aptitude -y --with-recommends install"
@@ -327,7 +324,6 @@ apt_remove="aptitude -y purge"
 
 snap_refresh="snap refresh"
 snap_install="snap install"
-snap_install_classic="snap install --classic"
 
 retry() {
 	local nTrys=0
@@ -420,6 +416,11 @@ add_repo() {
 		--recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
 	echo "deb https://download.mono-project.com/repo/ubuntu stable-focal main" |
 		tee /etc/apt/sources.list.d/mono-official-stable.list
+
+	# vscode
+	wget -O - https://packages.microsoft.com/keys/microsoft.asc |
+		gpg --dearmor --output /etc/apt/trusted.gpg.d/packages.microsoft.gpg
+	echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/trusted.gpg.d/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" >/etc/apt/sources.list.d/vscode.list
 
 	# docker
 	# manual installation
@@ -549,7 +550,6 @@ install_recommended() {
 install_snap_pkgs() {
 	eval ${snap_refresh}
 	eval ${snap_install} ${list_install_snap_pkgs[@]}
-	eval ${snap_install_classic} ${list_install_snap_classic_pkgs[@]}
 }
 
 post_process() {
