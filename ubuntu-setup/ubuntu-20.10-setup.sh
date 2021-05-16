@@ -384,9 +384,6 @@ add_repo() {
 
 	add-apt-repository --yes --no-update multiverse
 
-	# oracle java
-	# add-apt-repository --yes --no-update ppa:webupd8team/java </dev/null
-
 	# llvm
 	curl -sSL --retry 10 --retry-connrefused --retry-delay 3 \
 		https://apt.llvm.org/llvm-snapshot.gpg.key |
@@ -559,31 +556,6 @@ install_ttfs() {
 	rm -r -f /tmp/msttf
 }
 
-install_java() {
-	ORACLE_JAVA_PKG_PREFIX="oracle-java8"
-	eval ${apt_fetch} \
-		${ORACLE_JAVA_PKG_PREFIX}-installer \
-		${ORACLE_JAVA_PKG_PREFIX}-set-default \
-		${ORACLE_JAVA_PKG_PREFIX}-unlimited-jce-policy
-	lastStatus=65536
-	until [[ ${lastStatus} == 0 ]]; do
-		if ((lastStatus != 65536)); then
-			eval ${apt_remove} \
-				${ORACLE_JAVA_PKG_PREFIX}-installer \
-				${ORACLE_JAVA_PKG_PREFIX}-set-default \
-				${ORACLE_JAVA_PKG_PREFIX}-unlimited-jce-policy
-		fi
-		echo "${ORACLE_JAVA_PKG_PREFIX}-installer \
-			shared/accepted-oracle-license-v1-1 \
-			select true" | debconf-set-selections
-		eval ${apt_install} \
-			${ORACLE_JAVA_PKG_PREFIX}-installer \
-			${ORACLE_JAVA_PKG_PREFIX}-set-default \
-			${ORACLE_JAVA_PKG_PREFIX}-unlimited-jce-policy
-		lastStatus=$?
-	done
-}
-
 fetch_all() {
 	for task in "${list_install_tasks[@]}"; do
 		list_pkg=($(tasksel --task-packages ${task}))
@@ -697,7 +669,6 @@ main() {
 	prepare_unattended_install
 	fetch_all
 	install_ttfs
-	# install_java
 	install_all
 	install_vm_tools
 	# install_recommended
