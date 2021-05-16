@@ -188,6 +188,7 @@ list_install_pkgs=(
 	"perl-doc"
 	"golang"
 	"nodejs"
+	"yarn"
 	"mono-complete"
 	"openjdk-11-jdk"
 	"openjdk-11-jre"
@@ -432,6 +433,18 @@ add_repo() {
 			${DISTRO} main" |
 			tee -a /etc/apt/sources.list.d/nodesource.list
 	fi
+
+	# yarn
+	curl -sSL --retry 10 --retry-connrefused --retry-delay 3 \
+		https://dl.yarnpkg.com/debian/pubkey.gpg |
+		gpg --dearmor \
+			--output /etc/apt/trusted.gpg.d/yarn-archive-keyring.gpg
+	echo "deb \
+		[arch=$(dpkg --print-architecture) \
+		signed-by=/etc/apt/trusted.gpg.d/yarn-archive-keyring.gpg] \
+		https://dl.yarnpkg.com/debian \
+		stable main" |
+		tee /etc/apt/sources.list.d/yarn.list
 
 	# golang
 	if [[ ${flag_golang_auto_install} == true ]]; then
