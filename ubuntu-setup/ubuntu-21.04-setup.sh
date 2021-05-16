@@ -413,10 +413,7 @@ add_repo() {
 			--keyserver hkp://keyserver.ubuntu.com:80 \
 			--recv-keys 52B59B1571A79DBC054901C0F6BC817356A3D45E
 		add-apt-repository --yes --no-update \
-			"deb \
-			http://ppa.launchpad.net/longsleep/golang-backports/ubuntu \
-			hirsute \
-			main" \
+			"deb http://ppa.launchpad.net/longsleep/golang-backports/ubuntu hirsute main" \
 			</dev/null
 	fi
 
@@ -425,10 +422,7 @@ add_repo() {
 	retry apt-key adv \
 		--keyserver hkp://keyserver.ubuntu.com:80 \
 		--recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
-	echo "deb \
-		https://download.mono-project.com/repo/ubuntu \
-		stable-focal \
-		main" |
+	echo "deb https://download.mono-project.com/repo/ubuntu stable-focal main" |
 		tee /etc/apt/sources.list.d/mono-official-stable.list
 
 	# docker
@@ -437,9 +431,7 @@ add_repo() {
 		https://download.docker.com/linux/ubuntu/gpg |
 		apt-key add -
 	add-apt-repository --yes --no-update \
-		"deb [arch=amd64] https://download.docker.com/linux/ubuntu \
-		$(lsb_release -cs) \
-		stable"
+		"deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 
 	# hstr
 	if [[ ${flag_hstr_auto_install} == true ]]; then
@@ -453,13 +445,9 @@ add_repo() {
 			--recv-keys 1E841C1E5C04D97ABFF8FCB63A9508A2CC6FC1EB
 		# DISTRO="$(lsb_release -s -c)"
 		DISTRO="focal"
-		echo "deb http://ppa.launchpad.net/ultradvorka/ppa/ubuntu \
-			${DISTRO} \
-			main" |
+		echo "deb http://ppa.launchpad.net/ultradvorka/ppa/ubuntu ${DISTRO} main" |
 			tee /etc/apt/sources.list.d/ultradvorka.list
-		echo "deb-src http://ppa.launchpad.net/ultradvorka/ppa/ubuntu \
-			${DISTRO} \
-			main" |
+		echo "deb-src http://ppa.launchpad.net/ultradvorka/ppa/ubuntu ${DISTRO} main" |
 			tee -a /etc/apt/sources.list.d/ultradvorka.list
 	fi
 
