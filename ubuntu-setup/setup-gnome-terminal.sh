@@ -99,6 +99,18 @@ gsettings set \
 	bold-color-same-as-fg false
 gsettings set \
 	"org.gnome.Terminal.Legacy.Profile:/org/gnome/terminal/legacy/profiles:/:${profile_uuid}/" \
+	cursor-colors-set false
+gsettings set \
+	"org.gnome.Terminal.Legacy.Profile:/org/gnome/terminal/legacy/profiles:/:${profile_uuid}/" \
+	highlight-colors-set false
+gsettings set \
+	"org.gnome.Terminal.Legacy.Profile:/org/gnome/terminal/legacy/profiles:/:${profile_uuid}/" \
+	use-theme-transparency false
+gsettings set \
+	"org.gnome.Terminal.Legacy.Profile:/org/gnome/terminal/legacy/profiles:/:${profile_uuid}/" \
+	use-transparent-background false
+gsettings set \
+	"org.gnome.Terminal.Legacy.Profile:/org/gnome/terminal/legacy/profiles:/:${profile_uuid}/" \
 	bold-is-bright true
 gsettings set \
 	"org.gnome.Terminal.Legacy.Profile:/org/gnome/terminal/legacy/profiles:/:${profile_uuid}/" \
