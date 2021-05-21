@@ -363,7 +363,7 @@ gpg_get_repo_key() {
 		--keyring /tmp/archive-keyring.gpg \
 		--output $2 \
 		--export $1
-	rm -f /tmp/archive-keyring.gpg
+	rm -f /tmp/archive-keyring.gpg*
 }
 
 pre_process() {
