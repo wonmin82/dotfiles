@@ -228,6 +228,9 @@ $gopath
 typeset -U gopath
 __rationalize_path gopath
 export GOPATH
+
+# Import rust environment
+[[ -f $HOME/.cargo/env ]] && source "$HOME/.cargo/env"
 #}}}
 
 if [[ -f $HOME/.zshenv.path ]]; then

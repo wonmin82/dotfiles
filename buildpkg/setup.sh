@@ -13,3 +13,4 @@ set -e -x
 ./install-mc.sh
 ./install-shfmt.sh
 ./install-pythonpkgs.sh
+./install-rustup.sh

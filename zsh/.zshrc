@@ -615,6 +615,7 @@ if [[ ${_SYSENV_DIST} == "ubuntu" ]]; then
 	{
 		package-refresh
 		python-package-refresh
+		(( $+commands[rustup] )) && rustup update
 		retry antigen selfupdate
 		retry antigen update
 		[[ -v LS_COLORS_DIR ]] && lscolors-refresh
@@ -626,6 +627,7 @@ if [[ ${_SYSENV_DIST} == "ubuntu" ]]; then
 	function local-refresh()
 	{
 		python-package-refresh
+		(( $+commands[rustup] )) && rustup update
 		retry antigen selfupdate
 		retry antigen update
 		[[ -v LS_COLORS_DIR ]] && lscolors-refresh
