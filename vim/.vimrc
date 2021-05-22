@@ -314,6 +314,10 @@ call dein#add('vim-scripts/IndentConsistencyCop')
 call dein#add('vim-scripts/IndentConsistencyCopAutoCmds')
 call dein#add('ntpeters/vim-better-whitespace')
 
+call dein#add('rust-lang/rust.vim')
+call dein#add('cespare/vim-toml')
+call dein#add('fatih/vim-go')
+
 call dein#add('kergoth/vim-bitbake')
 call dein#add('peterhoeg/vim-qml')
 
@@ -791,6 +795,13 @@ augroup MyAutoCmd
 	if (v:version > 801 || v:version == 801 && has('patch729'))
 		autocmd SourcePost cppman.vim
 					\   execute "call s:set_buffer_env_for_cppman()"
+	endif
+	autocmd FileType godoc
+				\   execute "setlocal nolist nonumber nospell" |
+				\   execute "nnoremap <buffer> q :<c-u>bdelete<cr>" |
+	if exists('+colorcolumn')
+		autocmd FileType godoc
+					\   execute "setlocal colorcolumn="
 	endif
 	autocmd FileType vimshell
 				\   execute "setlocal nolist nonumber nospell"
@@ -1979,6 +1990,36 @@ else
 	let g:tagbar_autofocus = 0
 	autocmd BufEnter * nested :call tagbar#autoopen(0)
 endif
+
+" tagbar configuration for go language
+" https://github.com/jstemmer/gotags
+let g:tagbar_type_go = {
+	\ 'ctagstype' : 'go',
+	\ 'kinds'     : [
+		\ 'p:package',
+		\ 'i:imports:1',
+		\ 'c:constants',
+		\ 'v:variables',
+		\ 't:types',
+		\ 'n:interfaces',
+		\ 'w:fields',
+		\ 'e:embedded',
+		\ 'm:methods',
+		\ 'r:constructor',
+		\ 'f:functions'
+	\ ],
+	\ 'sro' : '.',
+	\ 'kind2scope' : {
+		\ 't' : 'ctype',
+		\ 'n' : 'ntype'
+	\ },
+	\ 'scope2kind' : {
+		\ 'ctype' : 't',
+		\ 'ntype' : 'n'
+	\ },
+	\ 'ctagsbin'  : 'gotags',
+	\ 'ctagsargs' : '-sort -silent'
+\ }
 "}}}
 
 " Plugin: NERDTree {{{
@@ -2039,6 +2080,41 @@ let g:better_whitespace_filetypes_blacklist = [
 			\	'help',
 			\	'man'
 			\]
+"}}}
+
+" Plugin: rust.vim {{{
+let g:rustfmt_autosave = 0
+autocmd FileType rust
+			\   noremap <buffer> <leader>cf :<c-u>RustFmt<cr>
+"}}}
+
+" Plugin: vim-go {{{
+let g:go_auto_type_info = 1
+let g:go_template_autocreate = 0
+
+let g:go_highlight_build_constraints = 1
+let g:go_highlight_fields = 1
+let g:go_highlight_functions = 1
+let g:go_highlight_interfaces = 1
+let g:go_highlight_methods = 1
+let g:go_highlight_operators = 1
+let g:go_highlight_structs = 1
+
+let g:go_fmt_command = 'goreturns'
+let g:go_fmt_options = {
+			\   'gofmt': '-s',
+			\   'goreturns': ''
+			\}
+let g:go_fmt_autosave = 0
+let g:go_imports_mode = 'goimports'
+let g:go_imports_autosave = 0
+let g:go_mod_fmt_autosave = 0
+let g:go_metalinter_autosave = 0
+
+autocmd FileType go
+			\   noremap <buffer> <leader>cf :<c-u>GoFmt<cr>
+autocmd FileType gomod
+			\   noremap <buffer> <leader>cf :<c-u>GoModFmt<cr>
 "}}}
 
 " Plugin: SrcExplorer {{{
@@ -2208,6 +2284,10 @@ catch
 	let g:syntastic_c_clang_check_exec = 'clang-check'
 	let g:syntastic_cpp_clang_check_exec = 'clang-check'
 endtry
+
+let g:syntastic_go_checkers = ['golint', 'govet', 'errcheck']
+
+let g:syntastic_rust_checkers = ['cargo']
 
 let g:syntastic_mode_map = { "mode": "active",
 			\   "active_filetypes": [],
