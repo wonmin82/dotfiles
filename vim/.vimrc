@@ -316,7 +316,9 @@ call dein#add('ntpeters/vim-better-whitespace')
 
 call dein#add('rust-lang/rust.vim')
 call dein#add('cespare/vim-toml')
-call dein#add('fatih/vim-go')
+if (v:version > 800 || v:version == 800 && has('patch1453'))
+	call dein#add('fatih/vim-go')
+endif
 
 call dein#add('kergoth/vim-bitbake')
 call dein#add('peterhoeg/vim-qml')
