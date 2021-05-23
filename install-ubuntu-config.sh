@@ -1,11 +1,26 @@
 #! /usr/bin/env bash
 
-flag_system=false
+scriptfile="$(readlink -f "$0")"
+scriptpath="$(readlink -m "$(dirname "${scriptfile}")")"
+configspath="${scriptpath}/ubuntu"
+
+flag_superuser=false
+flag_force=false
+
+[ ${EUID} == 0 ] && flag_superuser=true
+uid=${EUID}
+[ ${flag_superuser} == true ] && [ ! -z ${SUDO_USER} ] && uid=${SUDO_UID}
+gid=$(id -g ${uid})
+home="$(getent passwd ${uid} | cut -f6 -d:)"
+
+root_uid=$(id -u root)
+root_gid=$(id -g ${root_uid})
+root_home="$(getent passwd ${root_uid} | cut -f6 -d:)"
 
 while [[ $# -gt 0 ]]; do
 	case $1 in
-	-s | --system)
-		flag_system=true
+	-f | --force)
+		flag_force=true
 		shift
 		;;
 	*)
@@ -15,51 +30,52 @@ while [[ $# -gt 0 ]]; do
 	esac
 done
 
-cp -f -v $PWD/ubuntu/.bash_aliases $HOME/.bash_aliases
-cp -f -v $PWD/ubuntu/.inputrc $HOME/.inputrc
-cp -f -v $PWD/ubuntu/.tmux.conf $HOME/.tmux.conf
-cp -f -v $PWD/ubuntu/.gitconfig $HOME/.gitconfig
-cp -f -v $PWD/ubuntu/.clang-format $HOME/.clang-format
-cp -f -v $PWD/ubuntu/.wgetrc $HOME/.wgetrc
-cp -f -v $PWD/ubuntu/.curlrc $HOME/.curlrc
-cp -f -v $PWD/ubuntu/.axelrc $HOME/.axelrc
-mkdir -p -v $HOME/.config
-cp -f -v $PWD/ubuntu/flake8 $HOME/.config/flake8
-mkdir -p -v $HOME/.config/pip
-cp -f -v $PWD/ubuntu/pip.conf $HOME/.config/pip/
-mkdir -p -v $HOME/.config/python_keyring
-cp -f -v $PWD/ubuntu/keyringrc.cfg $HOME/.config/python_keyring/
-mkdir -p -v $HOME/.config/fontconfig
-cp -f -v $PWD/ubuntu/fonts.conf $HOME/.config/fontconfig/
-
-if [[ $flag_system == false ]]; then
-	exit 0
+install -v -m 644 -o ${uid} -g ${gid} \
+	-D ${configspath}/.bash_aliases -t ${home}/
+install -v -m 644 -o ${uid} -g ${gid} \
+	-D ${configspath}/.inputrc -t ${home}/
+install -v -m 644 -o ${uid} -g ${gid} \
+	-D ${configspath}/.tmux.conf -t ${home}/
+if [ ! -f ${home}/.gitconfig ] || [ ${flag_force} == true ]; then
+	install -v -m 644 -o ${uid} -g ${gid} \
+		-D ${configspath}/.gitconfig -t ${home}/
 fi
-sudo mkdir -p -v /root/.config/pip
-sudo cp -f -v $PWD/ubuntu/pip.conf /root/.config/pip/
-sudo chown -v root:root /root/.config/pip/pip.conf
-sudo mkdir -p -v /root/.config/fontconfig
-sudo cp -f -v $PWD/ubuntu/fonts.conf /root/.config/fontconfig/
-sudo chown -v root:root /root/.config/fontconfig/fonts.conf
+install -v -m 644 -o ${uid} -g ${gid} \
+	-D ${configspath}/.clang-format -t ${home}/
+install -v -m 644 -o ${uid} -g ${gid} \
+	-D ${configspath}/.wgetrc -t ${home}/
+install -v -m 644 -o ${uid} -g ${gid} \
+	-D ${configspath}/.curlrc -t ${home}/
+install -v -m 644 -o ${uid} -g ${gid} \
+	-D ${configspath}/.axelrc -t ${home}/
+install -v -m 644 -o ${uid} -g ${gid} \
+	-D ${configspath}/flake8 -t ${home}/.config/
+install -v -m 644 -o ${uid} -g ${gid} \
+	-D ${configspath}/pip.conf -t ${home}/.config/pip/
+install -v -m 644 -o ${uid} -g ${gid} \
+	-D ${configspath}/keyringrc.cfg -t ${home}/.config/python_keyring/
+install -v -m 644 -o ${uid} -g ${gid} \
+	-D ${configspath}/fonts.conf -t ${home}/.config/fontconfig/
 
-sudo mkdir -p -v /etc/fonts
-sudo cp -f -v $PWD/ubuntu/local.conf /etc/fonts/
-sudo chown -v root:root /etc/fonts/local.conf
+[ ${flag_superuser} == false ] && exit 0
 
-sudo mkdir -p -v /etc/apt/preferences.d
-sudo cp -f -v $PWD/ubuntu/preferences.d/ppa /etc/apt/preferences.d/
-sudo cp -f -v $PWD/ubuntu/preferences.d/runit /etc/apt/preferences.d/
-sudo cp -f -v $PWD/ubuntu/preferences.d/docker /etc/apt/preferences.d/
-sudo cp -f -v $PWD/ubuntu/preferences.d/llvm /etc/apt/preferences.d/
-sudo chown -v root:root \
-	/etc/apt/preferences.d/ppa \
-	/etc/apt/preferences.d/runit \
-	/etc/apt/preferences.d/docker \
-	/etc/apt/preferences.d/llvm
+install -v -m 644 -o ${root_uid} -g ${root_gid} \
+	-D ${configspath}/pip.conf -t ${root_home}/.config/pip/
+install -v -m 644 -o ${root_uid} -g ${root_gid} \
+	-D ${configspath}/fonts.conf -t ${root_home}/.config/fontconfig/
+install -v -m 644 -o ${root_uid} -g ${root_gid} \
+	-D ${configspath}/local.conf -t /etc/fonts/
+install -v -m 644 -o ${root_uid} -g ${root_gid} \
+	-D ${configspath}/preferences.d/ppa -t /etc/apt/preferences.d/
+install -v -m 644 -o ${root_uid} -g ${root_gid} \
+	-D ${configspath}/preferences.d/runit -t /etc/apt/preferences.d/
+install -v -m 644 -o ${root_uid} -g ${root_gid} \
+	-D ${configspath}/preferences.d/docker -t /etc/apt/preferences.d/
+install -v -m 644 -o ${root_uid} -g ${root_gid} \
+	-D ${configspath}/preferences.d/llvm -t /etc/apt/preferences.d/
+install -v -m 644 -o ${root_uid} -g ${root_gid} \
+	-D ${configspath}/apt.conf.d/99dpkg-options -t /etc/apt/apt.conf.d/
+install -v -m 644 -o ${root_uid} -g ${root_gid} \
+	-D ${configspath}/apt.conf.d/99retries -t /etc/apt/apt.conf.d/
 
-sudo mkdir -p -v /etc/apt/apt.conf.d
-sudo cp -f -v $PWD/ubuntu/apt.conf.d/99dpkg-options /etc/apt/apt.conf.d/
-sudo cp -f -v $PWD/ubuntu/apt.conf.d/99retries /etc/apt/apt.conf.d/
-sudo chown -v root:root \
-	/etc/apt/apt.conf.d/99dpkg-options \
-	/etc/apt/apt.conf.d/99retries
+exit 0
