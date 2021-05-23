@@ -190,6 +190,7 @@ list_install_pkgs=(
 	"nodejs"
 	"yarn"
 	"mono-complete"
+	"mono-devel"
 	"openjdk-11-jdk"
 	"openjdk-11-jre"
 	"openjdk-11-jre-headless"
