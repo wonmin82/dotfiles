@@ -317,8 +317,8 @@ list_install_snap_pkgs=(
 	"shfmt"
 )
 
-apt_update="retry aptitude update"
-apt_fetch="retry aptitude -y --with-recommends --download-only install"
+apt_update="aptitude update"
+apt_fetch="aptitude -y --with-recommends --download-only install"
 apt_install="aptitude -y --with-recommends install"
 apt_remove="aptitude -y purge"
 

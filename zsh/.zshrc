@@ -584,8 +584,8 @@ if [[ ${_SYSENV_DIST} == "ubuntu" ]]; then
 
 	function package-refresh()
 	{
-		retry sudo aptitude update
-		retry sudo aptitude -d -y upgrade
+		sudo aptitude update
+		sudo aptitude -d -y upgrade
 		sudo DEBIAN_FRONTEND="noninteractive" aptitude -y upgrade
 		package-cleanup
 		(( $+commands[snap] )) && sudo snap refresh
@@ -648,8 +648,8 @@ if [[ ${_SYSENV_DIST} == "raspbian" ]]; then
 
 	function package-refresh()
 	{
-		retry sudo aptitude update
-		retry sudo aptitude -d -y upgrade
+		sudo aptitude update
+		sudo aptitude -d -y upgrade
 		sudo DEBIAN_FRONTEND="noninteractive" aptitude -y upgrade
 		package-cleanup
 	}

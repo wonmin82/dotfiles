@@ -59,4 +59,7 @@ sudo chown -v root:root \
 
 sudo mkdir -p -v /etc/apt/apt.conf.d
 sudo cp -f -v $PWD/ubuntu/apt.conf.d/99dpkg-options /etc/apt/apt.conf.d/
-sudo chown -v root:root /etc/apt/apt.conf.d/99dpkg-options
+sudo cp -f -v $PWD/ubuntu/apt.conf.d/99retries /etc/apt/apt.conf.d/
+sudo chown -v root:root \
+	/etc/apt/apt.conf.d/99dpkg-options \
+	/etc/apt/apt.conf.d/99retries
