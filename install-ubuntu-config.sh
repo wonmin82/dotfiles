@@ -48,19 +48,31 @@ install -v -m 644 -o ${uid} -g ${gid} \
 	-D ${configspath}/.curlrc -t ${home}/
 install -v -m 644 -o ${uid} -g ${gid} \
 	-D ${configspath}/.axelrc -t ${home}/
+install -v -m 755 -o ${uid} -g ${gid} \
+	-d ${home}/.config/
 install -v -m 644 -o ${uid} -g ${gid} \
 	-D ${configspath}/flake8 -t ${home}/.config/
+install -v -m 755 -o ${uid} -g ${gid} \
+	-d ${home}/.config/pip/
 install -v -m 644 -o ${uid} -g ${gid} \
 	-D ${configspath}/pip.conf -t ${home}/.config/pip/
+install -v -m 755 -o ${uid} -g ${gid} \
+	-d ${home}/.config/python_keyring/
 install -v -m 644 -o ${uid} -g ${gid} \
 	-D ${configspath}/keyringrc.cfg -t ${home}/.config/python_keyring/
+install -v -m 755 -o ${uid} -g ${gid} \
+	-d ${home}/.config/fontconfig/
 install -v -m 644 -o ${uid} -g ${gid} \
 	-D ${configspath}/fonts.conf -t ${home}/.config/fontconfig/
 
 [ ${flag_superuser} == false ] && exit 0
 
+install -v -m 755 -o ${root_uid} -g ${root_gid} \
+	-d ${root_home}/.config/pip/
 install -v -m 644 -o ${root_uid} -g ${root_gid} \
 	-D ${configspath}/pip.conf -t ${root_home}/.config/pip/
+install -v -m 755 -o ${root_uid} -g ${root_gid} \
+	-d ${root_home}/.config/fontconfig/
 install -v -m 644 -o ${root_uid} -g ${root_gid} \
 	-D ${configspath}/fonts.conf -t ${root_home}/.config/fontconfig/
 install -v -m 644 -o ${root_uid} -g ${root_gid} \
