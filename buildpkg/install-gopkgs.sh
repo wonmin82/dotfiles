@@ -35,9 +35,9 @@ list_pkgs_go111=(
 )
 
 for pkg in "${list_pkgs_go[@]}"; do
-	go get -u -v ${pkg}
+	go get -v ${pkg}
 done
 
 for pkg in "${list_pkgs_go111[@]}"; do
-	GO111MODULE=on go get -u -v ${pkg}
+	GO111MODULE=on go get -v ${pkg}
 done
