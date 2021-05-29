@@ -303,6 +303,7 @@ list_install_pkgs=(
 	"apcalc"
 	"hstr"
 	"code"
+	"google-chrome-stable"
 	"docker-ce"
 	"docker-ce-cli"
 	"containerd.io"
@@ -487,6 +488,16 @@ add_repo() {
 		https://packages.microsoft.com/repos/code \
 		stable main" |
 		tee /etc/apt/sources.list.d/vscode.list
+
+	# google chrome
+	wget -O - https://dl-ssl.google.com/linux/linux_signing_key.pub |
+		gpg --dearmor --output /etc/apt/trusted.gpg.d/google-chrome-archive-keyring.gpg
+	echo "deb \
+		[arch=$(dpkg --print-architecture) \
+		signed-by=/etc/apt/trusted.gpg.d/google-chrome-archive-keyring.gpg] \
+		http://dl.google.com/linux/chrome/deb \
+		stable main" |
+		tee /etc/apt/sources.list.d/google-chrome.list
 
 	# docker
 	# manual installation
