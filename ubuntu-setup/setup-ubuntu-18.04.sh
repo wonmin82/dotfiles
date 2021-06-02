@@ -350,6 +350,8 @@ retry() {
 }
 
 gpg_init() {
+	export GNUPGHOME=$(echo ~root/.gnupg)
+
 	# Make sure that the /root/.gnupg is exist
 	gpg --update-trustdb
 }
