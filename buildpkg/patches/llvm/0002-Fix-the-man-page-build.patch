@@ -1,7 +1,7 @@
-From 75f97cdafe52cbfd4ba39c3b8c334ab0ca0106a2 Mon Sep 17 00:00:00 2001
+From 86449ca8ea52d4ee639729bff5334c25a6209c0c Mon Sep 17 00:00:00 2001
 From: Raphael Isemann <teemperor@gmail.com>
 Date: Thu, 11 Mar 2021 19:51:22 +0100
-Subject: [PATCH] [lldb] Fix the man page build
+Subject: [PATCH 2/2] Fix the man page build
 
 In D94489 we changed the way we build the docs and now have some additional
 dependencies to generate the Python API docs. As the same sphinx project is
@@ -26,7 +26,7 @@ Differential Revision: https://reviews.llvm.org/D98441
  1 file changed, 28 insertions(+), 14 deletions(-)
 
 diff --git a/lldb/docs/conf.py b/lldb/docs/conf.py
-index d55aad2bcff7..b614f43f55c0 100644
+index b9b94672c..b75e204c0 100644
 --- a/lldb/docs/conf.py
 +++ b/lldb/docs/conf.py
 @@ -15,16 +15,21 @@ from __future__ import print_function
@@ -100,5 +100,5 @@ index d55aad2bcff7..b614f43f55c0 100644
  # by just writing `SBData`.
  default_role = 'any'
 -- 
-2.31.1
+2.32.0
 

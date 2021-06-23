@@ -1,7 +1,7 @@
-From e3b72ba5f6b5b36de497aaf61324d18bc809562e Mon Sep 17 00:00:00 2001
+From dbf0747136e6c5b7a6a85f1a9bf9e9d992808975 Mon Sep 17 00:00:00 2001
 From: Wonmin Jung <wonmin82@gmail.com>
 Date: Tue, 13 Oct 2020 12:30:24 +0900
-Subject: [PATCH] Move the definition of current_pos
+Subject: [PATCH 1/2] Move the definition of current_pos
 
 ---
  llvm/include/llvm/Support/raw_ostream.h | 4 +---
@@ -39,5 +39,5 @@ index 8f10d136b..507cffae9 100644
    flush();
  }
 -- 
-2.31.1
+2.32.0
 
