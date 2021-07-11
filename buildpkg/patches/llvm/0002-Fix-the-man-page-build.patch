@@ -1,4 +1,4 @@
-From 86449ca8ea52d4ee639729bff5334c25a6209c0c Mon Sep 17 00:00:00 2001
+From 8084c2db3feb5bfe8362b83c3ebb5db3da6187d6 Mon Sep 17 00:00:00 2001
 From: Raphael Isemann <teemperor@gmail.com>
 Date: Thu, 11 Mar 2021 19:51:22 +0100
 Subject: [PATCH 2/2] Fix the man page build

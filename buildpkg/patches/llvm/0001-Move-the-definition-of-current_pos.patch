@@ -1,4 +1,4 @@
-From dbf0747136e6c5b7a6a85f1a9bf9e9d992808975 Mon Sep 17 00:00:00 2001
+From 198db51a00dfc1df9b227201d225f4643d7e8db8 Mon Sep 17 00:00:00 2001
 From: Wonmin Jung <wonmin82@gmail.com>
 Date: Tue, 13 Oct 2020 12:30:24 +0900
 Subject: [PATCH 1/2] Move the definition of current_pos

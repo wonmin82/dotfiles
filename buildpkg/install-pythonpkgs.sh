@@ -5,6 +5,8 @@ set -e -x
 source ./build-env.sh
 
 list_install_python_pkgs=(
+	"virtualenv"
+	"virtualenvwrapper"
 	"black"
 	"flake8"
 	"pep8"
@@ -14,5 +16,7 @@ list_install_python_pkgs=(
 )
 
 export PIP_REQUIRE_VIRTUALENV="false"
-python3 -m pip install --user --upgrade --force-reinstall pip
-python3 -m pip install --user --upgrade --force-reinstall ${list_install_python_pkgs[@]}
+python3 -m pip install --user --upgrade --force-reinstall \
+	pip
+python3 -m pip install --user --upgrade --force-reinstall \
+	${list_install_python_pkgs[@]}
