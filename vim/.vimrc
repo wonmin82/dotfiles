@@ -338,8 +338,8 @@ if v:version >= 704 && !s:is_raspbian && !s:is_synology
 endif
 call dein#add('honza/vim-snippets')
 
-" ensure vim version >= 7.3.584 and not in cygwin.
-if s:is_ycm_enabled && (v:version > 703 || v:version == 703 && has('patch584'))
+" ensure vim version >= 8.1.2269 and not in cygwin.
+if s:is_ycm_enabled && (v:version > 801 || v:version == 801 && has('patch2269'))
 	if s:is_linux32 || s:is_linux64 || s:is_macos
 		call dein#add('Valloric/YouCompleteMe', {
 					\   'build' : 'env CC=clang CXX=clang++ ./install.py --all --system-libclang'
