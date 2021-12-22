@@ -323,6 +323,7 @@ endif
 call dein#add('kergoth/vim-bitbake')
 call dein#add('peterhoeg/vim-qml')
 
+call dein#add('Konfekt/FastFold')
 call dein#add('kana/vim-operator-user')
 call dein#add('rhysd/vim-clang-format', {
 			\   'depends': 'kana/vim-operator-user'
