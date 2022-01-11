@@ -320,6 +320,7 @@ if (v:version > 800 || v:version == 800 && has('patch1453'))
 	call dein#add('fatih/vim-go')
 endif
 
+call dein#add('bfrg/vim-cpp-modern')
 call dein#add('kergoth/vim-bitbake')
 call dein#add('peterhoeg/vim-qml')
 
@@ -2361,6 +2362,13 @@ let g:IndentTab = 1
 "     let g:IndentTab_scopes = 'indent,commentprefix,string'
 let g:IndentTab_scopes = 'indent,commentprefix,string'
 let g:IndentTab_IsSuperTab = 0
+"}}}
+
+" Plugin: vim-cpp-modern {{{
+let g:cpp_function_highlight = 1
+let g:cpp_attributes_highlight = 1
+let g:cpp_member_highlight = 1
+let g:cpp_simple_highlight = 0
 "}}}
 
 " Plugin: UltiSnips {{{
