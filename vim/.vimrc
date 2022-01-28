@@ -320,7 +320,6 @@ if (v:version > 800 || v:version == 800 && has('patch1453'))
 	call dein#add('fatih/vim-go')
 endif
 
-call dein#add('bfrg/vim-cpp-modern')
 call dein#add('kergoth/vim-bitbake')
 call dein#add('peterhoeg/vim-qml')
 
@@ -345,6 +344,12 @@ if s:is_ycm_enabled && (v:version > 801 || v:version == 801 && has('patch2269'))
 	if s:is_linux32 || s:is_linux64 || s:is_macos
 		call dein#add('Valloric/YouCompleteMe', {
 					\   'build' : 'env CC=clang CXX=clang++ ./install.py --all --system-libclang'
+					\})
+		call dein#add('jeaye/color_coded', {
+					\   'build' : 'rm -f CMakeCache.txt && cmake . && make && make install'
+					\})
+		call dein#add('rdnetto/YCM-Generator', {
+					\   'rev' : 'stable'
 					\})
 	endif
 endif
@@ -2350,6 +2355,11 @@ let g:ycm_key_list_select_completion = [ '<c-n>', '<c-j>', '<down>' ]
 let g:ycm_key_list_previous_completion = [ '<c-p>', '<c-k>', '<up>' ]
 "}}}
 
+" Plugin: color_coded {{{
+let g:color_coded_enabled = 1
+let g:color_coded_filetypes = [ 'c', 'cpp', 'objc' ]
+"}}}
+
 " Plugin: IndentTab {{{
 let g:IndentTab = 1
 " Determine where the buffer's indent settings are applied. Elsewhere, spaces
@@ -2362,13 +2372,6 @@ let g:IndentTab = 1
 "     let g:IndentTab_scopes = 'indent,commentprefix,string'
 let g:IndentTab_scopes = 'indent,commentprefix,string'
 let g:IndentTab_IsSuperTab = 0
-"}}}
-
-" Plugin: vim-cpp-modern {{{
-let g:cpp_function_highlight = 1
-let g:cpp_attributes_highlight = 1
-let g:cpp_member_highlight = 1
-let g:cpp_simple_highlight = 0
 "}}}
 
 " Plugin: UltiSnips {{{
