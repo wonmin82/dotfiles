@@ -1439,6 +1439,7 @@ nnoremap <expr> <leader>re ':!rm -f '.projectroot#guess().'/.projectroot'
 let g:localvimrc_name = [ '.vimrc.local' ]
 " add BufReadPre autocmd for apply options of Syntastic
 let g:localvimrc_event = [ 'BufReadPre', 'BufWinEnter' ]
+let g:localvimrc_sandbox = 0
 let g:localvimrc_ask = 0
 "}}}
 
