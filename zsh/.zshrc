@@ -153,7 +153,7 @@ fi
 
 if [[ ${_SYSENV_OS} == "macos" ]]; then
 	antigen bundle sudo
-	antigen bundle osx
+	antigen bundle macos
 	antigen bundle brew
 	antigen bundle brew-cask
 	antigen bundle gnu-utils
