@@ -552,6 +552,11 @@ if [[ -s $HOME/.local/bin/virtualenvwrapper.sh ]]; then
 elif [[ -s /usr/share/virtualenvwrapper/virtualenvwrapper.sh ]]; then
 	source /usr/share/virtualenvwrapper/virtualenvwrapper.sh
 fi
+
+# homebrew configurations
+if (( $+commands[brew] )); then
+	export HOMEBREW_NO_ENV_HINTS=TRUE
+fi
 #}}}
 
 # Functions {{{
