@@ -1,7 +1,7 @@
-From 198db51a00dfc1df9b227201d225f4643d7e8db8 Mon Sep 17 00:00:00 2001
+From 22a7d5e9e5187ad6b2b0c480e5c857a91ab52644 Mon Sep 17 00:00:00 2001
 From: Wonmin Jung <wonmin82@gmail.com>
 Date: Tue, 13 Oct 2020 12:30:24 +0900
-Subject: [PATCH 1/2] Move the definition of current_pos
+Subject: [PATCH] Move the definition of current_pos
 
 ---
  llvm/include/llvm/Support/raw_ostream.h | 4 +---
@@ -9,10 +9,10 @@ Subject: [PATCH 1/2] Move the definition of current_pos
  2 files changed, 5 insertions(+), 3 deletions(-)
 
 diff --git a/llvm/include/llvm/Support/raw_ostream.h b/llvm/include/llvm/Support/raw_ostream.h
-index 7d572fe06..478c92f85 100644
+index c669c2bab..980e333d7 100644
 --- a/llvm/include/llvm/Support/raw_ostream.h
 +++ b/llvm/include/llvm/Support/raw_ostream.h
-@@ -610,9 +610,7 @@ class raw_string_ostream : public raw_ostream {
+@@ -626,9 +626,7 @@ class raw_string_ostream : public raw_ostream {
    /// See raw_ostream::write_impl.
    void write_impl(const char *Ptr, size_t Size) override;
  
@@ -24,10 +24,10 @@ index 7d572fe06..478c92f85 100644
  public:
    explicit raw_string_ostream(std::string &O) : OS(O) {
 diff --git a/llvm/lib/Support/raw_ostream.cpp b/llvm/lib/Support/raw_ostream.cpp
-index 8f10d136b..507cffae9 100644
+index d4e1c884d..28cb3937c 100644
 --- a/llvm/lib/Support/raw_ostream.cpp
 +++ b/llvm/lib/Support/raw_ostream.cpp
-@@ -938,6 +938,10 @@ bool raw_fd_stream::classof(const raw_ostream *OS) {
+@@ -936,6 +936,10 @@ bool raw_fd_stream::classof(const raw_ostream *OS) {
  //  raw_string_ostream
  //===----------------------------------------------------------------------===//
  
