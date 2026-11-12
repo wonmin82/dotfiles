@@ -12,22 +12,5 @@
 " Otherwise, vim will treats h file as c code.
 "unlet! g:c_syntax_for_h
 
-" default syntastic options
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
-let g:syntastic_mode_map = { "mode": "active",
-			\   "active_filetypes": [],
-			\   "passive_filetypes": []
-			\ }
-
-let g:syntastic_c_checkers = ['clang_check', 'clang_tidy', 'cppcheck', 'gcc']
-let g:syntastic_c_clang_check_args = '-extra-arg="-std=c11"'
-let g:syntastic_c_clang_tidy_args = '-extra-arg="-std=c11"'
-let g:syntastic_c_cppcheck_args = '--language=c --std=c11'
-let g:syntastic_c_compiler_options = '-Wall -std=c11'
-
-let g:syntastic_cpp_checkers = ['clang_check', 'clang_tidy', 'cppcheck', 'gcc']
-let g:syntastic_cpp_clang_check_args = '-extra-arg="-std=c++11"'
-let g:syntastic_cpp_clang_tidy_args = '-extra-arg="-std=c++11"'
-let g:syntastic_cpp_cppcheck_args = '--language=c++ --std=c++11'
-let g:syntastic_cpp_compiler_options = '-Wall -std=c++11 -pedantic'
+" Language-server options belong in .vim/coc-settings.json for each project.
+" Use compile_commands.json and .clangd for C/C++ compiler flags.

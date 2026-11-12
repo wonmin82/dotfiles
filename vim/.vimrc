@@ -126,7 +126,6 @@ let g:neomru#directory_mru_path = $NEOMRUPATH . '/directory'
 let g:dein#install_max_processes = 4        " default is 8
 let g:dein#types#git#default_protocol = 'https'
 let g:dein#types#git#clone_depth = 0
-" YouCompleteMe install process tooks time.
 let g:dein#install_process_timeout = 1200
 
 if has('vim_starting')
@@ -236,7 +235,15 @@ endwhile
 
 " My Bundles here:
 " Note: You don't set dein.vim setting in .gvimrc!
-let s:is_ycm_enabled = 1
+" Coc release requires Vim 9.0.0438+ and Node.js 22.15+.
+let s:is_coc_enabled = has('patch-9.0.0438') && has('job') && has('channel')
+            \ && executable('node')
+if s:is_coc_enabled
+    let s:node_version = split(substitute(system('node --version'), '^v', '', ''), '\.')
+    let s:is_coc_enabled = len(s:node_version) >= 2
+                \ && (str2nr(s:node_version[0]) > 22
+                \ || (str2nr(s:node_version[0]) == 22 && str2nr(s:node_version[1]) >= 15))
+endif
 
 if !s:is_synology
 	call dein#add('Shougo/vimproc.vim', {
@@ -300,12 +307,10 @@ call dein#add('scrooloose/nerdcommenter')
 if v:version > 703 || v:version == 703 && has('patch465')
 	call dein#add('eiginn/netrw')
 endif
-call dein#add('wesleyche/SrcExpl')
 call dein#add('jlanzarotta/bufexplorer')
 call dein#add('dbakker/vim-projectroot')
 call dein#add('godlygeek/tabular')
 call dein#add('Lokaltog/vim-easymotion')
-call dein#add('scrooloose/syntastic')
 call dein#add('vim-scripts/ingo-library')
 call dein#add('vim-scripts/IndentTab', {
 			\   'depends': 'vim-scripts/ingo-library'
@@ -339,19 +344,11 @@ if v:version >= 704 && !s:is_raspbian && !s:is_synology
 endif
 call dein#add('honza/vim-snippets')
 
-" ensure vim version >= 8.1.2269 and not in cygwin.
-if s:is_ycm_enabled && (v:version > 801 || v:version == 801 && has('patch2269'))
-	if s:is_linux32 || s:is_linux64 || s:is_macos
-		call dein#add('Valloric/YouCompleteMe', {
-					\   'build' : 'env CC=clang CXX=clang++ ./install.py --all --system-libclang'
-					\})
-		call dein#add('jeaye/color_coded', {
-					\   'build' : 'rm -f CMakeCache.txt && cmake . && make && make install'
-					\})
-		call dein#add('rdnetto/YCM-Generator', {
-					\   'rev' : 'stable'
-					\})
-	endif
+if s:is_coc_enabled
+    let g:coc_config_home = $DOTVIMPATH
+    let g:coc_data_home = $DOTVIMDATAPATH . '/coc'
+    let g:coc_global_extensions = ['coc-clangd', 'coc-json']
+    call dein#add('neoclide/coc.nvim', {'rev': 'release'})
 endif
 
 call dein#add('tomasr/molokai')
@@ -735,7 +732,7 @@ function s:set_buffer_env_for_python()
 	setlocal smarttab expandtab
 	setlocal autoindent cindent smartindent
 	setlocal backspace=indent,eol,start
-	nnoremap <silent> <buffer> K :call PydocFind()<CR>
+	nnoremap <silent> <buffer> K :call DotVimDocumentation()<CR>
 	vnoremap <silent> <buffer> K :<C-U>if line("'>") - line("'<") == 0<bar>execute(":call PydocShow(GetVisualSelection())")<bar>endif<CR>
 endfunction
 
@@ -1437,7 +1434,7 @@ nnoremap <expr> <leader>re ':!rm -f '.projectroot#guess().'/.projectroot'
 
 " Plugin: localvimrc {{{
 let g:localvimrc_name = [ '.vimrc.local' ]
-" add BufReadPre autocmd for apply options of Syntastic
+" Load project-local settings before reading buffers.
 let g:localvimrc_event = [ 'BufReadPre', 'BufWinEnter' ]
 let g:localvimrc_sandbox = 0
 let g:localvimrc_ask = 0
@@ -1481,7 +1478,7 @@ nnoremap <silent> [unite]u :<c-u>Unite -buffer-name=buffers file_mru buffer<cr>
 nnoremap <silent> [unite]y :<c-u>Unite -buffer-name=yanks history/yank<cr>
 
 " Quick outline
-nnoremap <silent> [unite]o :<c-u>Unite -buffer-name=outline -vertical outline<cr>
+nnoremap <silent> [unite]o :<c-u>call DotVimOutline()<cr>
 
 " Quick tag
 nnoremap <silent> [unite]t :<c-u>Unite -buffer-name=tag tag<cr>
@@ -1974,9 +1971,32 @@ let g:bufferline_show_bufnr = 1
 let g:bufferline_rotate = 2
 "}}}
 
+function! DotVimDocumentation() abort
+    if get(g:, 'coc_service_initialized', 0) && CocHasProvider('hover')
+        call CocActionAsync('doHover')
+    elseif &filetype ==# 'python'
+        call PydocFind()
+    else
+        normal! K
+    endif
+endfunction
+
+function! DotVimOutline() abort
+    if get(g:, 'coc_service_initialized', 0) && CocHasProvider('documentSymbol')
+        let l:win = coc#window#find('cocViewId', 'OUTLINE')
+        if l:win == -1
+            call CocActionAsync('showOutline', 1)
+        else
+            call coc#window#close(l:win)
+        endif
+    else
+        TagbarToggle
+    endif
+endfunction
+
 " Plugin: tagbar {{{
-nnoremap <silent> <expr> <f4> @% != "[BufExplorer]" ? ':TagbarToggle<cr>' : '\<nop>'
-inoremap <silent> <expr> <f4> @% != "[BufExplorer]" ? '<esc>:TagbarToggle<cr>a' : '\<nop>'
+nnoremap <silent> <expr> <f4> @% != "[BufExplorer]" ? ':call DotVimOutline()<cr>' : '\<nop>'
+inoremap <silent> <expr> <f4> @% != "[BufExplorer]" ? '<esc>:call DotVimOutline()<cr>a' : '\<nop>'
 
 try
 	let g:tagbar_ctags_bin = exepath('ctags')
@@ -2101,7 +2121,11 @@ autocmd FileType rust
 "}}}
 
 " Plugin: vim-go {{{
-let g:go_auto_type_info = 1
+let s:coc_handles_go = s:is_coc_enabled && executable('gopls')
+let g:go_auto_type_info = !s:coc_handles_go
+let g:go_code_completion_enabled = !s:coc_handles_go
+let g:go_def_mapping_enabled = !s:coc_handles_go
+let g:go_doc_keywordprg_enabled = !s:coc_handles_go
 let g:go_template_autocreate = 0
 
 let g:go_highlight_build_constraints = 1
@@ -2127,49 +2151,6 @@ autocmd FileType go
 			\   noremap <buffer> <leader>cf :<c-u>GoFmt<cr>
 autocmd FileType gomod
 			\   noremap <buffer> <leader>cf :<c-u>GoModFmt<cr>
-"}}}
-
-" Plugin: SrcExplorer {{{
-" // The switch of the Source Explorer
-nmap <f11> :SrcExplToggle<cr>
-
-" // Set the height of Source Explorer window
-let g:SrcExpl_winHeight = 8
-
-" // Set 100 ms for refreshing the Source Explorer
-let g:SrcExpl_refreshTime = 100
-
-" // Set "Enter" key to jump into the exact definition context
-let g:SrcExpl_jumpKey = "<enter>"
-
-" // Set "Space" key for back from the definition context
-let g:SrcExpl_gobackKey = "<space>"
-
-" // In order to Avoid conflicts, the Source Explorer should know what plugins
-" // are using buffers. And you need add their bufname into the list below
-" // according to the command ":buffers!"
-let g:SrcExpl_pluginList = [
-			\   "__Tag_List__",
-			\   "_NERD_tree_",
-			\   "Source_Explorer",
-			\   "[File List]",
-			\   "[Buf List]",
-			\   "[BufExplorer]"
-			\]
-" // Enable/Disable the local definition searching, and note that this is not
-" // guaranteed to work, the Source Explorer doesn't check the syntax for now.
-" // It only searches for a match with the keyword according to command 'gd'
-let g:SrcExpl_searchLocalDef = 1
-
-" // Let the Source Explorer update the tags file when opening
-let g:SrcExpl_isUpdateTags = 1
-
-" // Use program 'ctags' with argument '--sort=foldcase -R' to create or
-" // update a tags file
-let g:SrcExpl_updateTagsCmd = "ctags --sort=foldcase -R ."
-
-" // Set "<s-f11>" key for updating the tags file artificially
-let g:SrcExpl_updateTagsKey = "<s-f11>"
 "}}}
 
 " Plugin: Tabularize {{{
@@ -2224,144 +2205,12 @@ function! s:clang_format_detect()
 	throw l:base_command . ' could not be detected.'
 endfunction
 
-function! s:clang_tidy_detect()
-	let l:base_command = 'clang-tidy'
-
-	for clang_tools_version in s:clang_tools_suffixes
-		if executable(l:base_command . clang_tools_version)
-			try
-				let l:command = exepath(l:base_command . clang_tools_version)
-			catch
-				let l:command = l:base_command . clang_tools_version
-			endtry
-			return l:command
-		endif
-	endfor
-
-	throw l:base_command . ' could not be detected.'
-endfunction
-
-function! s:clang_check_detect()
-	let l:base_command = 'clang-check'
-
-	for clang_tools_version in s:clang_tools_suffixes
-		if executable(l:base_command . clang_tools_version)
-			try
-				let l:command = exepath(l:base_command . clang_tools_version)
-			catch
-				let l:command = l:base_command . clang_tools_version
-			endtry
-			return l:command
-		endif
-	endfor
-
-	throw l:base_command . ' could not be detected.'
-endfunction
-
 "}}}
 
-" Plugin: syntastic {{{
-nmap <leader>ms :SyntasticToggleMode<cr>
-nmap <leader>sc :SyntasticCheck<cr>
-nmap <leader>sr :SyntasticReset<cr>
-
-if 0
-	let g:syntastic_error_symbol = '✘'
-	let g:syntastic_warning_symbol = '⚠'
+" Plugin: coc.nvim {{{
+if s:is_coc_enabled
+    execute 'source ' . fnameescape($DOTVIMPATH . '/coc.vim')
 endif
-let g:syntastic_error_symbol = 'E>'
-let g:syntastic_warning_symbol = 'W>'
-let g:syntastic_style_error_symbol = 'S>'
-let g:syntastic_style_warning_symbol = 'S>'
-let g:syntastic_check_on_open = 1
-
-let g:syntastic_check_on_wq = 0
-let g:syntastic_aggregate_errors = 1
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 2       " use unite location list instead.
-" let g:syntastic_ignore_files = ['\m^/usr/include/', '\m\c\.h$']
-
-try
-	let s:clang_tidy_command = s:clang_tidy_detect()
-	let g:syntastic_c_clang_tidy_exec = s:clang_tidy_command
-	let g:syntastic_cpp_clang_tidy_exec = s:clang_tidy_command
-catch
-	let g:syntastic_c_clang_tidy_exec = 'clang-tidy'
-	let g:syntastic_cpp_clang_tidy_exec = 'clang-tidy'
-endtry
-try
-	let s:clang_check_command = s:clang_check_detect()
-	let g:syntastic_c_clang_check_exec = s:clang_check_command
-	let g:syntastic_cpp_clang_check_exec = s:clang_check_command
-catch
-	let g:syntastic_c_clang_check_exec = 'clang-check'
-	let g:syntastic_cpp_clang_check_exec = 'clang-check'
-endtry
-
-let g:syntastic_go_checkers = ['golint', 'govet', 'errcheck']
-
-let g:syntastic_rust_checkers = ['cargo']
-
-let g:syntastic_mode_map = { "mode": "active",
-			\   "active_filetypes": [],
-			\   "passive_filetypes": []
-			\}
-
-" autocmd for apply localvimrc to syntastic when loading a session.
-" it will trigger check twice.
-" TODO: find out how to remove redundancy check.
-augroup MyAutoCmd
-	autocmd SessionLoadPost *
-				\   if g:syntastic_check_on_open == 1 |
-				\       call SyntasticCheck() |
-				\   else |
-				\       call SyntasticReset() |
-				\   endif
-augroup END
-"}}}
-
-" Plugin: YouCompleteMe {{{
-" do not use ycm as syntastic checker.
-let g:ycm_register_as_syntastic_checker = 0 "default 1
-let g:ycm_show_diagnostics_ui = 0 "default 1
-
-"will put icons in Vim's gutter on lines that have a diagnostic set.
-"Turning this off will also turn off the YcmErrorLine and YcmWarningLine
-"highlighting
-let g:ycm_enable_diagnostic_signs = 0
-let g:ycm_enable_diagnostic_highlighting = 0
-let g:ycm_always_populate_location_list = 1 "default 0
-let g:ycm_open_loclist_on_ycm_diags = 1 "default 1
-let g:ycm_seed_identifiers_with_syntax = 1 "default 0
-
-let g:ycm_complete_in_strings = 1 "default 1
-let g:ycm_collect_identifiers_from_tags_files = 1 "default 0, set to 0 if tag file isn't in local.
-let g:ycm_path_to_python_interpreter = '' "default ''
-
-let g:ycm_server_use_vim_stdout = 0 "default 0 (logging to console)
-let g:ycm_server_log_level = 'info' "default info
-
-let g:ycm_global_ycm_extra_conf = $DOTVIMPATH . '/.ycm_extra_conf.py'
-let g:ycm_confirm_extra_conf = 0
-
-let g:ycm_goto_buffer_command = 'same-buffer' "[ 'same-buffer', 'horizontal-split', 'vertical-split', 'new-tab' ]
-let g:ycm_filetype_whitelist = { '*': 1 }
-let g:ycm_key_invoke_completion = '<c-q>'
-
-nnoremap <f12> :YcmForceCompileAndDiagnostics<cr>
-
-augroup MyAutoCmd
-	autocmd CursorMovedI * if pumvisible() == 0 | silent! pclose | endif
-	autocmd InsertLeave * if pumvisible() == 0 | silent! pclose | endif
-augroup END
-
-let g:ycm_key_list_select_completion = [ '<c-n>', '<c-j>', '<down>' ]
-let g:ycm_key_list_previous_completion = [ '<c-p>', '<c-k>', '<up>' ]
-"}}}
-
-" Plugin: color_coded {{{
-let g:color_coded_enabled = 1
-let g:color_coded_filetypes = [ 'c', 'cpp', 'objc' ]
 "}}}
 
 " Plugin: IndentTab {{{

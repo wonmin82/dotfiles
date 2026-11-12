@@ -1,0 +1,11 @@
+{
+  "suggest.noselect": true,
+  "semanticTokens.enable": true,
+  "diagnostic.enable": true,
+  "diagnostic.errorSign": "E>",
+  "diagnostic.warningSign": "W>",
+  "coc.preferences.formatOnSaveFiletypes": [],
+  "clangd.arguments": ["--background-index", "--clang-tidy"],
+  "clangd.compilationDatabaseCandidates": ["build"],
+  "clangd.fallbackFlags": ["-Wall", "-Wextra"]
+}
