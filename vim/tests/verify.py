@@ -123,8 +123,6 @@ def verify(version, binary, vim, env, work, fixture, previous, override):
     print(f"PASS {binaries_version}: {len(profile)} options, idempotence, Vim mappings and project styles")
     return first
 
-
-
 def verify_installed_layout(vim, env, work):
     home = Path(env["HOME"])
     runtime = home / ".vim" / "dotvim"
@@ -139,6 +137,86 @@ def verify_installed_layout(vim, env, work):
          "-c", "if exists(':ClangFormat') != 2 || exists('g:c_syntax_for_h') | cquit | endif",
          "-c", "qa!"], env, work)
     print("PASS installed layout and personal settings with spaces in HOME")
+
+
+def verify_plugin_startup(vim, env, work):
+    mock_bin = work / "mock bin"
+    mock_bin.mkdir()
+    dein = work / "mock dein.vim"
+    dein.write_text("""function! dein#begin(path, vimrcs) abort
+endfunction
+function! dein#add(repo, options) abort
+endfunction
+function! dein#get(name) abort
+    return {}
+endfunction
+function! dein#end() abort
+endfunction
+function! dein#check_install() abort
+    return str2nr($DOTVIM_TEST_MISSING)
+endfunction
+function! dein#install() abort
+    call writefile(['install'], $DOTVIM_TEST_EVENTS, 'a')
+endfunction
+""")
+    git = mock_bin / "git"
+    git.write_text("""#!/bin/sh
+set -eu
+[ "$1" = clone ]
+printf 'clone\\n' >> "$DOTVIM_TEST_EVENTS"
+[ "$DOTVIM_TEST_CLONE_FAILS" = 0 ]
+for destination do :; done
+/bin/mkdir -p "$destination/autoload"
+/bin/cp "$DOTVIM_TEST_DEIN" "$destination/autoload/dein.vim"
+""")
+    node = mock_bin / "node"
+    node.write_text("#!/bin/sh\nprintf 'v22.15.0\\n'\n")
+    git.chmod(0o700)
+    node.chmod(0o700)
+
+    for name, installed, missing, expected in (
+        ("fresh", False, True, ["clone", "install"]),
+        ("missing bundles", True, True, ["install"]),
+        ("managed dein", True, True, ["install"]),
+        ("all present", True, False, []),
+        ("opt out", True, True, []),
+        ("opt out without dein", False, True, []),
+        ("no load plugins", False, True, []),
+        ("failed clone", False, True, ["clone"]),
+    ):
+        home = work / name
+        home.mkdir()
+        if installed:
+            bundle = home / ".vim_data" / "bundle"
+            checkout = "repos/github.com/Shougo/dein.vim" if name == "managed dein" else "dein.vim"
+            autoload = bundle / checkout / "autoload"
+            autoload.mkdir(parents=True)
+            shutil.copyfile(dein, autoload / "dein.vim")
+        if name.startswith("opt out"):
+            (home / ".vimrc.local").write_text("let g:dotvim_auto_install_plugins = 0\n")
+        events = home / "events"
+        events.touch()
+        status = home / "vim-status"
+        startup_env = dict(env, HOME=str(home), PATH=str(mock_bin) + ":/usr/bin:/bin",
+                           DOTVIM_TEST_DEIN=str(dein), DOTVIM_TEST_EVENTS=str(events),
+                           DOTVIM_TEST_CLONE_FAILS=str(int(name == "failed clone")),
+                           DOTVIM_TEST_MISSING=str(int(missing)), DOTVIM_TEST_STATUS=str(status))
+        options = ["--noplugin"] if name == "no load plugins" else []
+        run([vim, "-N", "-n", "-i", "NONE", "-es", "-V1" + str(home / "vim.log"),
+             "-u", VIM / ".vimrc", *options,
+             "-c", "if exists(':ClangFormat') != 2 | cquit | endif",
+             "-c", "call writefile([json_encode(get(g:, 'coc_global_extensions', v:null)), "
+                   "string(has('patch-9.0.0438') && has('job') && has('channel'))], $DOTVIM_TEST_STATUS)",
+             "-c", "qa!"], startup_env, work, vim_log=True)
+        check(events.read_text().splitlines() == expected, f"Unexpected install actions for {name}")
+        extensions, coc_supported = status.read_text().splitlines()
+        if coc_supported == "1":
+            expected_extensions = None
+            if installed or name == "fresh":
+                expected_extensions = [] if name == "opt out" else ["coc-clangd", "coc-json"]
+            check(json.loads(extensions) == expected_extensions,
+                  f"Unexpected Coc extension list for {name}")
+    print("PASS automatic plugin startup and offline opt-out with Git and dein stubs")
 
 
 def verify_plugins(vim, env, work, plugin_root):
@@ -177,6 +255,7 @@ def main():
         work = Path(directory)
         env = make_environment(work)
         verify_installed_layout(vim, env, work)
+        verify_plugin_startup(vim, env, work)
         unsupported = work / "unsupported version"
         unsupported.write_text("#!/bin/sh\nprintf 'clang-format version 24.0.0\\n'\n")
         unsupported.chmod(0o700)

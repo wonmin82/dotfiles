@@ -9,12 +9,12 @@ if g:dotvim_coc_enabled
                 \ && (str2nr(s:node_version[0]) > 22
                 \ || (str2nr(s:node_version[0]) == 22 && str2nr(s:node_version[1]) >= 15))
 endif
-
-
 if get(g:, 'dotvim_disable_plugins', 0)
     finish
 endif
 
+let s:auto_install = has('vim_starting') && &loadplugins
+            \ && get(g:, 'dotvim_auto_install_plugins', 1)
 let g:dein#install_max_processes = 4        " default is 8
 let g:dein#types#git#default_protocol = 'https'
 let g:dein#types#git#clone_depth = 0
@@ -22,8 +22,32 @@ let g:dein#install_process_timeout = 1200
 " Use a separate cache so obsolete bundles in the previous aggregate stay inactive.
 let g:dein#cache_directory = $DOTVIMDATAPATH . '/cache/dein-dotvim'
 
-if filereadable($PLUGINPATH . '/dein.vim/autoload/dein.vim')
-    let &runtimepath .= ',' . escape($PLUGINPATH . '/dein.vim', ',')
+function! s:bootstrap_dein(path) abort
+    if !executable('git')
+        echomsg 'dotvim: Git is required to install dein.vim.'
+        return 0
+    endif
+    call EnsureDirExists(fnamemodify(a:path, ':h'))
+    let l:branch = v:version < 802 ? ' --branch 1.5' : ''
+    let l:output = system('git clone' . l:branch
+                \ . ' https://github.com/Shougo/dein.vim.git ' . shellescape(a:path))
+    if v:shell_error || !filereadable(a:path . '/autoload/dein.vim')
+        echomsg 'dotvim: Could not install dein.vim. ' . substitute(l:output, '\n\+$', '', '')
+        return 0
+    endif
+    return 1
+endfunction
+
+let s:dein_path = $PLUGINPATH . '/dein.vim'
+let s:managed_dein_path = $PLUGINPATH . '/repos/github.com/Shougo/dein.vim'
+if !filereadable(s:dein_path . '/autoload/dein.vim')
+            \ && filereadable(s:managed_dein_path . '/autoload/dein.vim')
+    let s:dein_path = s:managed_dein_path
+endif
+if filereadable(s:dein_path . '/autoload/dein.vim')
+            \ || (s:auto_install && empty(globpath(&runtimepath, 'autoload/dein.vim'))
+            \     && s:bootstrap_dein(s:dein_path))
+    let &runtimepath .= ',' . escape(s:dein_path, ',')
 endif
 if empty(globpath(&runtimepath, 'autoload/dein.vim'))
     let g:dotvim_coc_enabled = 0
@@ -50,10 +74,12 @@ if dein#begin($PLUGINPATH, s:vimrcs) == 1
     let g:dotvim_coc_enabled = 0
     finish
 endif
-if v:version >= 800
-    call s:add('Shougo/dein.vim')
+if v:version >= 802
+    let s:dein_options = filereadable(s:dein_path . '/autoload/dein.vim')
+                \ && !filereadable(s:managed_dein_path . '/autoload/dein.vim') ? {'path': s:dein_path} : {}
+    call s:add('Shougo/dein.vim', s:dein_options)
 else
-    call s:add($PLUGINPATH . '/dein.vim')
+    call s:add(s:dein_path)
 endif
 
 if !g:dotvim_platform.synology
@@ -154,7 +180,8 @@ call s:add('honza/vim-snippets')
 if g:dotvim_coc_enabled
     let g:coc_config_home = $DOTVIMPATH
     let g:coc_data_home = $DOTVIMDATAPATH . '/coc'
-    let g:coc_global_extensions = []
+    let g:coc_global_extensions = get(g:, 'coc_global_extensions',
+                \ s:auto_install ? ['coc-clangd', 'coc-json'] : [])
     call s:add('neoclide/coc.nvim', {'rev': 'release', 'merged': 0})
     let g:dotvim_coc_enabled = isdirectory(get(dein#get('coc.nvim'), 'path', ''))
 endif
@@ -167,8 +194,11 @@ call s:add('noahfrederick/vim-noctu')
 
 call dein#end()
 
-" Plugin changes are explicit so sourcing the vimrc works offline.
 command! DotVimInstall call dein#install()
+if s:auto_install && dein#check_install() > 0
+    echomsg 'dotvim: Installing missing plugins. Restart Vim after installation finishes.'
+    call dein#install()
+endif
 " Function: Helper function for dein.vim {{{
 function! DeinUpdate()
 	let autosave_save = g:session_autosave

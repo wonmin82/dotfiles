@@ -21,10 +21,12 @@ including `.vimrc`. A restored legacy vimrc uses its original plugin cache.
 For a fresh install, remove or move the installed `.vimrc` and the
 `~/.vim/dotvim` directory to disable the configuration.
 
-Vim can start without dein or missing bundles. In an environment that permits
-installations, place dein in `~/.vim_data/bundle/dein.vim` (or on
-`runtimepath`), then run `:DotVimInstall` explicitly and restart. The existing
-`:call DeinUpdate()` is an explicit update action. Dein's new runtime cache is
+On startup Vim uses Git to install dein into `~/.vim_data/bundle/dein.vim`
+if needed, then asks dein to install missing bundles. Restart Vim when the
+installation finishes. Put `let g:dotvim_auto_install_plugins = 0` in
+`~/.vimrc.local` for offline startup. With dein present, `:DotVimInstall`
+installs missing bundles on demand. Use `:call DeinUpdate()` to update
+existing bundles explicitly. Dein's runtime cache is
 `~/.vim_data/cache/dein-dotvim`. Existing installed bundles are reused in place.
 Paths for NERDTree, Tagbar, NERDCommenter and EasyMotion use their current
 repository names and fall back to the old checkout directories.
@@ -108,9 +110,10 @@ Use the installed Go/Rust and shell tooling for builds and format commands.
 
 The Coc release branch requires Vim 9.0.0438+ with jobs and channels and
 Node.js 22.15+. Coc uses `~/.vim/coc-settings.json` and stores extensions and
-state in `~/.vim_data/coc`. Existing extensions are reused. To add the standard
-extensions when installation is permitted, run `:CocInstall coc-clangd coc-json`
-and use `:CocInfo` or `:CocList extensions` to inspect the result.
+state in `~/.vim_data/coc`. Coc reuses installed extensions and installs
+`coc-clangd` and `coc-json` on startup when automatic installation is enabled.
+With it disabled, use `:CocInstall coc-clangd coc-json` when needed.
+Use `:CocInfo` or `:CocList extensions` to inspect the result.
 `gopls`, `rust-analyzer`, `pylsp` and `typescript-language-server` are
 registered when present on PATH. Coc owns completion/definition for Go when
 gopls is available. Vim and Coc diagnostics do not substitute for project builds.
@@ -202,7 +205,8 @@ checkout, without loading plugins. It checks the version, full dump schema,
 strict parsing, formatting and idempotence, C++ style invariants, version
 comparisons, key mappings, range/operator formatting, project styles, and
 save formatting. Missing binaries are reported as `BLOCKED`.
-The test also loads a copy of the installed layout in a home path with spaces.
+The test also loads a copy of the installed layout in a home path with spaces
+and checks the startup installation paths with stub Git and dein commands.
 Use `--installed-bundles ~/.vim_data/bundle/repos/github.com` to exercise
 existing bundles for Unite quickfix and MRU, BufExplorer, NERDTree, Fugitive
 and vim-session with disposable test data.
