@@ -120,7 +120,7 @@ antigen bundle git
 antigen bundle gitignore
 if (( $+commands[tmux] )); then
 	antigen bundle tmux
-	if [[ ${_SYSENV_OS} != "cygwin" && ${_SYSENV_DIST} != "synologydsm" ]]; then
+	if [[ ${_SYSENV_OS} != "cygwin" && ${_SYSENV_DIST} != "synologydsm" && ${_SYSENV_OS} != "macos" ]]; then
 		antigen bundle thewtex/tmux-mem-cpu-load
 	fi
 fi
@@ -556,6 +556,12 @@ fi
 # homebrew configurations
 if (( $+commands[brew] )); then
 	export HOMEBREW_NO_ENV_HINTS=TRUE
+	export HOMEBREW_NO_ASK=TRUE
+fi
+
+# mise configurations
+if [[ -s ~/.local/bin/mise ]]; then
+	eval "$(~/.local/bin/mise activate zsh)"
 fi
 #}}}
 
