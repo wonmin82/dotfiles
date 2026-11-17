@@ -16,6 +16,17 @@ set nomodified
 for s:plugin in ['unite', 'neomru', 'bufexplorer', 'fugitive', 'NERD_tree', 'tagbar', 'session']
     execute 'runtime plugin/' . s:plugin . '.vim'
 endfor
+
+" An empty session directory must leave startup in a normal editing buffer.
+unlet g:start_session_from_cmdline
+doautocmd MyAutoCmd VimEnter
+call assert_equal('', &buftype)
+call assert_equal('', &filetype)
+call assert_equal('', maparg('<CR>', 'i'))
+call feedkeys("i#include <stdio.h>\<CR>\<Esc>", 'xt')
+call assert_equal(['#include <stdio.h>', ''], getline(1, '$'))
+bwipeout!
+
 execute 'edit ' . fnameescape($DOTVIM_TEST_OUTPUT . '/answer.c')
 call assert_equal(2, exists(':OpenSession'))
 call assert_equal(2, exists(':Unite'))
@@ -26,6 +37,26 @@ call assert_equal(2, exists(':BufExplorer'))
 
 SaveSession! dotvim-smoke
 call assert_true(filereadable(g:session_directory . '/dotvim-smoke.vim'))
+call unite#custom#profile('sessions', 'context', {'start_insert': 0})
+doautocmd MyAutoCmd VimEnter
+call assert_equal('sessions', get(unite#get_current_unite(), 'buffer_name', ''))
+
+" Exercise Coc's mapping check without starting its Node service.
+let s:coc = $DOTVIM_TEST_BUNDLES . '/neoclide/coc.nvim_release'
+if filereadable(s:coc . '/autoload/coc/ui.vim')
+    let &runtimepath .= ',' . escape(s:coc, ',')
+    let s:enter = maparg('<CR>', 'i', 0, 1)
+    call assert_equal(1, get(s:enter, 'buffer', 0))
+    call assert_match('unite_do_default_action', get(s:enter, 'rhs', ''))
+    call coc#ui#check_pum_keymappings('always')
+    call assert_equal(s:enter, maparg('<CR>', 'i', 0, 1))
+endif
+close
+call assert_equal('', maparg('<CR>', 'i'))
+new
+call feedkeys("i#include <stdio.h>\<CR>\<Esc>", 'xt')
+call assert_equal(['#include <stdio.h>', ''], getline(1, '$'))
+bwipeout!
 enew
 OpenSession dotvim-smoke
 call assert_equal('answer.c', expand('%:t'))

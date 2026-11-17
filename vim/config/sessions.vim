@@ -6,12 +6,13 @@ let g:session_persist_colors = 0
 let g:session_menu = 0
 let g:session_verbose_messages = 0
 
-" Pop up session selection if no file is specified
+" Pop up session selection when there are saved sessions and no file is specified.
 autocmd MyAutoCmd VimEnter * call s:unite_session_on_enter()
 function! s:unite_session_on_enter()
 	if exists(':Unite') == 2 && exists(':OpenSession') == 2 && !argc() && !exists("g:start_session_from_cmdline") &&
 				\   !(&ft == 'man' ||
-				\   (exists("b:current_syntax") && b:current_syntax == "man"))
+			\   (exists("b:current_syntax") && b:current_syntax == "man")) &&
+			\   !empty(xolox#session#get_names(0))
 		Unite -buffer-name=sessions session
 	endif
 endfunction
