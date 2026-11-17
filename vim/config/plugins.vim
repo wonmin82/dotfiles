@@ -29,10 +29,10 @@ function! s:bootstrap_dein(path) abort
     endif
     call EnsureDirExists(fnamemodify(a:path, ':h'))
     let l:branch = v:version < 802 ? ' --branch 1.5' : ''
-    let l:output = system('git clone' . l:branch
-                \ . ' https://github.com/Shougo/dein.vim.git ' . shellescape(a:path))
+    execute 'silent !git clone --progress' . l:branch
+                \ . ' https://github.com/Shougo/dein.vim.git ' . shellescape(a:path, 1)
     if v:shell_error || !filereadable(a:path . '/autoload/dein.vim')
-        echomsg 'dotvim: Could not install dein.vim. ' . substitute(l:output, '\n\+$', '', '')
+        echomsg 'dotvim: Could not install dein.vim. See Git output above.'
         return 0
     endif
     return 1
@@ -195,9 +195,31 @@ call s:add('noahfrederick/vim-noctu')
 call dein#end()
 
 command! DotVimInstall call dein#install()
-if s:auto_install && dein#check_install() > 0
-    echomsg 'dotvim: Installing missing plugins. Restart Vim after installation finishes.'
-    call dein#install()
+
+function! s:install_startup_bundles() abort
+    let l:more = &more
+    let l:autosave = get(g:, 'session_autosave', 'no')
+    set nomore
+    let g:session_autosave = 'no'
+    try
+        echomsg 'dotvim: Installing missing plugins.'
+        if dein#install() == 0 && dein#check_install() == 0
+            redraw!
+            echomsg 'dotvim: Plugin installation complete. Restart Vim to continue.'
+            qall
+        endif
+        echomsg 'dotvim: Plugin installation did not finish. See :messages for details.'
+    finally
+        let &more = l:more
+        let g:session_autosave = l:autosave
+    endtry
+endfunction
+
+if s:auto_install
+    silent let s:missing = dein#check_install()
+    if s:missing > 0
+        call s:install_startup_bundles()
+    endif
 endif
 " Function: Helper function for dein.vim {{{
 function! DeinUpdate()

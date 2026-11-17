@@ -21,9 +21,9 @@ including `.vimrc`. A restored legacy vimrc uses its original plugin cache.
 For a fresh install, remove or move the installed `.vimrc` and the
 `~/.vim/dotvim` directory to disable the configuration.
 
-On startup Vim uses Git to install dein into `~/.vim_data/bundle/dein.vim`
-if needed, then asks dein to install missing bundles. Restart Vim when the
-installation finishes. Put `let g:dotvim_auto_install_plugins = 0` in
+On startup Vim shows Git's progress when installing dein into `~/.vim_data/bundle/dein.vim`,
+then shows dein's progress while installing missing bundles. Vim exits when
+the bundles are ready. Restart it to load them. Put `let g:dotvim_auto_install_plugins = 0` in
 `~/.vimrc.local` for offline startup. With dein present, `:DotVimInstall`
 installs missing bundles on demand. Use `:call DeinUpdate()` to update
 existing bundles explicitly. Dein's runtime cache is
@@ -112,6 +112,9 @@ The Coc release branch requires Vim 9.0.0438+ with jobs and channels and
 Node.js 22.15+. Coc uses `~/.vim/coc-settings.json` and stores extensions and
 state in `~/.vim_data/coc`. Coc reuses installed extensions and installs
 `coc-clangd` and `coc-json` on startup when automatic installation is enabled.
+Vim shows the progress in its message area when the original editor is empty,
+or in Coc's progress split while a file is open. The split closes after a
+successful install. Failed installs leave diagnostics available.
 With it disabled, use `:CocInstall coc-clangd coc-json` when needed.
 Use `:CocInfo` or `:CocList extensions` to inspect the result.
 `gopls`, `rust-analyzer`, `pylsp` and `typescript-language-server` are

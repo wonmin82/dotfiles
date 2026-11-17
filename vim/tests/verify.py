@@ -153,10 +153,15 @@ endfunction
 function! dein#end() abort
 endfunction
 function! dein#check_install() abort
-    return str2nr($DOTVIM_TEST_MISSING)
+    return get(g:, 'test_bundle_installed', 0) ? 0 : str2nr($DOTVIM_TEST_MISSING)
 endfunction
 function! dein#install() abort
     call writefile(['install'], $DOTVIM_TEST_EVENTS, 'a')
+    if $DOTVIM_TEST_INSTALL_FAILS ==# '1'
+        return 1
+    endif
+    let g:test_bundle_installed = 1
+    return 0
 endfunction
 """)
     git = mock_bin / "git"
@@ -178,6 +183,7 @@ for destination do :; done
         ("fresh", False, True, ["clone", "install"]),
         ("missing bundles", True, True, ["install"]),
         ("managed dein", True, True, ["install"]),
+        ("failed bundles", True, True, ["install"]),
         ("all present", True, False, []),
         ("opt out", True, True, []),
         ("opt out without dein", False, True, []),
@@ -200,6 +206,7 @@ for destination do :; done
         startup_env = dict(env, HOME=str(home), PATH=str(mock_bin) + ":/usr/bin:/bin",
                            DOTVIM_TEST_DEIN=str(dein), DOTVIM_TEST_EVENTS=str(events),
                            DOTVIM_TEST_CLONE_FAILS=str(int(name == "failed clone")),
+                           DOTVIM_TEST_INSTALL_FAILS=str(int(name == "failed bundles")),
                            DOTVIM_TEST_MISSING=str(int(missing)), DOTVIM_TEST_STATUS=str(status))
         options = ["--noplugin"] if name == "no load plugins" else []
         run([vim, "-N", "-n", "-i", "NONE", "-es", "-V1" + str(home / "vim.log"),
@@ -209,6 +216,9 @@ for destination do :; done
                    "string(has('patch-9.0.0438') && has('job') && has('channel'))], $DOTVIM_TEST_STATUS)",
              "-c", "qa!"], startup_env, work, vim_log=True)
         check(events.read_text().splitlines() == expected, f"Unexpected install actions for {name}")
+        if "install" in expected and name != "failed bundles":
+            check(not status.exists(), f"Vim kept running after installing bundles for {name}")
+            continue
         extensions, coc_supported = status.read_text().splitlines()
         if coc_supported == "1":
             expected_extensions = None
@@ -256,6 +266,10 @@ def main():
         env = make_environment(work)
         verify_installed_layout(vim, env, work)
         verify_plugin_startup(vim, env, work)
+        run([vim, "-N", "-n", "-i", "NONE", "--noplugin", "-es", "-V1" + str(work / "coc.log"),
+             "-u", VIM / ".vimrc", "--cmd", "let g:dotvim_disable_plugins=1",
+             "-S", TESTS / "coc-install.vim"], env, work, vim_log=True)
+        print("PASS Coc progress, successful cleanup, and failure preservation with simulated installs")
         unsupported = work / "unsupported version"
         unsupported.write_text("#!/bin/sh\nprintf 'clang-format version 24.0.0\\n'\n")
         unsupported.chmod(0o700)
