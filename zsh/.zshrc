@@ -497,6 +497,18 @@ setopt bang_hist
 setopt extended_history
 #}}}
 
+# fzf shell integration {{{
+# Load key bindings and completion before hstr can override Ctrl-R.
+if [[ -o interactive ]] && (( $+commands[fzf] )); then
+	() {
+		local fzf_init
+		if fzf_init=$(command fzf --zsh 2>/dev/null); then
+			eval "$fzf_init"
+		fi
+	}
+fi
+#}}}
+
 # hstr configuration {{{
 if (( $+commands[hstr] )); then
 	alias hh=hstr                    # hh to be alias for hstr
