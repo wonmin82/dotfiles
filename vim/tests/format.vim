@@ -80,6 +80,7 @@ endtry
 
 setlocal filetype=python
 call assert_match('Black', maparg(',cf', 'n'))
+call assert_match('\c<c-u>Black', maparg(',cf', 'x'))
 call writefile(v:errors, $DOTVIM_TEST_OUTPUT . '/vim-errors')
 if !empty(v:errors)
     cquit
