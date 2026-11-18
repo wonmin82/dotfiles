@@ -13,6 +13,7 @@ endfor
 let g:start_session_from_cmdline = 1
 execute 'source ' . fnameescape($DOTVIM_TEST_VIMRC)
 set nomodified
+let g:session_lock_directory = g:session_directory
 for s:plugin in ['unite', 'neomru', 'bufexplorer', 'fugitive', 'NERD_tree', 'tagbar', 'session']
     execute 'runtime plugin/' . s:plugin . '.vim'
 endfor
@@ -61,6 +62,8 @@ enew
 OpenSession dotvim-smoke
 call assert_equal('answer.c', expand('%:t'))
 call assert_match('/dotvim-smoke\.vim$', v:this_session)
+
+execute "source " . fnameescape(expand("<sfile>:p:h") . "/session.vim")
 
 execute "normal \<F3>"
 call assert_match('BufExplorer', bufname('%'))

@@ -248,6 +248,43 @@ def verify_plugins(vim, env, work, plugin_root):
         raise
     print("PASS existing bundles: Unite quickfix/MRU, BufExplorer, NERDTree, Fugitive, sessions")
 
+
+def verify_session_boundaries(vim, env, work, plugin_root):
+    output = work / "session boundary fixture"
+    output.mkdir()
+    provider = output / "provider"
+    target = provider / "autoload" / "xolox" / "session.vim"
+    target.parent.mkdir(parents=True)
+    source = (plugin_root / "xolox/vim-session/autoload/xolox/session.vim").read_text()
+    special_windows = "    call xolox#session#save_special_windows(lines)\n"
+    check(source.count(special_windows) == 1, "Session test fixture requires the vim-session 2.13.1 call site")
+    altered = """\
+    let scenario = get(g:, 'dotvim_test_boundary', '')
+    if scenario !=# 'missing'
+      let native_end = len(lines)
+      call xolox#session#save_special_windows(lines)
+      if scenario ==# 'duplicate'
+        call xolox#session#save_special_windows(lines)
+      elseif scenario ==# 'moved'
+        call insert(lines, '', native_end)
+      elseif scenario ==# 'unexpected'
+        call filter(lines, 'v:val !~# "^unlet g:SessionLoad$"')
+      elseif scenario ==# 'special failure'
+        throw 'dotvim test: special window failure'
+      endif
+    endif
+"""
+    target.write_text(source.replace(special_windows, altered).replace(
+        "Support for special windows like quick-fix and plug-in windows.", "Changed fixture comment."))
+    boundary_env = dict(env, DOTVIM_TEST_OUTPUT=str(output), DOTVIM_TEST_PROVIDER=str(provider),
+                        DOTVIM_TEST_VIMRC=str(VIM / ".vimrc"), DOTVIM_TEST_BUNDLES=str(plugin_root))
+    run([vim, "-N", "-n", "-i", "NONE", "--noplugin", "-es", "-u", "NONE",
+         "--cmd", "let g:dotvim_disable_plugins=1", "-V1" + str(output / "boundary.log"),
+         "-S", TESTS / "session-boundary.vim"], boundary_env, output, vim_log=True)
+    session_format = (output / "format").read_text().strip()
+    print(f"PASS {session_format} session path with changed provider comment and save/restore checks")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("clang_root", type=Path, help="Directory with 14/bin/clang-format through 23/bin/clang-format")
@@ -283,7 +320,9 @@ def main():
                 continue
             previous = verify(version, binary, vim, env, work, fixture, previous, unsupported)
         if args.installed_bundles:
-            verify_plugins(vim, env, work, args.installed_bundles.expanduser().resolve())
+            plugin_root = args.installed_bundles.expanduser().resolve()
+            verify_plugins(vim, env, work, plugin_root)
+            verify_session_boundaries(vim, env, work, plugin_root)
     return status
 
 

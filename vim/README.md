@@ -78,11 +78,13 @@ tabline shows buffer names and numbers. The old bufferline plugin is removed.
 
 `:SaveSession`, `:OpenSession` and Space-p use the existing vim-session store
 and preserve the existing startup picker and autosave. Unite keeps its session
-save, rename and delete actions. Session files and MRU/bookmark data need no migration. For Vim versions that emit Vim9 code from
-`:mksession`, the session compatibility module keeps the native section
-loadable while preserving vim-session's commands and state. Sessions saved
-with Vim9-generated state require Vim9 to restore. This is why vim-session,
-vim-misc, Unite and its data sources remain configured.
+save, rename and delete actions. When `:mksession` emits Vim9 code, the
+compatibility adapter marks the boundary before vim-session appends special
+window commands. It validates the generated script before vim-session writes
+the session file. Legacy sessions use the original script format and can
+still be opened. Sessions saved with Vim9-generated state require Vim9 to
+restore. When BufExplorer shares a tab with other splits, vim-session can
+restore the tab with a different focused buffer.
 
 ### Plugin inventory
 
