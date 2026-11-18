@@ -51,12 +51,27 @@ endfunction
 autocmd FileType python
 			\   nnoremap <buffer> <leader>cf :<c-u>Black<cr>
 autocmd FileType python
-			\   vnoremap <buffer> <leader>cf :Black<cr>
+			\   vnoremap <buffer> <leader>cf :<c-u>Black<cr>
 
 let g:black_fast = 0
 let g:black_linelength = 79
 let g:black_skip_string_normalization = 0
-let g:black_virtualenv = $DOTVIMDATAPATH . '/black'
+if !exists('g:black_virtualenv')
+    let g:black_virtualenv = $DOTVIMDATAPATH . '/black'
+    if get(g:, 'black_use_virtualenv', 1)
+        let s:homebrew_prefixes = g:dotvim_platform.macos ? ['/opt/homebrew', '/usr/local'] : []
+        if !empty($HOMEBREW_PREFIX)
+            call insert(s:homebrew_prefixes, $HOMEBREW_PREFIX)
+        endif
+        for s:prefix in s:homebrew_prefixes
+            let s:black_env = s:prefix . '/opt/black/libexec'
+            if filereadable(s:black_env . '/pyvenv.cfg') && executable(s:black_env . '/bin/black')
+                let g:black_virtualenv = s:black_env
+                break
+            endif
+        endfor
+    endif
+endif
 " Reuse an existing Black virtualenv without creating one on first use.
 let g:black_use_virtualenv = get(g:, 'black_use_virtualenv', isdirectory(g:black_virtualenv))
 "}}}

@@ -102,8 +102,15 @@ IndentTab is retained for tabs in indentation, comment prefixes and strings,
 and spaces for alignment. The retained JavaScript, JSON, JSX, CSS and HTML
 formatter uses JSBeautify's tab settings. The corresponding Black, GoFmt,
 RustFmt and shfmt commands remain on Leader-cf. These workflows require their
-formatters and any existing plugin-specific runtime dependencies. Black reuses
-an existing virtualenv or the Black module in Vim's Python environment.
+formatters and any existing plugin-specific runtime dependencies. Black formats
+the whole Python buffer from either Normal or Visual mode. Black prefers
+Homebrew's existing virtualenv under `$HOMEBREW_PREFIX/opt/black/libexec`.
+On macOS it also checks `/opt/homebrew` and `/usr/local`, so this works
+when Vim starts without Homebrew on `PATH`. If Homebrew Black is absent,
+the plugin checks `~/.vim_data/black` and Vim's Python environment.
+An explicit `g:black_virtualenv` or `g:black_use_virtualenv` setting takes
+precedence. Use Homebrew to manage the formula's virtualenv. Black's Python
+environment must be compatible with the Python linked into Vim.
 Tag navigation uses ctags, with gotags for the configured Go outline.
 Legacy Unite asynchronous sources still require a working vimproc build.
 Use the installed Go/Rust and shell tooling for builds and format commands.
