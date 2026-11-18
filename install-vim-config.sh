@@ -39,18 +39,18 @@ for dir in "$HOME/.vim" "$runtime" "$runtime/config" "$runtime/config/clang-form
     fi
 done
 
-mkdir -p "$HOME/.vim"
+mkdir -p -v -- "$HOME/.vim"
 lock="$HOME/.vim/.dotvim-install-lock"
-if ! mkdir "$lock"; then
+if ! mkdir -v -- "$lock"; then
     printf 'Another Vim installation may be in progress at %s\n' "$lock" >&2
     exit 1
 fi
 staged=''
 cleanup() {
     if [[ -n "$staged" ]]; then
-        rm -f -- "$staged"
+        rm -f -v -- "$staged"
     fi
-    rmdir -- "$lock"
+    rmdir -v -- "$lock"
 }
 trap cleanup EXIT
 trap 'exit 130' INT
@@ -83,8 +83,8 @@ if (( ${#conflicts[@]} )); then
     printf 'Saving previous configuration in %s\n' "$backup"
     for target in "${conflicts[@]}"; do
         relative="${target#"$HOME"/}"
-        mkdir -p -- "$backup/$(dirname -- "$relative")"
-        cp -p -- "$target" "$backup/$relative"
+        mkdir -p -v -- "$backup/$(dirname -- "$relative")"
+        cp -p -v -- "$target" "$backup/$relative"
     done
 fi
 
@@ -94,10 +94,11 @@ install_file() {
         return
     fi
     directory="$(dirname -- "$target")"
-    mkdir -p -- "$directory"
+    mkdir -p -v -- "$directory"
     staged="$(mktemp "$directory/.dotvim.XXXXXXXX")"
-    cp -- "$file" "$staged"
-    mv -f -- "$staged" "$target"
+    printf 'Created staging file %s\n' "$staged"
+    cp -v -- "$file" "$staged"
+    mv -f -v -- "$staged" "$target"
     staged=''
 }
 
