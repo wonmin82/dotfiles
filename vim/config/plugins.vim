@@ -1,5 +1,6 @@
 " My Bundles here:
 " Note: You don't set dein.vim setting in .gvimrc!
+let g:dotvim_vim_go_enabled = 0
 " Coc release requires Vim 9.0.0438+ and Node.js 22.15+.
 let g:dotvim_coc_enabled = has('patch-9.0.0438') && has('job') && has('channel')
             \ && !get(g:, 'dotvim_disable_plugins', 0) && executable('node')
@@ -158,8 +159,9 @@ call s:add('ntpeters/vim-better-whitespace')
 
 call s:add('rust-lang/rust.vim')
 call s:add('cespare/vim-toml')
-if (v:version > 800 || v:version == 800 && has('patch1453'))
-	call s:add('fatih/vim-go')
+if has('nvim') ? has('nvim-0.4.0') : has('patch-8.2.5072')
+    call s:add('fatih/vim-go')
+    let g:dotvim_vim_go_enabled = 1
 endif
 
 call s:add('kergoth/vim-bitbake')

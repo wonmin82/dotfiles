@@ -5,6 +5,10 @@ autocmd FileType rust
 "}}}
 
 " Plugin: vim-go {{{
+if !get(g:, 'dotvim_vim_go_enabled', 0)
+    finish
+endif
+
 let s:coc_handles_go = g:dotvim_coc_enabled && executable('gopls')
 let g:go_auto_type_info = !s:coc_handles_go
 let g:go_code_completion_enabled = !s:coc_handles_go
