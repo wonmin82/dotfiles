@@ -98,7 +98,7 @@ endfunction
 nnoremap <silent> [unite]g :<c-u>Unite -buffer-name=grep grep:.<cr>
 
 " Quick help
-nnoremap <silent> [unite]h :<c-u>Unite -buffer-name=help help<cr>
+nnoremap <silent> [unite]h :<c-u>Unite -buffer-name=help -no-start-insert help<cr>
 
 " Quick line using the word under cursor
 " nnoremap <silent> [unite]l :<c-u>UniteWithCursorWord -buffer-name=search_file line<cr>
