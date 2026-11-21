@@ -173,17 +173,25 @@ class Installers(unittest.TestCase):
         return homebrew_zsh
 
     def check_zsh_startup_and_keys(self, shell):
-        probe = 'print -r -- "RESULT $HOMEBREW_PREFIX $path[1] $ZDOTDIR"'
+        probe = 'print -r -- "RESULT $HOMEBREW_PREFIX $path[1] $ZDOTDIR"\nprint -rl -- "$path[@]"'
         machine = self.command("/usr/bin/uname", "-m").stdout.strip()
         prefix = "/opt/homebrew" if machine == "arm64" else "/usr/local"
         if not os.access(prefix + "/bin/brew", os.X_OK):
             self.skipTest(f"native Homebrew unavailable at {prefix}")
-        for flag in ("-dilc", "-dic"):
-            output = self.command(shell, flag, probe).stdout
-            self.assertIn(f"RESULT {prefix} {prefix}/bin {self.home / '.zsh'}", output)
-        with_existing_path = f"{prefix}/bin:{prefix}/sbin:{self.env['PATH']}"
-        output = self.command(shell, "-dic", probe, PATH=with_existing_path).stdout
-        self.assertIn(f"RESULT {prefix} {prefix}/bin {self.home / '.zsh'}", output)
+        brew_first = f"{prefix}/bin:{prefix}/sbin:{self.env['PATH']}"
+        system_first = f"{self.env['PATH']}:{prefix}/bin:{prefix}/sbin"
+        for flag, env in (
+            ("-dilc", {}),
+            ("-dic", {}),
+            ("-dic", {"PATH": brew_first}),
+            ("-ilc", {"PATH": brew_first, "HOMEBREW_PREFIX": prefix}),
+            ("-dic", {"PATH": system_first, "HOMEBREW_PREFIX": prefix}),
+        ):
+            with self.subTest(flag=flag, inherited_prefix=env.get("HOMEBREW_PREFIX")):
+                output = self.command(shell, flag, probe, **env).stdout
+                self.assertIn(f"RESULT {prefix} {prefix}/bin {self.home / '.zsh'}", output)
+                self.assertEqual(output.splitlines().count(f"{prefix}/bin"), 1)
+                self.assertEqual(output.splitlines().count(f"{prefix}/sbin"), 1)
         for flag in ("-dc", "-dlc"):
             self.assertIn("RESULT  ", self.command(shell, flag, probe).stdout)
 

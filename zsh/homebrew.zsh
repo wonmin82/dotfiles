@@ -13,13 +13,14 @@ typeset -g _dotfiles_homebrew_checked=1
 
     for prefix in "${prefixes[@]}"; do
         [[ -f "$prefix/bin/brew" && -x "$prefix/bin/brew" ]] || continue
-        if [[ ${HOMEBREW_PREFIX-} == "$prefix" && $(whence -p brew) == "$prefix/bin/brew" ]]; then
-            return 0
+        if [[ ${HOMEBREW_PREFIX-} != "$prefix" || $(whence -p brew) != "$prefix/bin/brew" ]]; then
+            # Ask for the full environment even when the parent already set PATH.
+            shellenv=$(PATH="/usr/bin:$PATH" "$prefix/bin/brew" shellenv zsh 2>/dev/null) || continue
+            eval "$shellenv" || return
         fi
-        # Ask for the full environment even when the parent already set PATH.
-        if shellenv=$(PATH="/usr/bin:$PATH" "$prefix/bin/brew" shellenv zsh 2>/dev/null); then
-            eval "$shellenv"
-            return
-        fi
+        # Restore Homebrew's precedence after login startup reorders an inherited PATH.
+        typeset -gU path
+        path=("$prefix/bin" "$prefix/sbin" "${path[@]}")
+        return 0
     done
 }
