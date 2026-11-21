@@ -86,15 +86,13 @@ for index in "${!managed_sources[@]}"; do
     fi
 done
 
-skip_install=0
 status=0
 if (( ${#conflicts[@]} )); then
-    if (( ! backup_requested )); then
-        skip_install=1
-        if (( ! skip_existing )); then
-            printf 'Existing configuration differs. Review the skipped files or rerun with --backup to replace them.\n' >&2
-            status=1
-        fi
+    if (( skip_existing )); then
+        printf 'Warning: Preserved Vim files may be incompatible with the shipped runtime. Review the differing files before using the combined configuration.\n' >&2
+    elif (( ! backup_requested )); then
+        printf 'Existing configuration differs. Review the skipped files or rerun with --backup to replace them.\n' >&2
+        status=1
     elif (( ! dry_run )); then
         backup="$(mktemp -d "$HOME/.dotvim-backup.XXXXXXXX")"
         printf 'Saving previous configuration in %s\n' "$backup"
@@ -113,7 +111,7 @@ install_file() {
             printf 'Skipped %s (already matches)\n' "$target"
             return
         fi
-        if (( skip_install )); then
+        if (( skip_existing || status )); then
             printf 'Skipped %s (existing file differs)\n' "$target"
             return
         fi
@@ -121,7 +119,7 @@ install_file() {
             printf 'Would back up and install %s\n' "$target"
             return
         fi
-    elif (( skip_install )); then
+    elif (( status )); then
         printf 'Skipped %s (existing Vim configuration has conflicts)\n' "$target"
         return
     elif (( dry_run )); then

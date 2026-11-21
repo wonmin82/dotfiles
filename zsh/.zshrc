@@ -75,6 +75,11 @@ readonly _SYSENV_OS _SYSENV_OSSTR _SYSENV_DIST _SYSENV_DISTROBASEDON \
 	SYSENV_PSEUDONAME _SYSENV_REV _SYSENV_KERNEL _SYSENV_MACH
 #}}}
 
+# Non-login interactive shells also need the macOS Homebrew environment.
+if [[ ${_SYSENV_OS} == macos && -r "${ZDOTDIR-$HOME}/homebrew.zsh" ]]; then
+	source "${ZDOTDIR-$HOME}/homebrew.zsh"
+fi
+
 # TERM variable {{{
 # force TERM environment to xterm-256color when we are in gnome-terminal
 if [[ ${_SYSENV_DIST} == "ubuntu" ]]; then
@@ -398,9 +403,18 @@ stty -ixon
 
 autoload zkbd
 
-# read zkbd key codes
+# Prefer the user's zkbd map. Use the current TERM on macOS when there is no map.
 if [[ -f $ZDOTDIR/.zkbd/$TERM-${${DISPLAY:t}:-$VENDOR-$OSTYPE} ]]; then
 	source $ZDOTDIR/.zkbd/$TERM-${${DISPLAY:t}:-$VENDOR-$OSTYPE}
+elif [[ ${_SYSENV_OS} == macos ]]; then
+	typeset -g -A key
+	key+=(
+		Home "${terminfo[khome]}" End "${terminfo[kend]}"
+		Insert "${terminfo[kich1]}" Delete "${terminfo[kdch1]}"
+		Up "${terminfo[kcuu1]}" Down "${terminfo[kcud1]}"
+		Left "${terminfo[kcub1]}" Right "${terminfo[kcuf1]}"
+		PageUp "${terminfo[kpp]}" PageDown "${terminfo[knp]}"
+	)
 fi
 
 # setup key accordingly

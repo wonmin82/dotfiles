@@ -37,11 +37,7 @@ if (( macos )); then
         printf 'The --macos option requires macOS.\n' >&2
         exit 1
     fi
-    zsh_platform="$(/bin/zsh -dfc 'print -r -- "$VENDOR-$OSTYPE"')"
-    entries+=('file:.zprofile.macos:.zsh/.zprofile')
-    for terminal in "${terminals[@]}"; do
-        entries+=("file:.zkbd/$terminal-apple-darwin18.0:.zsh/.zkbd/$terminal-$zsh_platform")
-    done
+    entries+=('file:homebrew.zsh:.zsh/homebrew.zsh' 'file:.zprofile.macos:.zsh/.zprofile')
 else
     for terminal in "${terminals[@]}"; do
         for platform in ubuntu-linux-gnu pc-linux-gnu apple-darwin18.0; do
@@ -92,7 +88,11 @@ if (( ! dry_run )); then
     trap 'exit 143' TERM
 fi
 
-for dir in "$HOME/.zsh" "$HOME/.zsh/.zkbd"; do
+target_dirs=("$HOME/.zsh")
+if (( ! macos )); then
+    target_dirs+=("$HOME/.zsh/.zkbd")
+fi
+for dir in "${target_dirs[@]}"; do
     if [[ -L "$dir" || ( -e "$dir" && ! -d "$dir" ) ]]; then
         printf 'Expected a real directory at %s\n' "$dir" >&2
         exit 1
@@ -111,12 +111,16 @@ for entry in "${entries[@]}"; do
     if [[ $kind == link && -L "$target" ]]; then
         continue
     fi
+    if (( macos && skip_existing )) && [[ $target == "$HOME/.zshenv" && -L "$target" ]]; then
+        continue
+    fi
     if [[ -L "$target" || ( -e "$target" && ! -f "$target" ) ]]; then
         printf 'Expected a regular file at %s\n' "$target" >&2
         exit 1
     fi
 done
 
+would_install_zshenv=0
 for entry in "${entries[@]}"; do
     kind="${entry%%:*}"
     paths="${entry#*:}"
@@ -124,6 +128,10 @@ for entry in "${entries[@]}"; do
     relative="${paths#*:}"
     target="$HOME/$relative"
     backup_file=''
+    if (( macos && skip_existing )) && [[ $relative == .zshenv && -L "$target" ]]; then
+        printf 'Skipped %s (existing symbolic link)\n' "$target"
+        continue
+    fi
     if [[ $kind == file ]]; then
         source_path="$script_dir/zsh/$source_path"
         if [[ -f "$target" ]] && cmp -s "$source_path" "$target"; then
@@ -144,6 +152,9 @@ for entry in "${entries[@]}"; do
             continue
         fi
         if (( dry_run )); then
+            if [[ $relative == .zshenv ]]; then
+                would_install_zshenv=1
+            fi
             if (( backup_requested )); then
                 printf 'Would back up and install %s\n' "$target"
             else
@@ -161,6 +172,9 @@ for entry in "${entries[@]}"; do
             cp -pP -- "$target" "$backup_file"
         fi
     elif (( dry_run )); then
+        if [[ $relative == .zshenv ]]; then
+            would_install_zshenv=1
+        fi
         printf 'Would install %s\n' "$target"
         continue
     fi
@@ -182,6 +196,60 @@ for entry in "${entries[@]}"; do
         printf 'Installed %s\n' "$target"
     fi
 done
+
+report_macos_zdotdir() {
+    local shell_path result effective='' rcs='' phase='after installation' target_dir
+    target_dir="$(cd -- "$HOME" && pwd -P)/.zsh"
+    shell_path="$(type -P zsh || printf /bin/zsh)"
+    if (( dry_run )); then
+        phase='before installation'
+    fi
+
+    # Evaluate only early startup in a read-only sandbox, with no network or terminal.
+    if [[ -x /usr/bin/sandbox-exec && -x /usr/bin/perl ]] &&
+        result=$(/usr/bin/perl -e 'alarm 3; exec @ARGV or die $!;' /usr/bin/sandbox-exec -p \
+            '(version 1) (deny default) (allow file-read* process-exec process-fork sysctl-read) (allow file-write-data (literal "/dev/null"))' \
+            "$shell_path" -dc '
+                dotdir=${ZDOTDIR-$HOME}
+                print -ru3 -- "$options[rcs]" "${${dotdir:-/}:A}"
+            ' \
+            3>&1 </dev/null >/dev/null 2>&1); then
+        case "$result" in
+            'on /'*|'off /'*)
+                rcs=${result%% *}
+                effective=${result#* }
+                ;;
+        esac
+    fi
+
+    if [[ -n $effective ]]; then
+        printf 'ZDOTDIR %s %s (early startup with %s)\n' "$phase" "$effective" "$shell_path"
+    else
+        printf 'ZDOTDIR %s could not be verified in read-only startup with %s\n' "$phase" "$shell_path"
+    fi
+
+    if (( dry_run )); then
+        if (( would_install_zshenv )) && [[ ${ZDOTDIR-$HOME} -ef "$HOME" ]]; then
+            printf 'ZDOTDIR after planned installation %s (managed default; user startup hooks may override it)\n' "$target_dir"
+            return
+        fi
+        printf 'ZDOTDIR after planned installation %s (expected with the same early startup file)\n' "${effective:-unverified}"
+    fi
+
+    if [[ $rcs == off ]]; then
+        printf 'Warning: Early startup disabled RCS, so Zsh may skip its .zprofile and .zshrc.\n' >&2
+    elif [[ -n $effective && $effective != "$target_dir" ]]; then
+        printf 'Warning: Zsh looks for .zprofile and .zshrc in %s, but the installer targets %s.\n' "$effective" "$target_dir" >&2
+    elif [[ -n $effective ]]; then
+        return
+    fi
+    printf 'In the affected Zsh, run %s to check its startup directory and adjust your ZDOTDIR or integrate the files in %s.\n' \
+        'print -r -- "${ZDOTDIR-$HOME}"' "$target_dir" >&2
+}
+
+if (( macos )); then
+    report_macos_zdotdir
+fi
 
 if (( change_shell )); then
     if (( dry_run )); then

@@ -12,7 +12,10 @@ Run `bash install-vim-config.sh` from this checkout. It deploys `~/.vimrc` and
 the managed files under `~/.vim/dotvim`. Identical files are safe to reinstall.
 If a managed file differs, review the paths printed by the script and rerun
 with `--backup` to save those files under a new `~/.dotvim-backup.*` directory
-before replacement. The installer keeps existing `~/.vimrc.local`,
+before replacement. With `--skip-existing`, the installer reports and skips each
+differing managed file and installs missing files. The combined Vim configuration
+can still require manual review when a preserved file expects a different runtime.
+Add `--dry-run` to preview file decisions. The installer keeps existing `~/.vimrc.local`,
 `~/.vim/coc-settings.json`, `~/.vim/coc.vim`, and all Vim data. A customized
 `~/.vim/coc.vim` takes precedence over the shipped Coc mapping file.
 

@@ -1,6 +1,4 @@
-# Initialize Homebrew on Apple Silicon and Intel Macs.
-if [[ -x /opt/homebrew/bin/brew ]]; then
-    eval "$(/opt/homebrew/bin/brew shellenv zsh)"
-elif [[ -x /usr/local/bin/brew ]]; then
-    eval "$(/usr/local/bin/brew shellenv zsh)"
+# Initialize Homebrew before the interactive login configuration.
+if [[ -o interactive && -r "${ZDOTDIR-$HOME}/homebrew.zsh" ]]; then
+    source "${ZDOTDIR-$HOME}/homebrew.zsh"
 fi
