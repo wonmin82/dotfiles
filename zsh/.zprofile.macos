@@ -1,0 +1,4 @@
+# Initialize Homebrew before the interactive login configuration.
+if [[ -o interactive && -r "${ZDOTDIR-$HOME}/homebrew.zsh" ]]; then
+    source "${ZDOTDIR-$HOME}/homebrew.zsh"
+fi

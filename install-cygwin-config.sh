@@ -1,8 +1,10 @@
 #!/bin/bash
-cp -f -v ./cygwin/.bash_profile ~/.bash_profile
-cp -f -v ./cygwin/.bashrc ~/.bashrc
-cp -f -v ./cygwin/.inputrc ~/.inputrc
-cp -f -v ./cygwin/.startxwinrc ~/.startxwinrc
-cp -f -v ./cygwin/.minttyrc ~/.minttyrc
-cp -f -v ./cygwin/.gitconfig ~/.gitconfig
-cp -f -v ./cygwin/.tmux.conf ~/.tmux.conf
+source ./lib/install-output.sh || exit
+
+copy_config_file ./cygwin/.bash_profile ~/.bash_profile
+copy_config_file ./cygwin/.bashrc ~/.bashrc
+copy_config_file ./cygwin/.inputrc ~/.inputrc
+copy_config_file ./cygwin/.startxwinrc ~/.startxwinrc
+copy_config_file ./cygwin/.minttyrc ~/.minttyrc
+copy_config_file ./cygwin/.gitconfig ~/.gitconfig
+copy_config_file ./cygwin/.tmux.conf ~/.tmux.conf
