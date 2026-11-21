@@ -3,14 +3,24 @@
 set -euo pipefail
 shopt -s nullglob
 
+usage() {
+    printf 'Usage: %s [--backup | --skip-existing] [--dry-run]\n' "$0" >&2
+}
+
 backup_requested=0
-case "${1-}" in
-    '') ;;
-    --backup) backup_requested=1; shift ;;
-    *) printf 'Usage: %s [--backup]\n' "$0" >&2; exit 2 ;;
-esac
-if (( $# != 0 )); then
-    printf 'Usage: %s [--backup]\n' "$0" >&2
+skip_existing=0
+dry_run=0
+while (( $# )); do
+    case "$1" in
+        --backup) backup_requested=1 ;;
+        --skip-existing) skip_existing=1 ;;
+        --dry-run) dry_run=1 ;;
+        *) usage; exit 2 ;;
+    esac
+    shift
+done
+if (( backup_requested && skip_existing )); then
+    usage
     exit 2
 fi
 
@@ -39,22 +49,25 @@ for dir in "$HOME/.vim" "$runtime" "$runtime/config" "$runtime/config/clang-form
     fi
 done
 
-mkdir -p -v -- "$HOME/.vim"
 lock="$HOME/.vim/.dotvim-install-lock"
-if ! mkdir -v -- "$lock"; then
-    printf 'Another Vim installation may be in progress at %s\n' "$lock" >&2
-    exit 1
-fi
 staged=''
+backup=''
 cleanup() {
     if [[ -n "$staged" ]]; then
-        rm -f -v -- "$staged"
+        rm -f -- "$staged"
     fi
-    rmdir -v -- "$lock"
+    rmdir -- "$lock"
 }
-trap cleanup EXIT
-trap 'exit 130' INT
-trap 'exit 143' TERM
+if (( ! dry_run )); then
+    mkdir -p -- "$HOME/.vim"
+    if ! mkdir -- "$lock"; then
+        printf 'Another Vim installation may be in progress at %s\n' "$lock" >&2
+        exit 1
+    fi
+    trap cleanup EXIT
+    trap 'exit 130' INT
+    trap 'exit 143' TERM
+fi
 
 conflicts=()
 for index in "${!managed_sources[@]}"; do
@@ -73,39 +86,70 @@ for index in "${!managed_sources[@]}"; do
     fi
 done
 
+skip_install=0
+status=0
 if (( ${#conflicts[@]} )); then
     if (( ! backup_requested )); then
-        printf 'Existing configuration differs. Review these files or rerun with --backup to replace them.\n' >&2
-        printf '  %s\n' "${conflicts[@]}" >&2
-        exit 1
+        skip_install=1
+        if (( ! skip_existing )); then
+            printf 'Existing configuration differs. Review the skipped files or rerun with --backup to replace them.\n' >&2
+            status=1
+        fi
+    elif (( ! dry_run )); then
+        backup="$(mktemp -d "$HOME/.dotvim-backup.XXXXXXXX")"
+        printf 'Saving previous configuration in %s\n' "$backup"
+        for target in "${conflicts[@]}"; do
+            relative="${target#"$HOME"/}"
+            mkdir -p -- "$backup/$(dirname -- "$relative")"
+            cp -p -- "$target" "$backup/$relative"
+        done
     fi
-    backup="$(mktemp -d "$HOME/.dotvim-backup.XXXXXXXX")"
-    printf 'Saving previous configuration in %s\n' "$backup"
-    for target in "${conflicts[@]}"; do
-        relative="${target#"$HOME"/}"
-        mkdir -p -v -- "$backup/$(dirname -- "$relative")"
-        cp -p -v -- "$target" "$backup/$relative"
-    done
 fi
 
 install_file() {
-    local file="$1" target="$2" directory
-    if [[ -f "$target" ]] && cmp -s "$file" "$target"; then
+    local file="$1" target="$2" directory backup_file=''
+    if [[ -f "$target" ]]; then
+        if cmp -s "$file" "$target"; then
+            printf 'Skipped %s (already matches)\n' "$target"
+            return
+        fi
+        if (( skip_install )); then
+            printf 'Skipped %s (existing file differs)\n' "$target"
+            return
+        fi
+        if (( dry_run )); then
+            printf 'Would back up and install %s\n' "$target"
+            return
+        fi
+    elif (( skip_install )); then
+        printf 'Skipped %s (existing Vim configuration has conflicts)\n' "$target"
+        return
+    elif (( dry_run )); then
+        printf 'Would install %s\n' "$target"
         return
     fi
     directory="$(dirname -- "$target")"
-    mkdir -p -v -- "$directory"
+    mkdir -p -- "$directory"
     staged="$(mktemp "$directory/.dotvim.XXXXXXXX")"
-    printf 'Created staging file %s\n' "$staged"
-    cp -v -- "$file" "$staged"
-    mv -f -v -- "$staged" "$target"
+    cp -- "$file" "$staged"
+    mv -f -- "$staged" "$target"
     staged=''
+    if [[ -n "$backup" ]]; then
+        backup_file="$backup/${target#"$HOME"/}"
+    fi
+    if [[ -n "$backup_file" && -f "$backup_file" ]]; then
+        printf 'Backed up and installed %s (backup at %s)\n' "$target" "$backup_file"
+    else
+        printf 'Installed %s\n' "$target"
+    fi
 }
 
 # These files belong to the user once created.
 for relative in .vimrc.local .vim/coc-settings.json; do
     target="$HOME/$relative"
-    if [[ ! -e "$target" && ! -L "$target" ]]; then
+    if [[ -e "$target" || -L "$target" ]]; then
+        printf 'Skipped %s (user-managed file)\n' "$target"
+    else
         install_file "$config_source/${relative##*/}" "$target"
     fi
 done
@@ -114,3 +158,4 @@ done
 for index in "${!managed_sources[@]}"; do
     install_file "${managed_sources[index]}" "${managed_targets[index]}"
 done
+exit "$status"
