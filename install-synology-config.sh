@@ -1,6 +1,8 @@
 #! /bin/bash
 
-cp -f -v ./common/.gitconfig ~/.gitconfig
-cp -f -v ./common/.wgetrc ~/.wgetrc
-cp -f -v ./common/.curlrc ~/.curlrc
-cp -f -v ./synology/.tmux.conf ~/.tmux.conf
+source ./lib/install-output.sh || exit
+
+copy_config_file ./common/.gitconfig ~/.gitconfig
+copy_config_file ./common/.wgetrc ~/.wgetrc
+copy_config_file ./common/.curlrc ~/.curlrc
+copy_config_file ./synology/.tmux.conf ~/.tmux.conf

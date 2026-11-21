@@ -28,6 +28,7 @@ if (( backup_requested && skip_existing )); then
 fi
 
 script_dir="$(cd -- "$(dirname -- "$0")" && pwd -P)"
+source "$script_dir/lib/install-output.sh"
 os="$(uname -s)"
 terminals=(xterm-256color screen-256color)
 entries=()
@@ -127,55 +128,52 @@ for entry in "${entries[@]}"; do
     source_path="${paths%%:*}"
     relative="${paths#*:}"
     target="$HOME/$relative"
-    backup_file=''
+    action=NEW
+    detail=''
     if (( macos && skip_existing )) && [[ $relative == .zshenv && -L "$target" ]]; then
-        printf 'Skipped %s (existing symbolic link)\n' "$target"
+        report_file SKIP "$target" 'existing symbolic link' "$dry_run"
         continue
     fi
     if [[ $kind == file ]]; then
         source_path="$script_dir/zsh/$source_path"
         if [[ -f "$target" ]] && cmp -s "$source_path" "$target"; then
-            printf 'Skipped %s (already matches)\n' "$target"
+            report_file SKIP "$target" 'already matches' "$dry_run"
             continue
         fi
     else
         source_path="$HOME/$source_path"
         if [[ -L "$target" && $(readlink "$target") == "$source_path" ]]; then
-            printf 'Skipped %s (already matches)\n' "$target"
+            report_file SKIP "$target" 'already matches' "$dry_run"
             continue
         fi
     fi
 
     if [[ -e "$target" || -L "$target" ]]; then
         if (( skip_existing )); then
-            printf 'Skipped %s (existing file differs)\n' "$target"
+            report_file SKIP "$target" 'existing file differs' "$dry_run"
             continue
         fi
-        if (( dry_run )); then
-            if [[ $relative == .zshenv ]]; then
-                would_install_zshenv=1
-            fi
-            if (( backup_requested )); then
-                printf 'Would back up and install %s\n' "$target"
-            else
-                printf 'Would replace %s\n' "$target"
-            fi
-            continue
-        fi
+        action=OVERWRITE
         if (( backup_requested )); then
-            if [[ -z "$backup" ]]; then
-                backup="$(mktemp -d "$HOME/.dotfiles-zsh-backup.XXXXXXXX")"
-                printf 'Saving previous configuration in %s\n' "$backup"
+            if (( dry_run )); then
+                detail='backup planned'
+            else
+                if [[ -z "$backup" ]]; then
+                    backup="$(mktemp -d "$HOME/.dotfiles-zsh-backup.XXXXXXXX")"
+                    printf 'Saving previous configuration in %s\n' "$backup"
+                fi
+                backup_file="$backup/$relative"
+                mkdir -p -- "$(dirname -- "$backup_file")"
+                cp -pP -- "$target" "$backup_file"
+                detail="backup at $backup_file"
             fi
-            backup_file="$backup/$relative"
-            mkdir -p -- "$(dirname -- "$backup_file")"
-            cp -pP -- "$target" "$backup_file"
         fi
-    elif (( dry_run )); then
+    fi
+    if (( dry_run )); then
         if [[ $relative == .zshenv ]]; then
             would_install_zshenv=1
         fi
-        printf 'Would install %s\n' "$target"
+        report_file "$action" "$target" "$detail" "$dry_run"
         continue
     fi
 
@@ -190,11 +188,7 @@ for entry in "${entries[@]}"; do
     else
         ln -sfn -- "$source_path" "$target"
     fi
-    if [[ -n "$backup_file" ]]; then
-        printf 'Backed up and installed %s (backup at %s)\n' "$target" "$backup_file"
-    else
-        printf 'Installed %s\n' "$target"
-    fi
+    report_file "$action" "$target" "$detail"
 done
 
 report_macos_zdotdir() {

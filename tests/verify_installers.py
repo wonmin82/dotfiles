@@ -32,8 +32,8 @@ class Installers(unittest.TestCase):
         self.env = {"HOME": str(self.home), "PATH": f"{self.bin}:{SYSTEM_PATH}",
                     "TERM": "xterm-256color", "LC_ALL": "en_US.UTF-8"}
 
-    def command(self, *argv, status=0, **env):
-        result = subprocess.run(argv, env={**self.env, **env}, cwd=self.work,
+    def command(self, *argv, status=0, cwd=None, **env):
+        result = subprocess.run(argv, env={**self.env, **env}, cwd=cwd or self.work,
                                 stdin=subprocess.DEVNULL, capture_output=True, text=True, timeout=20)
         if status is not None:
             self.assertEqual(result.returncode, status, result.stdout + result.stderr)
@@ -54,11 +54,12 @@ class Installers(unittest.TestCase):
         local.write_text('" Personal settings\n')
         before = self.snapshot()
         preview = self.install("vim", "--skip-existing", "--dry-run")
-        self.assertIn(f"Skipped {vimrc} (existing file differs)", preview)
-        self.assertIn(f"Would install {self.home / '.vim/dotvim/config/options.vim'}", preview)
+        self.assertIn(f"[DRY-RUN] [SKIP] {vimrc} (existing file differs)", preview)
+        self.assertIn(f"[DRY-RUN] [NEW] {self.home / '.vim/dotvim/config/options.vim'}", preview)
         self.assertEqual(self.snapshot(), before)
         output = self.install("vim", "--skip-existing")
         self.assertIn("Warning: Preserved Vim files", output)
+        self.assertIn(f"[SKIP] {local} (user-managed file)", output)
         self.assertEqual(vimrc.read_text(), '" Custom loader\n')
         self.assertEqual(local.read_text(), '" Personal settings\n')
         options = self.home / ".vim/dotvim/config/options.vim"
@@ -69,45 +70,63 @@ class Installers(unittest.TestCase):
         coc = self.home / ".vim/coc-settings.json"
         coc.write_text('{"personal": true}\n')
         output = self.install("vim", "--skip-existing")
-        self.assertIn(f"Skipped {options} (existing file differs)", output)
-        self.assertIn(f"Installed {appearance}", output)
+        self.assertIn(f"[SKIP] {options} (existing file differs)", output)
+        self.assertIn(f"[NEW] {appearance}", output)
         self.assertEqual(options.read_text(), '" Custom runtime\n')
         self.assertIn("Existing configuration differs", self.install("vim", status=1))
         output = self.install("vim", "--backup")
-        self.assertIn(f"Backed up and installed {vimrc}", output)
-        self.assertIn(f"Backed up and installed {options}", output)
         backup, = self.home.glob(".dotvim-backup.*")
+        self.assertIn(f"[OVERWRITE] {vimrc} (backup at {backup / '.vimrc'})", output)
+        self.assertIn(f"[OVERWRITE] {options} (backup at {backup / options.relative_to(self.home)})", output)
         self.assertEqual((backup / ".vimrc").read_text(), '" Custom loader\n')
         self.assertEqual((backup / options.relative_to(self.home)).read_text(), '" Custom runtime\n')
         self.assertEqual(coc.read_text(), '{"personal": true}\n')
         before = self.snapshot(include_directories=False)
-        self.assertIn(f"Skipped {vimrc} (already matches)", self.install("vim"))
+        self.assertIn(f"[SKIP] {vimrc} (already matches)", self.install("vim"))
         self.assertEqual(self.snapshot(include_directories=False), before)
 
     @unittest.skipUnless(MAC, "requires macOS")
     def test_macos_fresh_install_dry_run_and_force(self):
         before = self.snapshot()
         output = self.install("mac", "--dry-run")
+        self.assertIn(f"[DRY-RUN] [NEW] {self.home / '.wgetrc'}", output)
         self.assertIn("ZDOTDIR before installation", output)
         self.assertIn("ZDOTDIR after planned installation", output)
         self.assertEqual(self.snapshot(), before)
         output = self.install("mac")
         for relative in (".vimrc", ".zshenv", ".zsh/.zprofile", ".zsh/homebrew.zsh"):
-            self.assertIn(f"Installed {self.home / relative}", output)
+            self.assertIn(f"[NEW] {self.home / relative}", output)
         for relative in (".gitconfig", ".tmux.conf", ".curlrc", ".wgetrc", ".config/flake8", ".config/pip/pip.conf"):
-            self.assertIn(f"Installed {self.home / relative}", output)
+            self.assertIn(f"[NEW] {self.home / relative}", output)
             self.assertEqual((self.home / relative).read_bytes(), (ROOT / "common" / relative).read_bytes())
         self.assertFalse((self.home / ".zsh/.zkbd").exists())
         for name in (".vimrc", ".wgetrc", ".zsh/.zprofile"):
             (self.home / name).write_text("local settings\n")
         before = self.snapshot()
-        self.assertEqual(self.install("mac", "--force", "--dry-run").count("Would back up and install"), 3)
+        preview = self.install("mac", "--force", "--dry-run")
+        self.assertEqual(preview.count("[DRY-RUN] [OVERWRITE] "), 3)
+        self.assertEqual(preview.count("(backup planned)"), 3)
+        self.assertIn(f"[DRY-RUN] [SKIP] {self.home / '.curlrc'} (already matches)", preview)
         self.assertEqual(self.snapshot(), before)
-        self.assertEqual(self.install("mac", "--force").count("Backed up and installed"), 3)
+        output = self.install("mac", "--force")
+        self.assertEqual(output.count("[OVERWRITE] "), 3)
         for pattern, path in ((".dotvim-backup.*", ".vimrc"), (".dotfiles-mac-backup.*", ".wgetrc"),
                               (".dotfiles-zsh-backup.*", ".zsh/.zprofile")):
             backup, = self.home.glob(pattern)
+            self.assertIn(f"[OVERWRITE] {self.home / path} (backup at {backup / path})", output)
             self.assertEqual((backup / path).read_text(), "local settings\n")
+
+    def test_copy_installers_report_new_and_overwritten_files(self):
+        for platform, count in (("cygwin", 7), ("synology", 4)):
+            with self.subTest(platform=platform):
+                home = self.work / f"{platform} home"
+                home.mkdir()
+                script = ROOT / f"install-{platform}-config.sh"
+                for label in ("[NEW]", "[OVERWRITE]"):
+                    output = self.command("/bin/bash", script, cwd=ROOT, HOME=str(home)).stdout
+                    lines = output.splitlines()
+                    self.assertEqual(len(lines), count, output)
+                    self.assertTrue(all(line.startswith(f"{label} {home}/") for line in lines), output)
 
     @unittest.skipUnless(MAC, "requires the macOS read-only startup probe")
     def test_existing_zdotdir_is_evaluated_without_writes(self):
@@ -235,6 +254,7 @@ class Installers(unittest.TestCase):
         executable(self.bin / "sudo", "exit 99\n")
         fixture = self.work / "install-zsh-config.sh"
         fixture.write_text(source.replace("/etc/passwd", str(passwd)).replace("/etc/synoinfo.conf", str(marker)))
+        (self.work / "lib").symlink_to(ROOT / "lib", target_is_directory=True)
         (self.work / "zsh").symlink_to(ROOT / "zsh", target_is_directory=True)
         passwd.write_text("tester:x:1000:1000:Tester:/home/tester:/bin/zsh\n")
         self.command("/bin/bash", fixture)

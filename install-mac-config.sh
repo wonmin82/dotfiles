@@ -25,6 +25,7 @@ if [[ $(uname -s) != Darwin ]] || (( EUID == 0 )); then
 fi
 
 script_dir="$(cd -- "$(dirname -- "$0")" && pwd -P)"
+source "$script_dir/lib/install-output.sh"
 config_files=(
     'common/.gitconfig:.gitconfig'
     'common/.tmux.conf:.tmux.conf'
@@ -87,41 +88,39 @@ for entry in "${config_files[@]}"; do
     src="$script_dir/${entry%%:*}"
     relative="${entry#*:}"
     target="$HOME/$relative"
-    backup_file=''
+    action=NEW
+    detail=''
     if [[ -f "$target" ]]; then
         if cmp -s "$src" "$target"; then
-            printf 'Skipped %s (already matches)\n' "$target"
+            report_file SKIP "$target" 'already matches' "$dry_run"
             continue
         fi
         if (( ! force )); then
-            printf 'Skipped %s (existing file differs)\n' "$target"
+            report_file SKIP "$target" 'existing file differs' "$dry_run"
             continue
         fi
+        action=OVERWRITE
         if (( dry_run )); then
-            printf 'Would back up and install %s\n' "$target"
-            continue
+            detail='backup planned'
+        else
+            if [[ -z "$backup" ]]; then
+                backup="$(mktemp -d "$HOME/.dotfiles-mac-backup.XXXXXXXX")"
+                printf 'Saving previous configuration in %s\n' "$backup"
+            fi
+            backup_file="$backup/$relative"
+            mkdir -p -- "$(dirname -- "$backup_file")"
+            cp -p -- "$target" "$backup_file"
+            detail="backup at $backup_file"
         fi
-        if [[ -z "$backup" ]]; then
-            backup="$(mktemp -d "$HOME/.dotfiles-mac-backup.XXXXXXXX")"
-            printf 'Saving previous configuration in %s\n' "$backup"
-        fi
-        backup_file="$backup/$relative"
-        mkdir -p -- "$(dirname -- "$backup_file")"
-        cp -p -- "$target" "$backup_file"
-    elif (( dry_run )); then
-        printf 'Would install %s\n' "$target"
-        continue
     fi
 
-    dir="$(dirname -- "$target")"
-    mkdir -p -- "$dir"
-    staged="$(mktemp "$dir/.dotfiles-mac.XXXXXXXX")"
-    /usr/bin/install -m 644 "$src" "$staged"
-    mv -f -- "$staged" "$target"
-    staged=''
-    if [[ -n "$backup_file" ]]; then
-        printf 'Backed up and installed %s (backup at %s)\n' "$target" "$backup_file"
-    else
-        printf 'Installed %s\n' "$target"
+    if (( ! dry_run )); then
+        dir="$(dirname -- "$target")"
+        mkdir -p -- "$dir"
+        staged="$(mktemp "$dir/.dotfiles-mac.XXXXXXXX")"
+        /usr/bin/install -m 644 "$src" "$staged"
+        mv -f -- "$staged" "$target"
+        staged=''
     fi
+    report_file "$action" "$target" "$detail" "$dry_run"
 done
