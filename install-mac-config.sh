@@ -26,12 +26,12 @@ fi
 
 script_dir="$(cd -- "$(dirname -- "$0")" && pwd -P)"
 config_files=(
-    'ubuntu/.gitconfig:.gitconfig'
-    'ubuntu/.tmux.conf:.tmux.conf'
-    'ubuntu/.curlrc:.curlrc'
-    'ubuntu/.wgetrc:.wgetrc'
-    'ubuntu/flake8:.config/flake8'
-    'ubuntu/pip.conf:.config/pip/pip.conf'
+    'common/.gitconfig:.gitconfig'
+    'common/.tmux.conf:.tmux.conf'
+    'common/.curlrc:.curlrc'
+    'common/.wgetrc:.wgetrc'
+    'common/.config/flake8:.config/flake8'
+    'common/.config/pip/pip.conf:.config/pip/pip.conf'
 )
 
 lock="$HOME/.dotfiles-mac-install-lock"

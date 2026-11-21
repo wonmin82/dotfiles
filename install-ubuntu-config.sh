@@ -3,6 +3,7 @@
 scriptfile="$(readlink -f "$0")"
 scriptpath="$(readlink -m "$(dirname "${scriptfile}")")"
 configspath="${scriptpath}/ubuntu"
+commonpath="${scriptpath}/common"
 
 flag_superuser=false
 flag_force=false
@@ -35,27 +36,27 @@ install -v -m 644 -o ${uid} -g ${gid} \
 install -v -m 644 -o ${uid} -g ${gid} \
 	-D ${configspath}/.inputrc -t ${home}/
 install -v -m 644 -o ${uid} -g ${gid} \
-	-D ${configspath}/.tmux.conf -t ${home}/
+	-D "${commonpath}/.tmux.conf" -t ${home}/
 if [ ! -f ${home}/.gitconfig ] || [ ${flag_force} == true ]; then
 	install -v -m 644 -o ${uid} -g ${gid} \
-		-D ${configspath}/.gitconfig -t ${home}/
+		-D "${commonpath}/.gitconfig" -t ${home}/
 fi
 install -v -m 644 -o ${uid} -g ${gid} \
 	-D ${configspath}/.clang-format -t ${home}/
 install -v -m 644 -o ${uid} -g ${gid} \
-	-D ${configspath}/.wgetrc -t ${home}/
+	-D "${commonpath}/.wgetrc" -t ${home}/
 install -v -m 644 -o ${uid} -g ${gid} \
-	-D ${configspath}/.curlrc -t ${home}/
+	-D "${commonpath}/.curlrc" -t ${home}/
 install -v -m 644 -o ${uid} -g ${gid} \
 	-D ${configspath}/.axelrc -t ${home}/
 install -v -m 755 -o ${uid} -g ${gid} \
 	-d ${home}/.config/
 install -v -m 644 -o ${uid} -g ${gid} \
-	-D ${configspath}/flake8 -t ${home}/.config/
+	-D "${commonpath}/.config/flake8" -t ${home}/.config/
 install -v -m 755 -o ${uid} -g ${gid} \
 	-d ${home}/.config/pip/
 install -v -m 644 -o ${uid} -g ${gid} \
-	-D ${configspath}/pip.conf -t ${home}/.config/pip/
+	-D "${commonpath}/.config/pip/pip.conf" -t ${home}/.config/pip/
 install -v -m 755 -o ${uid} -g ${gid} \
 	-d ${home}/.config/python_keyring/
 install -v -m 644 -o ${uid} -g ${gid} \
@@ -70,7 +71,7 @@ install -v -m 644 -o ${uid} -g ${gid} \
 install -v -m 755 -o ${root_uid} -g ${root_gid} \
 	-d ${root_home}/.config/pip/
 install -v -m 644 -o ${root_uid} -g ${root_gid} \
-	-D ${configspath}/pip.conf -t ${root_home}/.config/pip/
+	-D "${commonpath}/.config/pip/pip.conf" -t ${root_home}/.config/pip/
 install -v -m 755 -o ${root_uid} -g ${root_gid} \
 	-d ${root_home}/.config/fontconfig/
 install -v -m 644 -o ${root_uid} -g ${root_gid} \

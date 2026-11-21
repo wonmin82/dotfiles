@@ -92,8 +92,11 @@ class Installers(unittest.TestCase):
         self.assertIn("ZDOTDIR after planned installation", output)
         self.assertEqual(self.snapshot(), before)
         output = self.install("mac")
-        for relative in (".vimrc", ".zshenv", ".zsh/.zprofile", ".zsh/homebrew.zsh", ".wgetrc", ".tmux.conf"):
+        for relative in (".vimrc", ".zshenv", ".zsh/.zprofile", ".zsh/homebrew.zsh"):
             self.assertIn(f"Installed {self.home / relative}", output)
+        for relative in (".gitconfig", ".tmux.conf", ".curlrc", ".wgetrc", ".config/flake8", ".config/pip/pip.conf"):
+            self.assertIn(f"Installed {self.home / relative}", output)
+            self.assertEqual((self.home / relative).read_bytes(), (ROOT / "common" / relative).read_bytes())
         self.assertFalse((self.home / ".zsh/.zkbd").exists())
         for name in (".vimrc", ".wgetrc", ".zsh/.zprofile"):
             (self.home / name).write_text("local settings\n")
@@ -249,7 +252,7 @@ class Installers(unittest.TestCase):
         tmux = shutil.which("tmux")
         if not tmux:
             self.skipTest("tmux unavailable")
-        config = ROOT / "ubuntu/.tmux.conf"
+        config = ROOT / "common/.tmux.conf"
         socket = self.work / "socket"
         cmd = [tmux, "-S", socket, "-f", "/dev/null"]
         result = self.command(*cmd, "new-session", "-d", "/bin/sh", status=None)
